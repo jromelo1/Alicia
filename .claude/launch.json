@@ -1,0 +1,23 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "Build Debug APK",
+      "runtimeExecutable": "gradlew.bat",
+      "runtimeArgs": [":app:assembleDebug"],
+      "port": null
+    },
+    {
+      "name": "Install & Run on Device",
+      "runtimeExecutable": "gradlew.bat",
+      "runtimeArgs": [":app:installDebug"],
+      "port": null
+    },
+    {
+      "name": "Connected Tests",
+      "runtimeExecutable": "gradlew.bat",
+      "runtimeArgs": [":app:connectedAndroidTest"],
+      "port": null
+    }
+  ]
+}

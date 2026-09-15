@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+    Ícono: Círculo de Confianza
+    Lienzo adaptive icon: 108×108dp  |  Zona segura: 72×72dp (márgenes de 18dp)
+    Diseño: 3 siluetas de personas en los vértices de un triángulo equilátero
+    inscrito en un círculo de radio 22, centrado en (54, 54).
+    Persona 1 (arriba):         (54, 32)
+    Persona 2 (abajo-derecha):  (73, 65)
+    Persona 3 (abajo-izquierda):(35, 65)
+-->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+
+    <!-- ── Anillo conector ── -->
+    <!-- Círculo de radio 22 centrado en (54,54), trazo blanco semitransparente -->
+    <path
+        android:fillColor="#00000000"
+        android:strokeColor="#99FFFFFF"
+        android:strokeWidth="2"
+        android:pathData="M 32,54 A 22,22 0 1,0 76,54 A 22,22 0 1,0 32,54 Z"/>
+
+    <!-- ══════════════════════════════════════════
+         PERSONA 1  —  parte superior  (54, 32)
+         Cabeza: círculo (54, 27) r=4
+         Cuerpo: rect redondeado x:49-59, y:33-41
+    ══════════════════════════════════════════ -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 50,27 A 4,4 0 1,0 58,27 A 4,4 0 1,0 50,27 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 51,33 L 57,33 Q 59,33 59,35 L 59,39 Q 59,41 57,41 L 51,41 Q 49,41 49,39 L 49,35 Q 49,33 51,33 Z"/>
+
+    <!-- ══════════════════════════════════════════
+         PERSONA 2  —  abajo-derecha  (73, 65)
+         Cabeza: círculo (73, 60) r=4
+         Cuerpo: rect redondeado x:68-78, y:66-74
+    ══════════════════════════════════════════ -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 69,60 A 4,4 0 1,0 77,60 A 4,4 0 1,0 69,60 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 70,66 L 76,66 Q 78,66 78,68 L 78,72 Q 78,74 76,74 L 70,74 Q 68,74 68,72 L 68,68 Q 68,66 70,66 Z"/>
+
+    <!-- ══════════════════════════════════════════
+         PERSONA 3  —  abajo-izquierda  (35, 65)
+         Cabeza: círculo (35, 60) r=4
+         Cuerpo: rect redondeado x:30-40, y:66-74
+    ══════════════════════════════════════════ -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 31,60 A 4,4 0 1,0 39,60 A 4,4 0 1,0 31,60 Z"/>
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M 32,66 L 38,66 Q 40,66 40,68 L 40,72 Q 40,74 38,74 L 32,74 Q 30,74 30,72 L 30,68 Q 30,66 32,66 Z"/>
+
+</vector>

@@ -1,0 +1,23 @@
+rules_version = '2';
+
+// Reglas de Firebase Storage. Reutiliza la misma noción de "miembro del
+// círculo" que firestore.rules: solo quien tiene users/{uid}.circleId ==
+// circleId puede leer o escribir archivos bajo ese círculo.
+//
+// Rutas cubiertas:
+//   /circles/{circleId}/medications/{medId}/photo.jpg
+//   /circles/{circleId}/memories/{memoryId}/photo.jpg
+service firebase.storage {
+  match /b/{bucket}/o {
+
+    function isCircleMember(circleId) {
+      return request.auth != null
+        && firestore.exists(/databases/(default)/documents/users/$(request.auth.uid))
+        && firestore.get(/databases/(default)/documents/users/$(request.auth.uid)).data.circleId == circleId;
+    }
+
+    match /circles/{circleId}/{allPaths=**} {
+      allow read, write: if isCircleMember(circleId);
+    }
+  }
+}

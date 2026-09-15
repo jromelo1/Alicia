@@ -1,0 +1,29 @@
+﻿{
+  "project_info": {
+    "project_number": "810691887855",
+    "project_id": "alicia-53950",
+    "storage_bucket": "alicia-53950.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:810691887855:android:4e49e7199eb34d17ff111a",
+        "android_client_info": {
+          "package_name": "com.gutigu.alicia"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzg41KKmqdPsX92AdRBCJg86M6R4cBDzA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

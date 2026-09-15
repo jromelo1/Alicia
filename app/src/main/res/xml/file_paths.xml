@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<paths>
+    <!-- Fotos temporales tomadas con la cámara (pastillas) -->
+    <cache-path name="pill_photos" path="pill_photos/" />
+    <!-- Fotos temporales tomadas con la cámara (recuerdos) -->
+    <cache-path name="memory_photos" path="memory_photos/" />
+</paths>
