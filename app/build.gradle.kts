@@ -13,7 +13,6 @@ plugins {
 val localProperties = Properties()
 val localFile = rootProject.file("local.properties")
 if (localFile.exists()) localProperties.load(localFile.inputStream())
-val anthropicApiKey: String = localProperties.getProperty("ANTHROPIC_API_KEY", "")
 val fcmServerKey: String = localProperties.getProperty("FCM_SERVER_KEY", "")
 val mapsApiKey: String  = localProperties.getProperty("MAPS_API_KEY", "")
 
@@ -29,11 +28,10 @@ android {
         applicationId = "com.gutigu.alicia"
         minSdk = 26
         targetSdk = 36
-        versionCode = 11
-        versionName = "11.0"
+        versionCode = 12
+        versionName = "12.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        buildConfigField("String", "ANTHROPIC_API_KEY", "\"$anthropicApiKey\"")
         buildConfigField("String", "FCM_SERVER_KEY", "\"$fcmServerKey\"")
         manifestPlaceholders["MAPS_API_KEY"] = mapsApiKey
     }

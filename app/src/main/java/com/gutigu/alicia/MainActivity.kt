@@ -14,8 +14,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.automirrored.filled.Chat
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.LocationOn
@@ -53,12 +53,12 @@ import com.gutigu.alicia.data.CircleSessionRepository
 import com.gutigu.alicia.data.PrivacyConsentRepository
 import com.gutigu.alicia.feature.auth.AuthRepository
 import com.gutigu.alicia.feature.auth.LoginScreen
-import com.gutigu.alicia.feature.chat.ChatScreen
 import com.gutigu.alicia.feature.checkin.CheckInScreen
 import com.gutigu.alicia.feature.checkin.FamiliarCheckInScreen
 import com.gutigu.alicia.feature.circle.CircleScreen
 import com.gutigu.alicia.feature.circle.JoinCircleScreen
 import com.gutigu.alicia.feature.circle.ShareCircleCodeScreen
+import com.gutigu.alicia.feature.dailycall.DailyCallScreen
 import com.gutigu.alicia.feature.familiar.FamiliarStatusScreen
 import com.gutigu.alicia.feature.medications.MedicationScreen
 import com.gutigu.alicia.feature.memories.MemoriesScreen
@@ -93,7 +93,7 @@ private val TextSecondary = AliciaTextSecondary
 // pantallas angostas).
 private val TabColorSos       = AliciaAlert       // rojo — reservado para emergencias reales
 private val TabColorBienestar = Color(0xFFEC407A) // rosa — bienestar/ánimo
-private val TabColorAlicia    = AliciaAccentBlue  // azul — chat
+private val TabColorLlamada   = AliciaAccentBlue  // azul — llamada diaria
 private val TabColorRecuerdos = AliciaCircle      // morado suave — coincide con Recuerdos
 private val TabColorMedicina  = Color(0xFFE67E22) // naranja — medicamentos
 private val TabColorNotas     = Color(0xFF9C27B0) // magenta — coincide con el ícono de Notas
@@ -103,7 +103,7 @@ private val TabColorCirculo   = AliciaAccent      // verde — círculo de confi
 private val TABS_ADULTO = listOf(
     Tab("SOS",       Icons.Default.Warning, TabColorSos),
     Tab("Bienestar", Icons.Default.Favorite, TabColorBienestar),
-    Tab("Alicia",    Icons.AutoMirrored.Filled.Chat, TabColorAlicia),
+    Tab("Llamada",   Icons.Default.Call, TabColorLlamada),
     Tab("Recuerdos", Icons.Default.PhotoLibrary, TabColorRecuerdos),
     Tab("Medicina",  Icons.Default.Notifications, TabColorMedicina),
     Tab("Notas",     Icons.Default.Edit, TabColorNotas),
@@ -114,6 +114,7 @@ private val TABS_ADULTO = listOf(
 private val TABS_FAMILIAR = listOf(
     Tab("Estado",    Icons.Default.Favorite),
     Tab("Bienestar", Icons.Default.Notifications),
+    Tab("Llamada",   Icons.Default.Call),
     Tab("Zonas",     Icons.Default.LocationOn),
     Tab("Recuerdos", Icons.Default.PhotoLibrary),
     Tab("Círculo",   Icons.Default.AccountCircle)
@@ -415,7 +416,7 @@ private fun AdultoMayorContent(tab: Int) {
     when (tab) {
         0 -> PanicScreen()
         1 -> CheckInScreen()
-        2 -> ChatScreen()
+        2 -> DailyCallScreen()
         3 -> MemoriesScreen()
         4 -> MedicationScreen()
         5 -> NotesScreen()
@@ -428,9 +429,10 @@ private fun FamiliarContent(tab: Int) {
     when (tab) {
         0 -> FamiliarStatusScreen()
         1 -> FamiliarCheckInScreen()
-        2 -> SafeZonesScreen()
-        3 -> MemoriesScreen()
-        4 -> CircleScreen()
+        2 -> DailyCallScreen()
+        3 -> SafeZonesScreen()
+        4 -> MemoriesScreen()
+        5 -> CircleScreen()
     }
 }
 

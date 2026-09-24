@@ -1,6 +1,6 @@
 # Círculo de Confianza — Spec v3 (Núcleo + Funciones completas)
 
-> Cubre: Check-in de Bienestar, SOS, Círculo de Confianza (emparejamiento), Dashboard Familiar, Notas, Alicia (chat IA), Zonas Seguras, Medicamentos, Citas médicas, Memorias.
+> Cubre: Check-in de Bienestar, SOS, Círculo de Confianza (emparejamiento), Dashboard Familiar, Notas, Llamada diaria (Alicia por voz, vía Retell), Zonas Seguras, Medicamentos, Citas médicas, Memorias.
 > Con esta versión el spec queda **completo respecto al código actual**: ya no hay funciones "fuera de alcance" como en v2. La feature de "Juegos" mencionada en versiones anteriores al v2 fue confirmada como **eliminada** — no existe rastro de ella en el código (ver §0.3).
 
 ---
@@ -25,7 +25,7 @@ El botón "Mensaje de voz" que el spec v2 (§6.2) todavía listaba junto a "Llam
 
 ### 0.5 Funciones nuevas documentadas por primera vez
 
-Notas, Alicia (chat con IA), Zonas Seguras, Medicamentos, Citas médicas y Memorias ya estaban construidas pero nunca se habían documentado con el rigor de un spec (v1 las mencionaba de pasada, v2 las declaraba explícitamente fuera de alcance). Este documento las cubre todas con el mismo nivel de detalle que el núcleo.
+Notas, Zonas Seguras, Medicamentos, Citas médicas y Memorias ya estaban construidas pero nunca se habían documentado con el rigor de un spec (v1 las mencionaba de pasada, v2 las declaraba explícitamente fuera de alcance). Este documento las cubre todas con el mismo nivel de detalle que el núcleo. La Llamada diaria (§9) es la excepción: reemplaza a la función de chat con IA que si existía en versiones anteriores de este documento, retirada en esta pasada.
 
 ### 0.6 Tercer tono de rojo, formalizado como token
 
@@ -46,7 +46,7 @@ El código usa consistentemente un rojo distinto (`#C0392B`) para acciones destr
 | `text-secondary` | Texto de apoyo, subtítulos | `#6B6880` |
 | `accent` | Verde — vida, seguridad, confirmación (Bienestar, medicamentos, Adulto Mayor en Onboarding) | `#2ECC71` |
 | `accent-soft` | Fondo tenue del accent (chips, halos) | `#E3F9EC` |
-| `accent-blue` | Azul — Citas médicas, rol "Familiar" en Onboarding, chat de Alicia usa su propio dorado (ver 1.1.1) | `#2980B9` |
+| `accent-blue` | Azul — Citas médicas, rol "Familiar" en Onboarding, Llamada diaria | `#2980B9` |
 | `circle-purple` | Morado — exclusivo de Círculo y de Memorias (dos funciones de vínculo, no de emergencia) | `#8E7FA6` |
 | `alert` | Rojo — **reservado exclusivamente para emergencia real** | `#E8342A` |
 | `alert-soft` | Fondo tenue del alert (banners de error no críticos) | `#FCE8E6` |
@@ -62,7 +62,6 @@ Regla dura heredada de v1/v2, sin cambios: **el rojo `alert` solo aparece en un 
 
 Algunas pantallas usan color como taxonomía interna de la propia función, no como estado semántico global — se documentan en su sección, no aquí:
 - **Notas**: cada categoría automática tiene su color propio (Salud rojo oscuro `#D32F2F`, Tarea verde `#2E7D32`, Recordatorio ámbar `#B7891A`, Del familiar morado `#7A1F8A`, Compras azul `#1E6FA8`, Familia naranja `#C0622E`, General = `text-secondary`).
-- **Alicia (chat)**: dorado `#B8860B` como acento de marca del asistente — no se reutiliza en ninguna otra función.
 - **Medicina "con comida"**: naranja `#B9770E` — matiz distinto de `warning`, exclusivo de esa etiqueta.
 
 ### 1.2 Tipografía
@@ -89,7 +88,7 @@ Asignación de color por función, actualizada con las funciones nuevas:
 - Medicamentos → `accent`
 - Citas médicas → `accent-blue`
 - Notas → sin color único de acceso; usa el color de categoría dentro de la propia pantalla
-- Alicia (chat) → dorado de marca (no forma parte de la paleta semántica)
+- Llamada diaria → `accent-blue`
 - Zonas → hereda `accent` (activa) / `inactive` (desactivada)
 
 ### 1.4 Ilustración
@@ -111,9 +110,9 @@ Sin cambios respecto a v2 (fondo oscuro, texto denso, elementos chicos, todo enc
 | Ícono | Dueño | Significado |
 |---|---|---|
 | 👤 | **Persona** | El adulto mayor o el familiar toma una acción explícita. |
-| 🔊 | **Alicia-voz** | El motor de texto-a-voz del sistema habla (saludo de alarma, confirmaciones). No confundir con "Alicia" el asistente conversacional de IA (§8), que es una función distinta aunque comparta nombre de personaje. |
-| 🤖 | **Alicia-IA** | El asistente conversacional (Claude vía API) genera una respuesta de chat. Solo aplica a la función de Chat (§8). |
-| ⚙️ | **Sistema** | Ocurre automáticamente (temporizador, sincronización, notificación push, reprogramación tras reinicio). |
+| 🔊 | **Alicia-voz** | El motor de texto-a-voz del sistema habla (saludo de alarma, confirmaciones). No confundir con "Alicia" el agente de voz de la Llamada diaria (§9, vía Retell) — comparten nombre de personaje pero son mecanismos distintos: uno es TTS local, el otro es una llamada telefónica real de un tercero. |
+| 🤖 | **Alicia-Retell** | El agente de voz de Retell conversa por teléfono durante la Llamada diaria. Solo aplica a §9. |
+| ⚙️ | **Sistema** | Ocurre automáticamente (temporizador, sincronización, notificación push, Cloud Function programada, reprogramación tras reinicio). |
 
 ---
 
@@ -397,48 +396,55 @@ Campo "¿Qué quieres anotar?" (3–6 líneas), botón "Guardar" deshabilitado s
 
 ---
 
-## 9 · Flujo: Alicia (chat conversacional con IA)
+## 9 · Flujo: Llamada diaria (Alicia por voz, vía Retell)
+
+**Reemplaza al chat de texto con IA** (que sí existió, documentado en versiones anteriores de este spec — ver Anexo 9.5). Se retiró por completo: pantalla, ViewModel, repositorio y la llamada directa a la API de Anthropic desde el cliente. En su lugar, Alicia llama por teléfono todos los días a la hora que la familia o el propio Adulto Mayor elijan, usando un agente de voz de Retell.
 
 ### 9.1 Resumen del flujo
 
 ```
-👤 Abre la pestaña Alicia
+👤 Adulto Mayor o Familiar llena el perfil de la llamada (pestaña "Llamada", cualquiera de los dos roles)
         ↓
-   ¿Primera vez / sin historial? ── Sí ──→ 🤖 Alicia envía saludo proactivo según hora del día e intereses
-        │ No
+👤 Acepta el consentimiento específico para la llamada con IA
         ↓
-👤 Escribe y envía mensajes ←→ 🤖 Alicia responde (llamada a la API de Anthropic)
-        │
-        👤 Puede editar su perfil (nombre + intereses) o reiniciar la conversación en cualquier momento
+⚙️ Cloud Function programada (`dailyCallScheduler`, cada 15 min) revisa la hora
+   local de cada círculo con la llamada activada
+        ↓
+   ¿Es la hora preferida y no se ha llamado hoy? ── Sí ──→ ⚙️ Le pide a Retell que llame
+        ↓
+🤖 Retell llama al teléfono del Adulto Mayor y conversa con él/ella
+        ↓
+⚙️ Retell analiza la llamada y envía el resultado por webhook (`retellWebhook`)
+        ↓
+⚙️ Se guarda el resumen en Firestore — alimenta la siguiente llamada y el historial visible para ambos roles
 ```
 
-### 9.2 Pantalla principal (`ChatScreen`)
+### 9.2 Pantalla (`DailyCallScreen`) — la misma para los dos roles
 
 | | |
 |---|---|
-| **Dueño** | 👤 + 🤖 |
-| **Top bar** | "Alicia" (dorado) + "IA Vecinal · Círculo de Confianza". Ícono de perfil ("Mis intereses"), ícono de refrescar ("Nueva conversación"). |
-| **Mensajes** | Burbujas de usuario (celeste, derecha) vs. Alicia (superficie alterna, izquierda, avatar dorado "A"). |
-| **Cargando (`isLoading`)** | Indicador "escribiendo…" (tres puntos dorados con rebote). Input deshabilitado mientras carga. |
-| **Error** | Banner rojo (`alert`) sobre el input con el mensaje y botón "OK" para descartarlo. |
-| **Input** | Placeholder "Escribe un mensaje…", botón enviar circular (activo solo con texto y sin carga en curso). |
+| **Dueño** | 👤 Adulto Mayor o Familiar, indistintamente — quien tenga los datos a mano. Sincronizado por Firestore: lo que edita uno lo ve el otro. |
+| **Interruptor "Llamada activada"** | Deshabilitado hasta que haya nombre, teléfono válido (6+ dígitos) y el consentimiento aceptado — con esas tres cosas resueltas, cualquiera de los dos roles puede prenderla o apagarla en cualquier momento. |
+| **Formulario** | Nombre completo, "¿Cómo le gusta que le llamen?" (trato — ej. "Doña Rosa"), país de origen, gustos y temas de conversación (texto libre), familia (texto libre — nombres y parentescos para que Alicia los use bien), teléfono (con selector de país, mismo componente que Círculo), contacto de emergencia (nombre + teléfono), hora preferida de la llamada (mismo ajustador de ±30 min que el horario de check-in). |
+| **Consentimiento** | Tarjeta propia, separada del aviso de privacidad general (§5.3) — explica que los datos y el audio se comparten con Retell, un tercero. Checkbox "Autorizo la llamada diaria con IA" + fecha de aceptación una vez marcado. La fecha no se vuelve a pisar aunque se seleccione de nuevo — se guarda solo la primera vez. |
+| **Llamadas recientes** | Lista de las últimas 20 llamadas ya ocurridas: fecha/hora, estado (Completada / No contestó / Buzón de voz / No se pudo llamar), y el resumen que generó Retell. Vacío: *"Todavía no ha habido ninguna llamada."* De solo lectura — nadie edita este historial desde la app. |
 
-### 9.3 Bottom sheet "Mi perfil"
+### 9.3 Qué pasa fuera de la app (Cloud Functions, `functions/`)
 
-Campo "Tu nombre" (default "Vecino"), 16 chips de intereses con emoji (🎸 Metal/Rock, 🎵 Música, ✈️ Viajes, 🍳 Cocina, 🌱 Jardín, 📚 Libros, 🎬 Películas, 📷 Fotografía, ⚽ Fútbol, 🏃 Ejercicio, 🐱 Mascotas, 🧩 Manualidades, 🎭 Teatro/Arte, 🌿 Naturaleza, 🕹️ Videojuegos, 🧘 Bienestar), selección múltiple. Botón "Guardar y reiniciar chat" — **reinicia toda la conversación** con un saludo nuevo acorde a los intereses actualizados.
+- **`dailyCallScheduler`**: corre cada 15 minutos. Por cada círculo con `callProfile.callEnabled = true`, calcula la hora local real según el `timeZoneId` guardado (el del dispositivo que configuró la hora) y compara contra la hora preferida. Si coincide con la ventana de 15 minutos actual y no se ha llamado ya hoy (comparando fechas locales), llama a la API de Retell (`POST /v2/create-phone-call`) pasándole nombre, trato, país, gustos, familia, contactos de emergencia y el resumen de la última llamada como variables dinámicas del agente.
+- **`retellWebhook`**: recibe el evento `call_analyzed` de Retell (firmado con `x-retell-signature`, verificado contra el cuerpo crudo de la petición — nunca contra el JSON re-serializado). Guarda un registro nuevo en `circles/{circleId}/callHistory/{call_id}` (fecha, duración, resumen, estado) y actualiza `callProfile.lastCallNotes`/`lastCallAt` en el círculo, para que la siguiente llamada tenga contexto de la anterior.
+- Requiere el plan Blaze de Firebase (Cloud Functions programadas y llamadas salientes no corren en el plan gratuito) y una cuenta de Retell con agente y número configurados — ver `functions/README.md` para los pasos exactos de despliegue, que un asistente de código no puede completar por cuenta propia (requieren la tarjeta de pago y las credenciales reales de la cuenta).
 
-### 9.4 Reglas de negocio / restricciones de contenido
+### 9.4 Reglas de negocio y límites conocidos
 
-- Historial persistido en `SharedPreferences`, últimos 30 mensajes; perfil (nombre + intereses) en otro `SharedPreferences` separado.
-- **UI optimista**: el mensaje del usuario aparece de inmediato; si la llamada falla, se revierte y se muestra el error, sin dejar el mensaje fallido visible.
-- El "system prompt" de Alicia impone reglas estrictas, relevantes para cualquier ampliación futura de esta función:
-  - Responder siempre en español, cálido, oraciones cortas.
-  - Mencionar vecinos con intereses en común (datos mock hoy; están pensados para venir de Firestore `circles/{id}/members` en el futuro).
-  - Si detecta urgencia, recordar el Botón de Pánico de la app.
-  - **No dar consejos médicos, legales ni financieros.**
-  - **Regla innegociable**: nunca explicar para qué sirve un medicamento, qué significa una dosis, ni dar diagnóstico u opinión sobre consecuencias de no tomarlo — debe redirigir con calidez a la familia o al médico, incluso si el usuario insiste.
-- Requiere `ANTHROPIC_API_KEY` configurada; si falta, el error visible es literal: *"Falta ANTHROPIC_API_KEY..."* — esto es un detalle de configuración de build, no algo que el usuario final deba ver en producción.
-- Sin estado de carga inicial en la lista de mensajes — el saludo proactivo reutiliza el mismo `isLoading` que un mensaje normal.
+- El teléfono se guarda en formato E.164 completo (`+` + código de país + número) — es el mismo que se marca, no hay una validación adicional de que el número sea correcto más allá del selector de país ya existente.
+- Si Retell falla al intentar la llamada (error de red, número inválido, etc.), no se marca `lastCallAt` — el scheduler reintenta en la siguiente ventana de 15 minutos del mismo día. No hay límite de reintentos en esta primera versión; si Retell sigue fallando todo el día, solo queda visible en los logs de Cloud Functions, no en la app.
+- La clasificación del estado de la llamada (Completada / No contestó / Buzón de voz / No se pudo llamar) se basa en coincidencias parciales del campo `disconnection_reason` de Retell, porque su documentación no publica un enum cerrado — pendiente de ajustar con datos reales una vez haya llamadas de producción (ver `functions/README.md`).
+- **Pendiente, no resuelto en esta pasada**: el aviso de privacidad general (§5.3) no menciona todavía a Retell como tercero que procesa datos y audio de las llamadas — es un nuevo sub-procesador que el aviso de privacidad debería declarar explícitamente, igual que ya declara a Firebase/Google Cloud.
+
+### 9.5 Anexo: lo que existía antes (chat de texto con IA, retirado)
+
+Versiones anteriores de este documento describían aquí un chat de texto ("Alicia") que llamaba directo a la API de Anthropic desde el cliente Android, con perfil de intereses, saludo proactivo e historial en `SharedPreferences`. Se eliminó por completo — pantalla, ViewModel, repositorio y la dependencia de `ANTHROPIC_API_KEY` en el build — a favor de la llamada diaria por voz descrita arriba. No queda código de esa función en el repositorio.
 
 ---
 

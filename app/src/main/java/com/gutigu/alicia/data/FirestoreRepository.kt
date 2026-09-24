@@ -4,6 +4,9 @@ import android.util.Log
 import com.gutigu.alicia.CircleMember
 import com.gutigu.alicia.MemberRole
 import com.gutigu.alicia.feature.checkin.CheckInScheduleData
+import com.gutigu.alicia.feature.dailycall.CallProfile
+import com.gutigu.alicia.feature.dailycall.CallRecord
+import com.gutigu.alicia.feature.dailycall.CallStatus
 import com.gutigu.alicia.feature.familiar.CircleProfileData
 import com.gutigu.alicia.feature.memories.Memory
 import com.gutigu.alicia.feature.memories.MemoryTag
@@ -48,6 +51,15 @@ import javax.inject.Singleton
  *                                            a propósito: es un diario privado (§8.2 del
  *                                            spec), nunca debe llegar al familiar.
  *
+ * /circles/{circleId}                       campo callProfile: perfil de la Llamada
+ *                                            diaria (nombre, trato, gustos, hora
+ *                                            preferida, consentimiento) — lo edita
+ *                                            cualquiera de los dos roles.
+ * /circles/{circleId}/callHistory/{callId}  callId = call_id de Retell. Escrito
+ *                                            EXCLUSIVAMENTE por la Cloud Function
+ *                                            (functions/), nunca desde la app — la
+ *                                            app solo lee. Ver functions/src/index.ts.
+ *
  * /users/{uid}/                            un doc por cuenta autenticada
  *   - circleId, profile ("ADULTO_MAYOR" | "FAMILIAR")
  *
@@ -73,6 +85,7 @@ class FirestoreRepository @Inject constructor(
         private const val SUB_MEMORIES        = "memories"
         private const val SUB_APPOINTMENTS    = "appointments"
         private const val SUB_MEDICATIONS     = "medications"
+        private const val SUB_CALL_HISTORY    = "callHistory"
         private const val DOC_PANIC_ACTIVE    = "active"
 
         // Sin 0/O ni 1/I para que no se confundan al leerlo/dictarlo en voz alta.
@@ -734,6 +747,110 @@ class FirestoreRepository @Inject constructor(
             )
         } catch (e: Exception) {
             Log.e(TAG, "Error parseando medicamento", e)
+            null
+        }
+    }
+
+    // ── Llamada diaria (Alicia por voz, vía Retell) ─────────────────────────────
+
+    /** Guarda el perfil de la llamada diaria — lo puede editar cualquiera de los dos roles. */
+    suspend fun saveCallProfile(circleId: String, profile: CallProfile) {
+        try {
+            circleDoc(circleId).set(mapOf("callProfile" to profile.toFirestoreMap()), SetOptions.merge()).await()
+            Log.d(TAG, "Perfil de llamada guardado para $circleId")
+        } catch (e: Exception) {
+            Log.e(TAG, "Error guardando perfil de llamada", e)
+        }
+    }
+
+    /** Escucha en tiempo real el perfil de llamada — lo usan ambos roles. */
+    fun observeCallProfile(circleId: String): Flow<CallProfile> = callbackFlow {
+        val listener = circleDoc(circleId).addSnapshotListener { snapshot, error ->
+            if (error != null) {
+                Log.e(TAG, "Error escuchando perfil de llamada", error)
+                return@addSnapshotListener
+            }
+            @Suppress("UNCHECKED_CAST")
+            val raw = snapshot?.get("callProfile") as? Map<String, Any?>
+            trySend(raw.toCallProfile())
+        }
+        awaitClose { listener.remove() }
+    }
+
+    /** Historial de llamadas ya ocurridas — de solo lectura para la app, la escribe la Cloud Function. */
+    fun observeCallHistory(circleId: String): Flow<List<CallRecord>> = callbackFlow {
+        val listener = circleDoc(circleId).collection(SUB_CALL_HISTORY)
+            .orderBy("startedAt", com.google.firebase.firestore.Query.Direction.DESCENDING)
+            .limit(20)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    Log.e(TAG, "Error escuchando historial de llamadas", error)
+                    return@addSnapshotListener
+                }
+                val list = snapshot?.documents?.mapNotNull { it.toCallRecord() } ?: emptyList()
+                trySend(list)
+            }
+        awaitClose { listener.remove() }
+    }
+
+    private fun CallProfile.toFirestoreMap(): Map<String, Any> = mapOf(
+        "fullName" to fullName,
+        "treatment" to treatment,
+        "originCountry" to originCountry,
+        "interests" to interests,
+        "familyInfo" to familyInfo,
+        "emergencyContactName" to emergencyContactName,
+        "emergencyContactPhone" to emergencyContactPhone,
+        "phoneE164" to phoneE164,
+        "preferredHour" to preferredHour,
+        "preferredMinute" to preferredMinute,
+        "timeZoneId" to timeZoneId,
+        "callEnabled" to callEnabled,
+        "consentAcceptedAt" to (consentAcceptedAt ?: 0L),
+        "lastCallNotes" to lastCallNotes,
+        "lastCallAt" to (lastCallAt ?: 0L)
+    )
+
+    private fun Map<String, Any?>?.toCallProfile(): CallProfile {
+        if (this == null) return CallProfile()
+        return try {
+            CallProfile(
+                fullName = this["fullName"] as? String ?: "",
+                treatment = this["treatment"] as? String ?: "",
+                originCountry = this["originCountry"] as? String ?: "",
+                interests = this["interests"] as? String ?: "",
+                familyInfo = this["familyInfo"] as? String ?: "",
+                emergencyContactName = this["emergencyContactName"] as? String ?: "",
+                emergencyContactPhone = this["emergencyContactPhone"] as? String ?: "",
+                phoneE164 = this["phoneE164"] as? String ?: "",
+                preferredHour = (this["preferredHour"] as? Long)?.toInt() ?: 10,
+                preferredMinute = (this["preferredMinute"] as? Long)?.toInt() ?: 0,
+                timeZoneId = this["timeZoneId"] as? String ?: "",
+                callEnabled = this["callEnabled"] as? Boolean ?: false,
+                consentAcceptedAt = (this["consentAcceptedAt"] as? Long)?.takeIf { it > 0 },
+                lastCallNotes = this["lastCallNotes"] as? String ?: "",
+                lastCallAt = (this["lastCallAt"] as? Long)?.takeIf { it > 0 }
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "Error parseando perfil de llamada", e)
+            CallProfile()
+        }
+    }
+
+    private fun com.google.firebase.firestore.DocumentSnapshot.toCallRecord(): CallRecord? {
+        return try {
+            CallRecord(
+                id = id,
+                startedAt = getLong("startedAt") ?: 0L,
+                endedAt = getLong("endedAt") ?: 0L,
+                durationSeconds = getLong("durationSeconds")?.toInt() ?: 0,
+                summary = getString("summary") ?: "",
+                status = try {
+                    CallStatus.valueOf(getString("status") ?: "UNKNOWN")
+                } catch (e: Exception) { CallStatus.UNKNOWN }
+            )
+        } catch (e: Exception) {
+            Log.e(TAG, "Error parseando registro de llamada", e)
             null
         }
     }
