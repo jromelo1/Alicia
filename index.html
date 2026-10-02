@@ -40,6 +40,15 @@ h1,h2,h3,p{margin:0}
 .btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 24px;border-radius:999px;background:var(--ink);color:#fff;font-weight:500;font-size:15px;transition:transform .3s var(--ease),background .3s}
 .btn:hover{background:#000;transform:scale(1.03)}
 .btn.sm{min-height:38px;padding:0 18px;font-size:14px}
+.links{margin-left:auto}
+.lang{display:inline-flex;flex:0 0 auto;border:1px solid var(--line);border-radius:999px;padding:3px;margin-left:24px;background:#fff}
+.lang button{min-width:44px;height:34px;border:0;border-radius:999px;background:none;font:inherit;font-size:13px;font-weight:500;color:var(--muted);cursor:pointer;transition:background .25s,color .25s}
+.lang button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.flang button{border:0;background:none;padding:6px 0;font:inherit;color:inherit;cursor:pointer}
+.flang button:hover,.flang button[aria-pressed="true"]{color:var(--ink)}
+.flang button[aria-pressed="true"]{font-weight:500}
+.hero h1{text-wrap:balance}
+html[lang="es"] .hero h1{font-size:clamp(38px,4.3vw,58px)}
 .menu-btn{display:none;width:44px;height:44px;margin-right:-10px;border:0;background:none;cursor:pointer;align-items:center;justify-content:center}
 .menu-btn svg{transition:transform .3s var(--ease)}
 
@@ -154,8 +163,9 @@ footer a:hover{color:var(--ink)}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
 
 /* Mobile */
-@media (max-width:820px){
-  .links{position:fixed;inset:64px 0 auto 0;flex-direction:column;align-items:stretch;gap:0;padding:8px var(--pad) 24px;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--line-2);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .35s var(--ease)}
+@media (max-width:960px){
+  .lang{margin-left:auto;margin-right:6px}
+  .links{margin-left:0;position:fixed;inset:64px 0 auto 0;flex-direction:column;align-items:stretch;gap:0;padding:8px var(--pad) 24px;background:rgba(255,255,255,.96);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border-bottom:1px solid var(--line-2);opacity:0;visibility:hidden;transform:translateY(-8px);transition:all .35s var(--ease)}
   .links a:not(.btn){padding:16px 0;font-size:20px;font-weight:500;border-bottom:1px solid var(--line-2)}
   .links .btn{margin-top:20px;min-height:50px;font-size:16px}
   .nav.open .links{opacity:1;visibility:visible;transform:none}
@@ -171,7 +181,7 @@ footer a:hover{color:var(--ink)}
   .tile{border-radius:28px}.tile.big{grid-row:auto}
   footer .wrap{flex-direction:column-reverse;align-items:flex-start}
 }
-@media (min-width:821px) and (max-width:1080px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:961px) and (max-width:1080px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation:none!important;transition:none!important}
@@ -190,6 +200,10 @@ footer a:hover{color:var(--ink)}
       <a href="#moments">Moments</a>
       <a href="#register" class="btn sm">Get early access</a>
     </nav>
+    <div class="lang" role="group" aria-label="Language / Idioma">
+      <button type="button" data-lang="en" aria-pressed="true" aria-label="English">EN</button>
+      <button type="button" data-lang="es" aria-pressed="false" aria-label="Español">ES</button>
+    </div>
     <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="links">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1d1d1f" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 9h16M4 15h16"/></svg>
     </button>
@@ -262,7 +276,7 @@ footer a:hover{color:var(--ink)}
             <line x1="254" y1="200" x2="254" y2="260"/><line x1="270" y1="218" x2="270" y2="242"/>
           </g>
         </svg>
-        <div class="pill"><i></i>Alicia is calling · 9:00 a.m.</div>
+        <div class="pill"><i></i><span>Alicia is calling · 9:00 a.m.</span></div>
       </div>
       </div>
     </div>
@@ -331,7 +345,7 @@ footer a:hover{color:var(--ink)}
       <a href="#top">Privacy</a>
       <a href="#top">Terms</a>
       <a href="mailto:hello@callmealicia.com">Contact</a>
-      <a href="#top">English · Español</a>
+      <span class="flang"><button type="button" data-lang="en" aria-pressed="true">English</button> · <button type="button" data-lang="es" aria-pressed="false">Español</button></span>
     </nav>
   </div>
 </footer>
@@ -360,8 +374,7 @@ footer a:hover{color:var(--ink)}
 var CONFIG={turnstileSiteKey:'',sendCodeUrl:'',registerUrl:''};
 
 (function(){
-  var ES=(navigator.language||'en').toLowerCase().indexOf('es')===0;
-  var T=ES?{
+  var L={es:{
     title:'Crea tu cuenta',sub:'Regístrate para empezar a recibir las llamadas de Alicia.',
     name:'Nombre completo',phone:'Número de celular',otp:'Código de verificación',send:'Enviar código',
     captcha:'Verificación de seguridad',submit:'Registrarse',submitting:'Registrando…',
@@ -375,7 +388,7 @@ var CONFIG={turnstileSiteKey:'',sendCodeUrl:'',registerUrl:''};
     notYetSms:'La verificación por SMS aún no está activa. Muy pronto.',
     notYet:'El registro aún no está abierto. Muy pronto podrás crear tu cuenta.',
     done:'¡Listo! Tu cuenta fue creada.',fail:'Algo salió mal. Inténtalo de nuevo.'
-  }:{
+  },en:{
     title:'Create your account',sub:'Sign up to start receiving Alicia’s calls.',
     name:'Full name',phone:'Mobile number',otp:'Verification code',send:'Send code',
     captcha:'Security check',submit:'Sign up',submitting:'Signing up…',
@@ -389,7 +402,34 @@ var CONFIG={turnstileSiteKey:'',sendCodeUrl:'',registerUrl:''};
     notYetSms:'SMS verification isn’t active yet. Coming soon.',
     notYet:'Registration isn’t open yet. You’ll be able to create your account soon.',
     done:'All set! Your account was created.',fail:'Something went wrong. Please try again.'
-  };
+  }};
+  var T=L.en,LANG='en';
+
+  // Spanish version of the page. English is the text already in the HTML.
+  // Each row: [CSS selector, [text for each element that matches, in order]]
+  var PAGE_ES=[
+    ['.links a',['Cómo funciona','Características','Momentos','Acceso anticipado']],
+    ['.hero h1',['Alguien con quien hablar.<br>Todos los días.']],
+    ['.hero .lede',['Alicia es una compañera de voz con IA, cálida y cercana, que llama a las personas que quieres a la hora que ellas elijan — en español o en inglés.']],
+    ['.hero .link',['Mira cómo funciona ›']],
+    ['.pill span',['Alicia está llamando · 9:00 a.m.']],
+    ['.intro p',['Una llamada es lo más sencillo del mundo. <span>Alicia se asegura de que el teléfono siga sonando — con una voz que escucha, se toma su tiempo y siempre se alegra de saludar.</span>']],
+    ['.features .h2',['Diseñada alrededor de una llamada al día.']],
+    ['.features .head p',['Todo lo que hace Alicia está pensado para que ese momento se sienta fácil, familiar y humano.']],
+    ['.feat h3',['A su hora, todos los días','Español e inglés','Solo hay que contestar','El consentimiento va primero','Un registro corto y sencillo','Una voz cálida y paciente']],
+    ['.feat p',['Las llamadas llegan a la hora que la persona elija, para que cada día tenga algo que esperar.','Alicia habla ambos idiomas con naturalidad y sigue el ritmo de la persona.','No hay nada que aprender en la llamada. El teléfono suena, contestan y conversan.','Las llamadas empiezan solo cuando la propia persona dice que sí.','Un registro rápido en la app: su perfil, su consentimiento y su hora preferida.','Conversación sin afán, que escucha tanto como habla.']],
+    ['.moments .h2',['Momentos que merecen una llamada.']],
+    ['.moments .center p',['Pequeñas conversaciones que le dan forma al día.']],
+    ['.tile .ph',['[Foto: una mujer riendo al teléfono en la mesa de su cocina]','[Foto: manos cuidando un jardín]','[Foto: una sala tranquila al atardecer]']],
+    ['.tile strong',['El café de la mañana, en compañía.','¿Cómo van los tomates?','Cuéntame cómo estuvo tu día.']],
+    ['.cta .h2',['Dale a alguien una razón para contestar el teléfono.']],
+    ['.cta .btn',['Acceso anticipado']],
+    ['.cta p',['En pruebas en Estados Unidos y Colombia.']],
+    ['footer nav a',['Privacidad','Términos','Contacto']]
+  ];
+  var PAGE=PAGE_ES.map(function(r){var els=[].slice.call(document.querySelectorAll(r[0]));return {els:els,es:r[1],en:els.map(function(e){return e.innerHTML})}});
+  var desc=document.querySelector('meta[name="description"]');
+  var META={en:[document.title,desc.content],es:['Call Me Alicia — Alguien con quien hablar, todos los días',PAGE_ES[2][1][0]]};
   // country, dial code, national digits
   var C=[['US','+1',10],['CO','+57',10],['MX','+52',10],['PE','+51',9],['EC','+593',9],['CR','+506',8],['GT','+502',8],['PA','+507',8],['SV','+503',8],['HN','+504',8],['NI','+505',8]];
 
@@ -397,8 +437,22 @@ var CONFIG={turnstileSiteKey:'',sendCodeUrl:'',registerUrl:''};
   var form=$('register'),name=$('name'),country=$('country'),phone=$('phone'),otp=$('otp'),
       sendBtn=$('sendBtn'),submitBtn=$('submitBtn'),msg=$('msg'),captchaToken='';
 
-  form.querySelectorAll('[data-t]').forEach(function(el){el.textContent=T[el.getAttribute('data-t')]});
-  name.placeholder=T.namePh;
+  function applyLang(l,save){
+    LANG=l;T=L[l];document.documentElement.lang=l;
+    PAGE.forEach(function(r){r.els.forEach(function(el,i){el.innerHTML=r[l][i]})});
+    document.title=META[l][0];desc.content=META[l][1];
+    form.querySelectorAll('[data-t]').forEach(function(el){el.textContent=T[el.getAttribute('data-t')]});
+    name.placeholder=T.namePh;
+    country.setAttribute('aria-label',l==='es'?'Indicativo del país':'Country code');
+    ['name','phone','otp','captcha'].forEach(function(f){setErr(f,'')});say('');
+    document.querySelectorAll('[data-lang]').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-lang')===l?'true':'false')});
+    if(save)try{localStorage.setItem('lang',l)}catch(e){}
+  }
+  // Which language to show: ?lang=es in the link > the visitor's last choice > their browser language
+  var saved=null;try{saved=localStorage.getItem('lang')}catch(e){}
+  var asked=(location.search.match(/[?&]lang=(es|en)/)||[])[1];
+  applyLang(asked||(saved==='es'||saved==='en'?saved:((navigator.language||'en').toLowerCase().indexOf('es')===0?'es':'en')));
+  document.querySelectorAll('[data-lang]').forEach(function(b){b.addEventListener('click',function(){applyLang(b.getAttribute('data-lang'),true)})});
   C.forEach(function(c){var o=document.createElement('option');o.value=c[0];o.textContent=c[0]+' '+c[1];country.appendChild(o)});
   var region=((navigator.language||'').split('-')[1]||'').toUpperCase();
   if(C.some(function(c){return c[0]===region}))country.value=region;
