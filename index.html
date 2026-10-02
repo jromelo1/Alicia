@@ -44,15 +44,50 @@ h1,h2,h3,p{margin:0}
 .menu-btn svg{transition:transform .3s var(--ease)}
 
 /* Hero */
-.hero{padding:clamp(72px,10vw,128px) 0 clamp(88px,10vw,140px);text-align:center}
+.hero{padding:clamp(32px,4.5vw,64px) 0 clamp(88px,10vw,140px)}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:clamp(36px,5vw,72px);align-items:start}
+.hero-main{text-align:center;padding-top:clamp(8px,2vw,32px);display:flex;flex-direction:column}
 .eyebrow{font-size:clamp(17px,1.6vw,21px);font-weight:500;color:var(--accent);margin-bottom:18px}
-.hero h1{font-size:clamp(46px,7.4vw,104px);line-height:1.02;font-weight:600;letter-spacing:-.045em;max-width:1000px;margin:0 auto}
-.hero .lede{margin:26px auto 0;font-size:clamp(18px,1.9vw,24px);line-height:1.42;color:var(--muted);max-width:680px}
+.hero h1{font-size:clamp(42px,5vw,68px);line-height:1.03;font-weight:600;letter-spacing:-.04em;margin:0 auto}
+.hero .lede{margin:22px auto 0;font-size:clamp(18px,1.6vw,21px);line-height:1.45;color:var(--muted);max-width:560px}
+
+/* Registration form */
+.reg{border:1px solid var(--line-2);border-radius:28px;padding:clamp(22px,2.4vw,30px);background:#fff;box-shadow:0 12px 40px rgba(0,0,0,.05);display:flex;flex-direction:column;gap:18px;scroll-margin-top:88px}
+.reg h2{font-size:24px;font-weight:600;letter-spacing:-.02em}
+.reg .sub{font-size:15px;line-height:1.45;color:var(--muted);margin-top:-10px}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.field label{font-size:14px;font-weight:500;color:var(--ink-2)}
+.row{display:flex;gap:8px}
+.reg input,.reg select{width:100%;min-width:0;height:50px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-size:16px;transition:border-color .2s,box-shadow .2s;-webkit-appearance:none;appearance:none}
+.reg select{flex:0 0 132px;width:132px;padding-right:30px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%236e6e73' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer}
+.reg input::placeholder{color:#a1a1a6}
+.reg input:focus,.reg select:focus{outline:0;border-color:var(--ink);box-shadow:0 0 0 4px rgba(176,80,45,.16)}
+.field.bad input,.field.bad select{border-color:#c4281c}
+.err{font-size:13px;line-height:1.35;color:#c4281c;min-height:0}
+.err:empty{display:none}
+#otp{letter-spacing:.32em;font-variant-numeric:tabular-nums}
+#otp::placeholder{letter-spacing:.32em}
+.btn2{flex:0 0 auto;height:50px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg-3);color:var(--ink);font:inherit;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .2s}
+.btn2:hover{background:var(--line-2)}
+.btn2:disabled,.reg .btn:disabled{cursor:not-allowed;opacity:.6;transform:none}
+.captcha{min-height:66px;border:1px dashed var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 12px;font-size:13px;color:var(--muted);text-align:center}
+.captcha.live{border:0;padding:0;justify-content:flex-start}
+.captcha svg{flex:0 0 auto;width:18px;height:18px;stroke:var(--muted);fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
+.reg .btn{width:100%;min-height:52px;border:0;font:inherit;font-size:17px;font-weight:500;cursor:pointer;gap:10px}
+.spin{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+.btn2 .spin{border-color:rgba(0,0,0,.15);border-top-color:var(--ink);width:16px;height:16px}
+.loading .spin{display:inline-block}
+.btn2.loading .lbl{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+.msg{font-size:14px;line-height:1.45;padding:12px 14px;border-radius:12px;background:var(--bg-3);color:var(--ink-2)}
+.msg:empty{display:none}
+.msg.ok{background:#eaf5ee;color:#1d5c37}
+.legal{font-size:12px;line-height:1.45;color:var(--muted);text-align:center}
 .ctas{margin-top:40px;display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap}
 .ctas .btn{min-height:52px;padding:0 30px;font-size:17px}
 .link{font-size:17px;font-weight:500;color:var(--accent)}
 .link:hover{text-decoration:underline;text-underline-offset:4px}
-.orb{margin:clamp(56px,7vw,96px) auto 0;width:min(460px,78vw);aspect-ratio:1;position:relative}
+.orb{margin:clamp(40px,5vw,64px) auto 0;width:min(380px,78vw);aspect-ratio:1;position:relative}
 .orb svg{width:100%;height:100%;display:block}
 .orb .core{transform-origin:230px 230px;animation:breathe 4.5s ease-in-out infinite}
 .orb .halo{transform-origin:230px 230px;animation:halo 4.5s ease-in-out infinite}
@@ -126,6 +161,8 @@ footer a:hover{color:var(--ink)}
   .nav.open .links{opacity:1;visibility:visible;transform:none}
   .nav.open .menu-btn svg{transform:rotate(90deg)}
   .menu-btn{display:flex}
+  .hero .wrap{grid-template-columns:minmax(0,1fr)}
+  .reg{max-width:460px;width:100%;justify-self:start}
   .ctas{flex-direction:column;gap:14px}
   .ctas .btn,.cta .btn{width:100%}
   .head{flex-direction:column;align-items:flex-start;gap:16px}
@@ -151,7 +188,7 @@ footer a:hover{color:var(--ink)}
       <a href="#intro">How it works</a>
       <a href="#features">Features</a>
       <a href="#moments">Moments</a>
-      <a href="#start" class="btn sm">Get early access</a>
+      <a href="#register" class="btn sm">Get early access</a>
     </nav>
     <button class="menu-btn" id="menuBtn" aria-label="Open menu" aria-expanded="false" aria-controls="links">
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1d1d1f" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M4 9h16M4 15h16"/></svg>
@@ -162,11 +199,53 @@ footer a:hover{color:var(--ink)}
 <main id="top">
   <section class="hero">
     <div class="wrap">
+      <form class="reg reveal" id="register" novalidate>
+        <h2 data-t="title">Create your account</h2>
+        <p class="sub" data-t="sub">Sign up to start receiving Alicia’s calls.</p>
+
+        <div class="field" id="f-name">
+          <label for="name" data-t="name">Full name</label>
+          <input id="name" name="name" type="text" autocomplete="name" autocapitalize="words" maxlength="80" aria-describedby="e-name" required>
+          <div class="err" id="e-name" role="alert"></div>
+        </div>
+
+        <div class="field" id="f-phone">
+          <label for="phone" data-t="phone">Mobile number</label>
+          <div class="row">
+            <select id="country" name="country" aria-label="Country code" autocomplete="tel-country-code"></select>
+            <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" aria-describedby="e-phone" required>
+          </div>
+          <div class="err" id="e-phone" role="alert"></div>
+        </div>
+
+        <div class="field" id="f-otp">
+          <label for="otp" data-t="otp">Verification code</label>
+          <div class="row">
+            <input id="otp" name="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000" aria-describedby="e-otp" required>
+            <button type="button" class="btn2" id="sendBtn"><span class="spin"></span><span class="lbl" data-t="send">Send code</span></button>
+          </div>
+          <div class="err" id="e-otp" role="alert"></div>
+        </div>
+
+        <div class="field" id="f-captcha">
+          <!-- CAPTCHA: paste your Cloudflare Turnstile site key in CONFIG.turnstileSiteKey (script at the bottom) and the widget renders here -->
+          <div class="captcha" id="captcha">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
+            <span data-t="captcha">Security check</span>
+          </div>
+          <div class="err" id="e-captcha" role="alert"></div>
+        </div>
+
+        <button type="submit" class="btn" id="submitBtn"><span class="spin"></span><span class="lbl" data-t="submit">Sign up</span></button>
+        <div class="msg" id="msg" role="status" aria-live="polite"></div>
+        <p class="legal" data-t="legal">We only use your number to verify your account and place Alicia’s calls.</p>
+      </form>
+
+      <div class="hero-main">
       <div class="eyebrow reveal">Call Me Alicia</div>
       <h1 class="reveal d1">Someone to talk to.<br>Every single day.</h1>
       <p class="lede reveal d2">Alicia is a warm AI voice companion that calls the people you love at the hour they choose — in English or Spanish.</p>
       <div class="ctas reveal d2">
-        <a href="#start" class="btn">Get early access</a>
         <a href="#intro" class="link">See how it works ›</a>
       </div>
       <div class="orb reveal d3" aria-hidden="true">
@@ -184,6 +263,7 @@ footer a:hover{color:var(--ink)}
           </g>
         </svg>
         <div class="pill"><i></i>Alicia is calling · 9:00 a.m.</div>
+      </div>
       </div>
     </div>
   </section>
@@ -238,7 +318,7 @@ footer a:hover{color:var(--ink)}
   <section class="cta" id="start">
     <div class="wrap">
       <h2 class="h2 reveal">Give someone a reason to pick up the phone.</h2>
-      <a href="mailto:hello@callmealicia.com?subject=Early%20access%20to%20Call%20Me%20Alicia" class="btn reveal d1">Get early access</a>
+      <a href="#register" class="btn reveal d1">Get early access</a>
       <p class="reveal d2">Now testing in the United States and Colombia.</p>
     </div>
   </section>
@@ -267,6 +347,125 @@ footer a:hover{color:var(--ink)}
   if(!('IntersectionObserver' in window)){els.forEach(function(el){el.classList.add('in')});return}
   var io=new IntersectionObserver(function(entries){entries.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}})},{threshold:.15,rootMargin:'0px 0px -40px 0px'});
   els.forEach(function(el){io.observe(el)});
+})();
+</script>
+
+<script>
+/* ---------- Registration form ----------
+   CONFIG is the only thing to fill in when the backend is ready:
+   - turnstileSiteKey: Cloudflare Turnstile site key (public). Empty = placeholder box.
+   - sendCodeUrl:  endpoint that texts the 6-digit code.   Receives {phone}
+   - registerUrl:  endpoint that checks the code and creates the account. Receives {name, phone, code, captcha}
+   While the two URLs are empty nothing is sent anywhere. */
+var CONFIG={turnstileSiteKey:'',sendCodeUrl:'',registerUrl:''};
+
+(function(){
+  var ES=(navigator.language||'en').toLowerCase().indexOf('es')===0;
+  var T=ES?{
+    title:'Crea tu cuenta',sub:'Regístrate para empezar a recibir las llamadas de Alicia.',
+    name:'Nombre completo',phone:'Número de celular',otp:'Código de verificación',send:'Enviar código',
+    captcha:'Verificación de seguridad',submit:'Registrarse',submitting:'Registrando…',
+    legal:'Solo usamos tu número para verificar tu cuenta y hacer las llamadas de Alicia.',
+    namePh:'Ej. María Gómez',
+    eNameEmpty:'Escribe tu nombre completo.',eNameBad:'Usa solo letras y espacios.',
+    ePhoneEmpty:'Escribe tu número de celular.',ePhoneLen:'El número debe tener {n} dígitos.',
+    eOtpEmpty:'Escribe el código de 6 dígitos.',eOtpLen:'El código tiene 6 dígitos.',
+    eCaptcha:'Completa la verificación de seguridad.',
+    sent:'Te enviamos un código por SMS.',resend:'Reenviar en {s}s',
+    notYetSms:'La verificación por SMS aún no está activa. Muy pronto.',
+    notYet:'El registro aún no está abierto. Muy pronto podrás crear tu cuenta.',
+    done:'¡Listo! Tu cuenta fue creada.',fail:'Algo salió mal. Inténtalo de nuevo.'
+  }:{
+    title:'Create your account',sub:'Sign up to start receiving Alicia’s calls.',
+    name:'Full name',phone:'Mobile number',otp:'Verification code',send:'Send code',
+    captcha:'Security check',submit:'Sign up',submitting:'Signing up…',
+    legal:'We only use your number to verify your account and place Alicia’s calls.',
+    namePh:'e.g. Maria Gomez',
+    eNameEmpty:'Enter your full name.',eNameBad:'Use letters and spaces only.',
+    ePhoneEmpty:'Enter your mobile number.',ePhoneLen:'The number must have {n} digits.',
+    eOtpEmpty:'Enter the 6-digit code.',eOtpLen:'The code has 6 digits.',
+    eCaptcha:'Complete the security check.',
+    sent:'We texted you a code.',resend:'Resend in {s}s',
+    notYetSms:'SMS verification isn’t active yet. Coming soon.',
+    notYet:'Registration isn’t open yet. You’ll be able to create your account soon.',
+    done:'All set! Your account was created.',fail:'Something went wrong. Please try again.'
+  };
+  // country, dial code, national digits
+  var C=[['US','+1',10],['CO','+57',10],['MX','+52',10],['PE','+51',9],['EC','+593',9],['CR','+506',8],['GT','+502',8],['PA','+507',8],['SV','+503',8],['HN','+504',8],['NI','+505',8]];
+
+  var $=function(id){return document.getElementById(id)};
+  var form=$('register'),name=$('name'),country=$('country'),phone=$('phone'),otp=$('otp'),
+      sendBtn=$('sendBtn'),submitBtn=$('submitBtn'),msg=$('msg'),captchaToken='';
+
+  form.querySelectorAll('[data-t]').forEach(function(el){el.textContent=T[el.getAttribute('data-t')]});
+  name.placeholder=T.namePh;
+  C.forEach(function(c){var o=document.createElement('option');o.value=c[0];o.textContent=c[0]+' '+c[1];country.appendChild(o)});
+  var region=((navigator.language||'').split('-')[1]||'').toUpperCase();
+  if(C.some(function(c){return c[0]===region}))country.value=region;
+
+  function cur(){return C.filter(function(c){return c[0]===country.value})[0]}
+  function syncPhone(){var n=cur()[2];phone.maxLength=n;phone.placeholder='0'.repeat(n);phone.value=phone.value.slice(0,n)}
+  syncPhone();
+
+  function setErr(f,text){$('f-'+f).classList.toggle('bad',!!text);$('e-'+f).textContent=text||'';var i=$('f-'+f).querySelector('input');if(i)i.setAttribute('aria-invalid',text?'true':'false')}
+  function say(text,ok){msg.textContent=text||'';msg.classList.toggle('ok',!!ok)}
+
+  // Live filtering: letters only for the name, digits only for phone and code
+  var NOT_LETTER=/[^\p{L}\s'’-]/gu;
+  name.addEventListener('input',function(){name.value=name.value.replace(NOT_LETTER,'').replace(/\s{2,}/g,' ');setErr('name','')});
+  phone.addEventListener('input',function(){phone.value=phone.value.replace(/\D/g,'').slice(0,cur()[2]);setErr('phone','')});
+  otp.addEventListener('input',function(){otp.value=otp.value.replace(/\D/g,'').slice(0,6);setErr('otp','')});
+  country.addEventListener('change',function(){syncPhone();setErr('phone','')});
+
+  function vName(){var v=name.value.trim();var e=!v?T.eNameEmpty:(!/^[\p{L}][\p{L}\s'’-]*$/u.test(v)||v.replace(/[^\p{L}]/gu,'').length<2)?T.eNameBad:'';setErr('name',e);return !e}
+  function vPhone(){var n=cur()[2],v=phone.value;var e=!v?T.ePhoneEmpty:v.length!==n?T.ePhoneLen.replace('{n}',n):'';setErr('phone',e);return !e}
+  function vOtp(){var v=otp.value;var e=!v?T.eOtpEmpty:v.length!==6?T.eOtpLen:'';setErr('otp',e);return !e}
+  function vCaptcha(){var e=CONFIG.turnstileSiteKey&&!captchaToken?T.eCaptcha:'';setErr('captcha',e);return !e}
+  name.addEventListener('blur',function(){if(name.value)vName()});
+  phone.addEventListener('blur',function(){if(phone.value)vPhone()});
+
+  function fullPhone(){return cur()[1]+phone.value}
+  function post(url,data){return fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(function(r){if(!r.ok)throw new Error(r.status);return r})}
+  function wait(ms){return new Promise(function(r){setTimeout(r,ms)})}
+
+  // Send the SMS code
+  sendBtn.addEventListener('click',function(){
+    say('');
+    if(!vPhone()){phone.focus();return}
+    sendBtn.classList.add('loading');sendBtn.disabled=true;
+    var job=CONFIG.sendCodeUrl?post(CONFIG.sendCodeUrl,{phone:fullPhone()}).then(function(){return true}):wait(900).then(function(){return false});
+    job.then(function(sent){
+      sendBtn.classList.remove('loading');
+      if(!sent){sendBtn.disabled=false;say(T.notYetSms);return}
+      say(T.sent,true);otp.focus();
+      var s=30,lbl=sendBtn.querySelector('.lbl');
+      (function tick(){if(s<=0){lbl.textContent=T.send;sendBtn.disabled=false;return}lbl.textContent=T.resend.replace('{s}',s--);setTimeout(tick,1000)})();
+    }).catch(function(){sendBtn.classList.remove('loading');sendBtn.disabled=false;say(T.fail)});
+  });
+
+  // Submit
+  form.addEventListener('submit',function(e){
+    e.preventDefault();say('');
+    var ok=[vName(),vPhone(),vOtp(),vCaptcha()];
+    if(ok.indexOf(false)>-1){[name,phone,otp][ok.indexOf(false)]&&[name,phone,otp][ok.indexOf(false)].focus();return}
+    var lbl=submitBtn.querySelector('.lbl');
+    submitBtn.classList.add('loading');submitBtn.disabled=true;submitBtn.setAttribute('aria-busy','true');lbl.textContent=T.submitting;
+    var job=CONFIG.registerUrl
+      ?post(CONFIG.registerUrl,{name:name.value.trim(),phone:fullPhone(),code:otp.value,captcha:captchaToken}).then(function(){return true})
+      :wait(1400).then(function(){return false});
+    job.then(function(created){say(created?T.done:T.notYet,created);if(created)form.reset(),syncPhone()})
+       .catch(function(){say(T.fail)})
+       .then(function(){submitBtn.classList.remove('loading');submitBtn.disabled=false;submitBtn.removeAttribute('aria-busy');lbl.textContent=T.submit});
+  });
+
+  // Captcha (Cloudflare Turnstile) — only loads when a site key is set
+  if(CONFIG.turnstileSiteKey){
+    window.onTurnstileReady=function(){
+      var box=$('captcha');box.textContent='';box.classList.add('live');
+      turnstile.render(box,{sitekey:CONFIG.turnstileSiteKey,callback:function(t){captchaToken=t;setErr('captcha','')},'expired-callback':function(){captchaToken=''}});
+    };
+    var s=document.createElement('script');s.src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileReady&render=explicit';s.async=true;document.head.appendChild(s);
+  }
 })();
 </script>
 </body>
