@@ -74,6 +74,7 @@ html[lang="es"] .hero h1{font-size:clamp(38px,4.3vw,58px)}
 .field.bad input,.field.bad select{border-color:#c4281c}
 .err{font-size:13px;line-height:1.35;color:#c4281c;min-height:0}
 .err:empty{display:none}
+.hint:empty{display:none}
 #otp{letter-spacing:.32em;font-variant-numeric:tabular-nums}
 #otp::placeholder{letter-spacing:.32em}
 .btn2{flex:0 0 auto;height:50px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg-3);color:var(--ink);font:inherit;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;transition:background .2s}
@@ -162,6 +163,32 @@ footer a:hover{color:var(--ink)}
 .reveal.in{opacity:1;transform:none}
 .d1{transition-delay:.1s}.d2{transition-delay:.2s}.d3{transition-delay:.3s}
 
+/* Registration v2 */
+[hidden]{display:none!important}
+.sr{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+.reg-body{display:flex;flex-direction:column;gap:18px}
+.group{display:flex;flex-direction:column;gap:18px;padding:16px;border-radius:16px;background:var(--bg-3)}
+.who{border:0;margin:0;padding:4px;display:grid;grid-template-columns:1fr 1fr;gap:4px;background:var(--bg-3);border-radius:14px}
+.who{position:relative}
+.reg .who input{position:absolute;left:0;top:0;opacity:0;width:1px;height:1px;margin:0;padding:0;border:0;pointer-events:none}
+.who label{display:flex;align-items:center;justify-content:center;min-height:44px;padding:0 10px;border-radius:10px;font-size:15px;font-weight:500;color:var(--muted);cursor:pointer;text-align:center;transition:background .25s,color .25s,box-shadow .25s}
+.who input:checked+label{background:#fff;color:var(--ink);box-shadow:0 1px 4px rgba(0,0,0,.08)}
+.who input:focus-visible+label{outline:3px solid rgba(176,80,45,.35);outline-offset:1px}
+.hint{font-size:13px;line-height:1.4;color:var(--muted)}
+.reg select.sel-time{flex:0 0 132px;width:132px}
+.reg select.sel-grow{flex:1 1 auto;width:auto}
+.check{display:flex;gap:12px;align-items:flex-start}
+.reg .check input{flex:0 0 auto;width:22px;min-width:22px;height:22px;margin:1px 0 0;padding:0;border:0;border-radius:4px;box-shadow:none;-webkit-appearance:checkbox;appearance:auto;accent-color:var(--ink);cursor:pointer}
+.check label{font-size:13.5px;line-height:1.45;color:var(--ink-2);cursor:pointer}
+.field.bad .check label{color:#c4281c}
+.legal a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.grecaptcha-badge{visibility:hidden}
+.done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:12px 0 4px;outline:0}
+.done svg{width:56px;height:56px;fill:none;stroke:#1d5c37;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.done p{font-size:16px;line-height:1.5;color:var(--ink-2)}
+.code-box{display:flex;flex-direction:column;gap:4px;padding:14px 22px;border-radius:14px;background:var(--bg-3);font-size:13px;color:var(--muted)}
+.code-box strong{font-size:26px;letter-spacing:.14em;color:var(--ink);font-variant-numeric:tabular-nums}
+
 /* Mobile */
 @media (max-width:960px){
   .lang{margin-left:auto;margin-right:6px}
@@ -214,21 +241,48 @@ footer a:hover{color:var(--ink)}
   <section class="hero">
     <div class="wrap">
       <form class="reg reveal" id="register" novalidate>
+        <div id="formBody" class="reg-body">
         <h2 data-t="title">Create your account</h2>
         <p class="sub" data-t="sub">Sign up to start receiving Alicia’s calls.</p>
 
+        <fieldset class="who">
+          <legend class="sr" data-t="whoLegend">Who is it for?</legend>
+          <input type="radio" name="who" id="who-self" value="self" checked>
+          <label for="who-self" data-t="forMe">For me</label>
+          <input type="radio" name="who" id="who-loved" value="loved">
+          <label for="who-loved" data-t="forLoved">For a loved one</label>
+        </fieldset>
+
+        <div id="g-reg" class="group" hidden>
+          <div class="field" id="f-rname">
+            <label for="rname" data-t="rname">Your name</label>
+            <input id="rname" type="text" autocomplete="name" autocapitalize="words" maxlength="80" aria-describedby="e-rname">
+            <div class="err" id="e-rname" role="alert"></div>
+          </div>
+          <div class="field" id="f-rphone">
+            <label for="rphone" data-t="rphone">Your mobile number</label>
+            <div class="row">
+              <select id="rcountry" aria-label="Country code"></select>
+              <input id="rphone" type="tel" inputmode="numeric" autocomplete="tel-national" aria-describedby="h-rphone e-rphone">
+            </div>
+            <div class="hint" id="h-rphone" data-t="rphoneHint">We’ll save it as the emergency contact.</div>
+            <div class="err" id="e-rphone" role="alert"></div>
+          </div>
+        </div>
+
         <div class="field" id="f-name">
-          <label for="name" data-t="name">Full name</label>
+          <label for="name" id="l-name">Full name</label>
           <input id="name" name="name" type="text" autocomplete="name" autocapitalize="words" maxlength="80" aria-describedby="e-name" required>
           <div class="err" id="e-name" role="alert"></div>
         </div>
 
         <div class="field" id="f-phone">
-          <label for="phone" data-t="phone">Mobile number</label>
+          <label for="phone" id="l-phone">Mobile number</label>
           <div class="row">
-            <select id="country" name="country" aria-label="Country code" autocomplete="tel-country-code"></select>
-            <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" aria-describedby="e-phone" required>
+            <select id="country" name="country" aria-label="Country code"></select>
+            <input id="phone" name="phone" type="tel" inputmode="numeric" autocomplete="tel-national" aria-describedby="h-phone e-phone" required>
           </div>
+          <div class="hint" id="h-phone" hidden></div>
           <div class="err" id="e-phone" role="alert"></div>
         </div>
 
@@ -241,18 +295,38 @@ footer a:hover{color:var(--ink)}
           <div class="err" id="e-otp" role="alert"></div>
         </div>
 
-        <div class="field" id="f-captcha">
-          <!-- CAPTCHA: paste your Cloudflare Turnstile site key in CONFIG.turnstileSiteKey (script at the bottom) and the widget renders here -->
-          <div class="captcha" id="captcha">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg>
-            <span data-t="captcha">Security check</span>
+        <div class="field" id="f-time">
+          <label for="hour" data-t="time">Daily call time</label>
+          <div class="row">
+            <select id="hour" class="sel-time"></select>
+            <select id="tz" class="sel-grow" aria-label="Time zone"></select>
           </div>
-          <div class="err" id="e-captcha" role="alert"></div>
         </div>
+
+        <div class="field" id="f-consent">
+          <div class="check">
+            <input type="checkbox" id="consent" aria-describedby="e-consent">
+            <label for="consent" id="l-consent">I agree…</label>
+          </div>
+          <div class="err" id="e-consent" role="alert"></div>
+        </div>
+
+        <!-- Firebase puts its invisible security check (reCAPTCHA) here -->
+        <div id="recaptcha"></div>
 
         <button type="submit" class="btn" id="submitBtn"><span class="spin"></span><span class="lbl" data-t="submit">Sign up</span></button>
         <div class="msg" id="msg" role="status" aria-live="polite"></div>
-        <p class="legal" data-t="legal">We only use your number to verify your account and place Alicia’s calls.</p>
+        <p class="legal" id="legal"></p>
+        </div>
+
+        <div id="done" class="done" hidden tabindex="-1">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.5l3 3 6-6.5"/></svg>
+          <h2 id="doneTitle"></h2>
+          <p id="doneText"></p>
+          <div class="code-box"><span id="doneCodeLabel"></span><strong id="doneCode"></strong></div>
+          <p class="hint" id="doneCodeHint"></p>
+          <button type="button" class="btn2" id="againBtn"></button>
+        </div>
       </form>
 
       <div class="hero-main">
@@ -365,48 +439,93 @@ footer a:hover{color:var(--ink)}
 </script>
 
 <script>
-/* ---------- Registration form ----------
-   CONFIG is the only thing to fill in when the backend is ready:
-   - turnstileSiteKey: Cloudflare Turnstile site key (public). Empty = placeholder box.
-   - sendCodeUrl:  endpoint that texts the 6-digit code.   Receives {phone}
-   - registerUrl:  endpoint that checks the code and creates the account. Receives {name, phone, code, captcha}
-   While the two URLs are empty nothing is sent anywhere. */
-var CONFIG={turnstileSiteKey:'',sendCodeUrl:'',registerUrl:''};
+/* ---------- Registration → Firebase → daily Retell call ----------
+   The form writes the same data the Android app writes (circles/{code}.callProfile),
+   so the existing Cloud Function `dailyCallScheduler` picks the person up and Retell calls them.
+
+   CONFIG.firebase: paste the Web app config from
+   Firebase console → Project settings → Your apps → Web app (</>).
+   These values are public by design (security lives in firestore.rules).
+   While apiKey is empty, nothing is sent anywhere and the form explains registration isn't open yet. */
+var CONFIG={
+  firebase:{
+    apiKey:'',
+    authDomain:'alicia-53950.firebaseapp.com',
+    projectId:'alicia-53950',
+    appId:''
+  },
+  sdk:'https://www.gstatic.com/firebasejs/10.12.2/'
+};
 
 (function(){
   var L={es:{
-    title:'Crea tu cuenta',sub:'Regístrate para empezar a recibir las llamadas de Alicia.',
-    name:'Nombre completo',phone:'Número de celular',otp:'Código de verificación',send:'Enviar código',
-    captcha:'Verificación de seguridad',submit:'Registrarse',submitting:'Registrando…',
-    legal:'Solo usamos tu número para verificar tu cuenta y hacer las llamadas de Alicia.',
+    title:'Crea tu cuenta',sub:'Alicia llamará todos los días a la hora que elijas.',
+    whoLegend:'¿Para quién es?',forMe:'Para mí',forLoved:'Para un ser querido',
+    rname:'Tu nombre',rphone:'Tu número de celular',rphoneHint:'Lo guardaremos como contacto de emergencia.',
+    nameSelf:'Nombre completo',nameLoved:'Nombre de tu ser querido',
+    phoneSelf:'Número de celular',phoneLoved:'Celular de tu ser querido',
+    phoneLovedHint:'Le enviaremos un código por SMS a este número. Pídeselo: así confirmamos que está de acuerdo.',
+    otp:'Código de verificación',send:'Enviar código',time:'Hora de la llamada diaria',
+    consentSelf:'Acepto recibir una llamada diaria de Alicia, una asistente de voz con inteligencia artificial, y que mis datos y el audio de las llamadas se compartan con Retell AI para poder hacerlas.',
+    consentLoved:'Confirmo que mi ser querido está de acuerdo en recibir una llamada diaria de Alicia, una asistente de voz con inteligencia artificial, y en que sus datos y el audio se compartan con Retell AI para poder hacerlas.',
+    submit:'Registrarse',submitting:'Registrando…',
+    legal:'Protegido por reCAPTCHA: aplican la <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Política de privacidad</a> y los <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Términos</a> de Google.',
     namePh:'Ej. María Gómez',
-    eNameEmpty:'Escribe tu nombre completo.',eNameBad:'Usa solo letras y espacios.',
-    ePhoneEmpty:'Escribe tu número de celular.',ePhoneLen:'El número debe tener {n} dígitos.',
-    eOtpEmpty:'Escribe el código de 6 dígitos.',eOtpLen:'El código tiene 6 dígitos.',
-    eCaptcha:'Completa la verificación de seguridad.',
-    sent:'Te enviamos un código por SMS.',resend:'Reenviar en {s}s',
+    eNameEmpty:'Escribe el nombre completo.',eNameBad:'Usa solo letras y espacios.',
+    ePhoneEmpty:'Escribe el número de celular.',ePhoneLen:'El número debe tener {n} dígitos.',ePhoneBad:'Ese número no parece válido. Revísalo.',
+    eOtpEmpty:'Escribe el código de 6 dígitos.',eOtpLen:'El código tiene 6 dígitos.',eNoCode:'Primero toca “Enviar código”.',
+    eCodeBad:'El código no es correcto. Revísalo e inténtalo de nuevo.',eCodeExpired:'El código venció. Pide uno nuevo.',
+    eConsent:'Para activar las llamadas necesitamos esta autorización.',
+    eTooMany:'Demasiados intentos. Espera unos minutos y vuelve a intentarlo.',eNetwork:'Sin conexión. Revisa tu internet e inténtalo de nuevo.',
+    eSetup:'El registro no está disponible en este momento. Inténtalo más tarde.',
+    sentSelf:'Te enviamos un código por SMS.',sentLoved:'Enviamos un código por SMS al celular de tu ser querido. Pídeselo y escríbelo aquí.',
+    resend:'Reenviar en {s}s',
     notYetSms:'La verificación por SMS aún no está activa. Muy pronto.',
     notYet:'El registro aún no está abierto. Muy pronto podrás crear tu cuenta.',
-    done:'¡Listo! Tu cuenta fue creada.',fail:'Algo salió mal. Inténtalo de nuevo.'
+    fail:'Algo salió mal. Inténtalo de nuevo.',
+    doneTitle:'¡Listo!',
+    doneSelf:'Alicia te llamará todos los días a las {time} (hora de {tz}). La primera llamada será {when}.',
+    doneLoved:'Alicia llamará a {name} todos los días a las {time} (hora de {tz}). La primera llamada será {when}.',
+    today:'hoy',tomorrow:'mañana',
+    doneCodeLabel:'Código del círculo',
+    doneCodeHint:'Guárdalo: sirve para conectar la app y ver el resumen de cada llamada.',
+    again:'Registrar a otra persona'
   },en:{
-    title:'Create your account',sub:'Sign up to start receiving Alicia’s calls.',
-    name:'Full name',phone:'Mobile number',otp:'Verification code',send:'Send code',
-    captcha:'Security check',submit:'Sign up',submitting:'Signing up…',
-    legal:'We only use your number to verify your account and place Alicia’s calls.',
+    title:'Create your account',sub:'Alicia will call every day at the time you choose.',
+    whoLegend:'Who is it for?',forMe:'For me',forLoved:'For a loved one',
+    rname:'Your name',rphone:'Your mobile number',rphoneHint:'We’ll save it as the emergency contact.',
+    nameSelf:'Full name',nameLoved:'Your loved one’s name',
+    phoneSelf:'Mobile number',phoneLoved:'Your loved one’s mobile',
+    phoneLovedHint:'We’ll text a code to this number. Ask them for it — that’s how we confirm they agree.',
+    otp:'Verification code',send:'Send code',time:'Daily call time',
+    consentSelf:'I agree to receive a daily call from Alicia, an AI voice assistant, and for my information and call audio to be shared with Retell AI to make those calls.',
+    consentLoved:'I confirm my loved one agrees to receive a daily call from Alicia, an AI voice assistant, and for their information and call audio to be shared with Retell AI to make those calls.',
+    submit:'Sign up',submitting:'Signing up…',
+    legal:'Protected by reCAPTCHA — the Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.',
     namePh:'e.g. Maria Gomez',
-    eNameEmpty:'Enter your full name.',eNameBad:'Use letters and spaces only.',
-    ePhoneEmpty:'Enter your mobile number.',ePhoneLen:'The number must have {n} digits.',
-    eOtpEmpty:'Enter the 6-digit code.',eOtpLen:'The code has 6 digits.',
-    eCaptcha:'Complete the security check.',
-    sent:'We texted you a code.',resend:'Resend in {s}s',
+    eNameEmpty:'Enter the full name.',eNameBad:'Use letters and spaces only.',
+    ePhoneEmpty:'Enter the mobile number.',ePhoneLen:'The number must have {n} digits.',ePhoneBad:'That number doesn’t look valid. Please check it.',
+    eOtpEmpty:'Enter the 6-digit code.',eOtpLen:'The code has 6 digits.',eNoCode:'Tap “Send code” first.',
+    eCodeBad:'That code isn’t right. Check it and try again.',eCodeExpired:'The code expired. Ask for a new one.',
+    eConsent:'We need this permission to turn on the calls.',
+    eTooMany:'Too many attempts. Wait a few minutes and try again.',eNetwork:'You’re offline. Check your connection and try again.',
+    eSetup:'Sign-up isn’t available right now. Please try again later.',
+    sentSelf:'We texted you a code.',sentLoved:'We texted a code to your loved one’s phone. Ask them for it and enter it here.',
+    resend:'Resend in {s}s',
     notYetSms:'SMS verification isn’t active yet. Coming soon.',
     notYet:'Registration isn’t open yet. You’ll be able to create your account soon.',
-    done:'All set! Your account was created.',fail:'Something went wrong. Please try again.'
+    fail:'Something went wrong. Please try again.',
+    doneTitle:'All set!',
+    doneSelf:'Alicia will call you every day at {time} ({tz} time). The first call will be {when}.',
+    doneLoved:'Alicia will call {name} every day at {time} ({tz} time). The first call will be {when}.',
+    today:'today',tomorrow:'tomorrow',
+    doneCodeLabel:'Circle code',
+    doneCodeHint:'Keep it: it connects the app so you can see a summary of every call.',
+    again:'Register someone else'
   }};
   var T=L.en,LANG='en';
 
-  // Spanish version of the page. English is the text already in the HTML.
-  // Each row: [CSS selector, [text for each element that matches, in order]]
+  // Spanish version of the rest of the page. English is the text already in the HTML.
   var PAGE_ES=[
     ['.links a',['Cómo funciona','Características','Momentos','Acceso anticipado']],
     ['.hero h1',['Alguien con quien hablar.<br>Todos los días.']],
@@ -430,96 +549,243 @@ var CONFIG={turnstileSiteKey:'',sendCodeUrl:'',registerUrl:''};
   var PAGE=PAGE_ES.map(function(r){var els=[].slice.call(document.querySelectorAll(r[0]));return {els:els,es:r[1],en:els.map(function(e){return e.innerHTML})}});
   var desc=document.querySelector('meta[name="description"]');
   var META={en:[document.title,desc.content],es:['Call Me Alicia — Alguien con quien hablar, todos los días',PAGE_ES[2][1][0]]};
-  // country, dial code, national digits
-  var C=[['US','+1',10],['CO','+57',10],['MX','+52',10],['PE','+51',9],['EC','+593',9],['CR','+506',8],['GT','+502',8],['PA','+507',8],['SV','+503',8],['HN','+504',8],['NI','+505',8]];
+
+  // [country, dial code, national digits, default time zone]
+  var C=[['US','+1',10,'America/New_York'],['CO','+57',10,'America/Bogota'],['MX','+52',10,'America/Mexico_City'],['PE','+51',9,'America/Lima'],['EC','+593',9,'America/Guayaquil'],['CR','+506',8,'America/Costa_Rica'],['GT','+502',8,'America/Guatemala'],['PA','+507',8,'America/Panama'],['SV','+503',8,'America/El_Salvador'],['HN','+504',8,'America/Tegucigalpa'],['NI','+505',8,'America/Managua']];
+  // [IANA zone, Spanish label, English label]
+  var TZ=[['America/Bogota','Colombia','Colombia'],['America/Mexico_City','México','Mexico'],['America/Lima','Perú','Peru'],['America/Guayaquil','Ecuador','Ecuador'],['America/Panama','Panamá','Panama'],['America/Costa_Rica','Costa Rica','Costa Rica'],['America/Guatemala','Guatemala','Guatemala'],['America/El_Salvador','El Salvador','El Salvador'],['America/Tegucigalpa','Honduras','Honduras'],['America/Managua','Nicaragua','Nicaragua'],['America/New_York','EE. UU. Este','US Eastern'],['America/Chicago','EE. UU. Centro','US Central'],['America/Denver','EE. UU. Montaña','US Mountain'],['America/Phoenix','Arizona','Arizona'],['America/Los_Angeles','EE. UU. Pacífico','US Pacific']];
+  var US_TZ=['America/New_York','America/Chicago','America/Denver','America/Phoenix','America/Los_Angeles'];
 
   var $=function(id){return document.getElementById(id)};
   var form=$('register'),name=$('name'),country=$('country'),phone=$('phone'),otp=$('otp'),
-      sendBtn=$('sendBtn'),submitBtn=$('submitBtn'),msg=$('msg'),captchaToken='';
+      rname=$('rname'),rcountry=$('rcountry'),rphone=$('rphone'),hour=$('hour'),tz=$('tz'),consent=$('consent'),
+      sendBtn=$('sendBtn'),submitBtn=$('submitBtn'),msg=$('msg');
+  var who='self',confirmation=null,sentTo='',tzTouched=false,verifier=null,fbP=null,timer=null,doneInfo=null;
+  var browserTz='';try{browserTz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
+
+  function inList(z){return TZ.some(function(t){return t[0]===z})}
+  function fillCountries(sel){C.forEach(function(c){var o=document.createElement('option');o.value=c[0];o.textContent=c[0]+' '+c[1];sel.appendChild(o)})}
+  fillCountries(country);fillCountries(rcountry);
+  var region=((navigator.language||'').split('-')[1]||'').toUpperCase();
+  if(!C.some(function(c){return c[0]===region})){var byTz=C.filter(function(c){return c[3]===browserTz})[0];region=byTz?byTz[0]:(US_TZ.indexOf(browserTz)>-1?'US':'')}
+  if(region){country.value=region;rcountry.value=region}
+
+  function cur(sel){var v=sel.value;return C.filter(function(c){return c[0]===v})[0]}
+  function syncLen(input,sel){var n=cur(sel)[2];input.maxLength=n;input.placeholder='0'.repeat(n);input.value=input.value.slice(0,n)}
+  syncLen(phone,country);syncLen(rphone,rcountry);
+  function e164(input,sel){return cur(sel)[1]+input.value}
+  function tzForCountry(){var c=cur(country);if(c[0]==='US')return US_TZ.indexOf(browserTz)>-1?browserTz:'America/New_York';return c[3]}
+
+  function fmtTime(h,m){return new Date(2000,0,1,h,m).toLocaleTimeString(LANG==='es'?'es-CO':'en-US',{hour:'numeric',minute:'2-digit'})}
+  function buildSelects(){
+    var hv=hour.value||'10:00',zv=tz.value||tzForCountry();
+    hour.textContent='';
+    for(var h=7;h<=21;h++){for(var m=0;m<60;m+=30){if(h===21&&m>0)break;var o=document.createElement('option');o.value=h+':'+(m<10?'0':'')+m;o.textContent=fmtTime(h,m);hour.appendChild(o)}}
+    hour.value=hv;
+    tz.textContent='';
+    TZ.forEach(function(t){var o=document.createElement('option');o.value=t[0];o.textContent=LANG==='es'?t[1]:t[2];tz.appendChild(o)});
+    tz.value=zv;
+  }
+  function tzLabel(z){var t=TZ.filter(function(x){return x[0]===z})[0];return t?(LANG==='es'?t[1]:t[2]):z}
+
+  function setErr(f,text){var box=$('f-'+f);if(!box)return;box.classList.toggle('bad',!!text);$('e-'+f).textContent=text||'';box.querySelectorAll('input').forEach(function(i){i.setAttribute('aria-invalid',text?'true':'false')})}
+  function clearErrs(){['rname','rphone','name','phone','otp','consent'].forEach(function(f){setErr(f,'')})}
+  function say(text,ok){msg.textContent=text||'';msg.classList.toggle('ok',!!ok)}
+
+  function renderWho(){
+    var loved=who==='loved';
+    $('g-reg').hidden=!loved;
+    $('l-name').textContent=loved?T.nameLoved:T.nameSelf;
+    $('l-phone').textContent=loved?T.phoneLoved:T.phoneSelf;
+    $('h-phone').hidden=!loved;$('h-phone').textContent=T.phoneLovedHint;
+    $('l-consent').textContent=loved?T.consentLoved:T.consentSelf;
+  }
+  function renderDone(){
+    if(!doneInfo)return;
+    var d=doneInfo;
+    $('doneTitle').textContent=T.doneTitle;
+    $('doneText').textContent=(d.loved?T.doneLoved:T.doneSelf).replace('{name}',d.name).replace('{time}',fmtTime(d.h,d.m)).replace('{tz}',tzLabel(d.tz)).replace('{when}',d.today?T.today:T.tomorrow);
+    $('doneCodeLabel').textContent=T.doneCodeLabel;$('doneCode').textContent=d.code;
+    $('doneCodeHint').textContent=T.doneCodeHint;$('againBtn').textContent=T.again;
+  }
 
   function applyLang(l,save){
     LANG=l;T=L[l];document.documentElement.lang=l;
     PAGE.forEach(function(r){r.els.forEach(function(el,i){el.innerHTML=r[l][i]})});
     document.title=META[l][0];desc.content=META[l][1];
     form.querySelectorAll('[data-t]').forEach(function(el){el.textContent=T[el.getAttribute('data-t')]});
-    name.placeholder=T.namePh;
-    country.setAttribute('aria-label',l==='es'?'Indicativo del país':'Country code');
-    ['name','phone','otp','captcha'].forEach(function(f){setErr(f,'')});say('');
+    $('legal').innerHTML=T.legal;
+    name.placeholder=T.namePh;rname.placeholder=T.namePh;
+    var cc=l==='es'?'Indicativo del país':'Country code';country.setAttribute('aria-label',cc);rcountry.setAttribute('aria-label',cc);
+    tz.setAttribute('aria-label',l==='es'?'Zona horaria':'Time zone');
+    buildSelects();renderWho();renderDone();clearErrs();say('');
+    if(timer){clearInterval(timer);timer=null;sendBtn.disabled=false}
     document.querySelectorAll('[data-lang]').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-lang')===l?'true':'false')});
     if(save)try{localStorage.setItem('lang',l)}catch(e){}
+    fbP&&fbP.then(function(fb){if(fb)fb.auth.languageCode=l}).catch(function(){});
   }
-  // Which language to show: ?lang=es in the link > the visitor's last choice > their browser language
   var saved=null;try{saved=localStorage.getItem('lang')}catch(e){}
   var asked=(location.search.match(/[?&]lang=(es|en)/)||[])[1];
   applyLang(asked||(saved==='es'||saved==='en'?saved:((navigator.language||'en').toLowerCase().indexOf('es')===0?'es':'en')));
   document.querySelectorAll('[data-lang]').forEach(function(b){b.addEventListener('click',function(){applyLang(b.getAttribute('data-lang'),true)})});
-  C.forEach(function(c){var o=document.createElement('option');o.value=c[0];o.textContent=c[0]+' '+c[1];country.appendChild(o)});
-  var region=((navigator.language||'').split('-')[1]||'').toUpperCase();
-  if(C.some(function(c){return c[0]===region}))country.value=region;
 
-  function cur(){return C.filter(function(c){return c[0]===country.value})[0]}
-  function syncPhone(){var n=cur()[2];phone.maxLength=n;phone.placeholder='0'.repeat(n);phone.value=phone.value.slice(0,n)}
-  syncPhone();
-
-  function setErr(f,text){$('f-'+f).classList.toggle('bad',!!text);$('e-'+f).textContent=text||'';var i=$('f-'+f).querySelector('input');if(i)i.setAttribute('aria-invalid',text?'true':'false')}
-  function say(text,ok){msg.textContent=text||'';msg.classList.toggle('ok',!!ok)}
-
-  // Live filtering: letters only for the name, digits only for phone and code
+  // Inputs: letters only for names, digits only for numbers
   var NOT_LETTER=/[^\p{L}\s'’-]/gu;
-  name.addEventListener('input',function(){name.value=name.value.replace(NOT_LETTER,'').replace(/\s{2,}/g,' ');setErr('name','')});
-  phone.addEventListener('input',function(){phone.value=phone.value.replace(/\D/g,'').slice(0,cur()[2]);setErr('phone','')});
+  [name,rname].forEach(function(el){el.addEventListener('input',function(){el.value=el.value.replace(NOT_LETTER,'').replace(/\s{2,}/g,' ');setErr(el.id,'')})});
+  function phoneChanged(){if(confirmation&&e164(phone,country)!==sentTo){confirmation=null}}
+  phone.addEventListener('input',function(){phone.value=phone.value.replace(/\D/g,'').slice(0,cur(country)[2]);setErr('phone','');phoneChanged()});
+  rphone.addEventListener('input',function(){rphone.value=rphone.value.replace(/\D/g,'').slice(0,cur(rcountry)[2]);setErr('rphone','')});
   otp.addEventListener('input',function(){otp.value=otp.value.replace(/\D/g,'').slice(0,6);setErr('otp','')});
-  country.addEventListener('change',function(){syncPhone();setErr('phone','')});
+  country.addEventListener('change',function(){syncLen(phone,country);setErr('phone','');phoneChanged();if(!tzTouched)tz.value=tzForCountry()});
+  rcountry.addEventListener('change',function(){syncLen(rphone,rcountry);setErr('rphone','')});
+  tz.addEventListener('change',function(){tzTouched=true});
+  consent.addEventListener('change',function(){setErr('consent','')});
+  [].forEach.call(document.querySelectorAll('input[name="who"]'),function(r){r.addEventListener('change',function(){who=r.value;renderWho();clearErrs();say('')})});
 
-  function vName(){var v=name.value.trim();var e=!v?T.eNameEmpty:(!/^[\p{L}][\p{L}\s'’-]*$/u.test(v)||v.replace(/[^\p{L}]/gu,'').length<2)?T.eNameBad:'';setErr('name',e);return !e}
-  function vPhone(){var n=cur()[2],v=phone.value;var e=!v?T.ePhoneEmpty:v.length!==n?T.ePhoneLen.replace('{n}',n):'';setErr('phone',e);return !e}
+  function vName(el){var v=el.value.trim();var e=!v?T.eNameEmpty:(!/^[\p{L}][\p{L}\s'’-]*$/u.test(v)||v.replace(/[^\p{L}]/gu,'').length<2)?T.eNameBad:'';setErr(el.id,e);return !e}
+  function vPhone(el,sel){var n=cur(sel)[2],v=el.value;var e=!v?T.ePhoneEmpty:v.length!==n?T.ePhoneLen.replace('{n}',n):'';setErr(el.id,e);return !e}
   function vOtp(){var v=otp.value;var e=!v?T.eOtpEmpty:v.length!==6?T.eOtpLen:'';setErr('otp',e);return !e}
-  function vCaptcha(){var e=CONFIG.turnstileSiteKey&&!captchaToken?T.eCaptcha:'';setErr('captcha',e);return !e}
-  name.addEventListener('blur',function(){if(name.value)vName()});
-  phone.addEventListener('blur',function(){if(phone.value)vPhone()});
+  function vConsent(){var e=consent.checked?'':T.eConsent;setErr('consent',e);return !e}
+  name.addEventListener('blur',function(){if(name.value)vName(name)});
+  rname.addEventListener('blur',function(){if(rname.value)vName(rname)});
+  phone.addEventListener('blur',function(){if(phone.value)vPhone(phone,country)});
+  rphone.addEventListener('blur',function(){if(rphone.value)vPhone(rphone,rcountry)});
 
-  function fullPhone(){return cur()[1]+phone.value}
-  function post(url,data){return fetch(url,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}).then(function(r){if(!r.ok)throw new Error(r.status);return r})}
-  function wait(ms){return new Promise(function(r){setTimeout(r,ms)})}
+  // ---- Firebase (loaded only when configured) ----
+  function loadFb(){
+    if(!CONFIG.firebase.apiKey)return Promise.resolve(null);
+    if(!fbP){
+      fbP=Promise.all([import(CONFIG.sdk+'firebase-app.js'),import(CONFIG.sdk+'firebase-auth.js'),import(CONFIG.sdk+'firebase-firestore.js')]).then(function(m){
+        var app=m[0].initializeApp(CONFIG.firebase);var auth=m[1].getAuth(app);auth.languageCode=LANG;
+        return {A:m[1],F:m[2],auth:auth,db:m[2].getFirestore(app)};
+      });
+      fbP.catch(function(){fbP=null});
+    }
+    return fbP;
+  }
+  if(CONFIG.firebase.apiKey)loadFb().catch(function(e){console.error('Firebase load failed',e)});
 
-  // Send the SMS code
+  function errMsg(err){
+    var c=(err&&err.code)||'';
+    console.error('[register]',c,err);
+    if(c==='auth/invalid-phone-number'||c==='auth/missing-phone-number')return T.ePhoneBad;
+    if(c==='auth/invalid-verification-code'||c==='auth/missing-verification-code')return T.eCodeBad;
+    if(c==='auth/code-expired')return T.eCodeExpired;
+    if(c==='auth/too-many-requests'||c==='auth/quota-exceeded')return T.eTooMany;
+    if(c==='auth/network-request-failed'||c==='unavailable')return T.eNetwork;
+    if(/operation-not-allowed|unauthorized-domain|invalid-app-credential|captcha|api-key|permission-denied|admin-restricted/.test(c))return T.eSetup;
+    return T.fail;
+  }
+  function resetVerifier(){try{verifier&&verifier.clear()}catch(e){}verifier=null;$('recaptcha').textContent=''}
+  function startCountdown(){
+    var s=30,lbl=sendBtn.querySelector('.lbl');sendBtn.disabled=true;
+    if(timer)clearInterval(timer);
+    lbl.textContent=T.resend.replace('{s}',s);
+    timer=setInterval(function(){s--;if(s<=0){clearInterval(timer);timer=null;lbl.textContent=T.send;sendBtn.disabled=false;return}lbl.textContent=T.resend.replace('{s}',s)},1000);
+  }
+
+  // Send the SMS code to the number Alicia will call
   sendBtn.addEventListener('click',function(){
     say('');
-    if(!vPhone()){phone.focus();return}
+    if(!vPhone(phone,country)){phone.focus();return}
     sendBtn.classList.add('loading');sendBtn.disabled=true;
-    var job=CONFIG.sendCodeUrl?post(CONFIG.sendCodeUrl,{phone:fullPhone()}).then(function(){return true}):wait(900).then(function(){return false});
-    job.then(function(sent){
+    var to=e164(phone,country);
+    loadFb().then(function(fb){
+      if(!fb)return new Promise(function(r){setTimeout(function(){r(false)},900)});
+      if(!verifier)verifier=new fb.A.RecaptchaVerifier(fb.auth,'recaptcha',{size:'invisible'});
+      return fb.A.signInWithPhoneNumber(fb.auth,to,verifier).then(function(res){confirmation=res;sentTo=to;return true});
+    }).then(function(sent){
       sendBtn.classList.remove('loading');
       if(!sent){sendBtn.disabled=false;say(T.notYetSms);return}
-      say(T.sent,true);otp.focus();
-      var s=30,lbl=sendBtn.querySelector('.lbl');
-      (function tick(){if(s<=0){lbl.textContent=T.send;sendBtn.disabled=false;return}lbl.textContent=T.resend.replace('{s}',s--);setTimeout(tick,1000)})();
-    }).catch(function(){sendBtn.classList.remove('loading');sendBtn.disabled=false;say(T.fail)});
+      say(who==='loved'?T.sentLoved:T.sentSelf,true);otp.focus();startCountdown();
+    }).catch(function(err){
+      sendBtn.classList.remove('loading');sendBtn.disabled=false;resetVerifier();
+      var m=errMsg(err);if(m===T.ePhoneBad)setErr('phone',m);else say(m);
+    });
   });
 
-  // Submit
+  // ---- Save, in the same shape the Android app uses ----
+  var CODE_ABC='23456789ABCDEFGHJKLMNPQRSTUVWXYZ';
+  function newCode(){var s='';var a=new Uint32Array(8);crypto.getRandomValues(a);for(var i=0;i<8;i++)s+=CODE_ABC[a[i]%CODE_ABC.length];return s}
+  function localNow(zone){
+    var p={};new Intl.DateTimeFormat('en-US',{timeZone:zone,hour:'2-digit',minute:'2-digit',hour12:false}).formatToParts(new Date()).forEach(function(x){p[x.type]=x.value});
+    return (parseInt(p.hour==='24'?'0':p.hour,10))*60+parseInt(p.minute,10);
+  }
+
+  function saveAll(fb,uid,d){
+    var F=fb.F,db=fb.db,now=Date.now(),userRef=F.doc(db,'users',uid),circleId=null,existing=null;
+    return F.getDoc(userRef).then(function(u){
+      circleId=u.exists()?u.data().circleId:null;
+      return circleId?F.getDoc(F.doc(db,'circles',circleId)):null;
+    }).then(function(c){
+      if(c&&c.exists())existing=c.data();else circleId=null;
+      var old=(existing&&existing.callProfile)||{};
+      var cp={fullName:d.name,phoneE164:d.phone,preferredHour:d.h,preferredMinute:d.m,timeZoneId:d.tz,callEnabled:true,language:LANG};
+      if(!old.consentAcceptedAt)cp.consentAcceptedAt=now;
+      if(d.loved&&!old.emergencyContactPhone){cp.emergencyContactName=d.rname;cp.emergencyContactPhone=d.rphone}
+      if(circleId){
+        return F.setDoc(F.doc(db,'circles',circleId),{callProfile:cp},{merge:true});
+      }
+      var full={fullName:'',treatment:'',originCountry:'',interests:'',familyInfo:'',emergencyContactName:'',emergencyContactPhone:'',phoneE164:'',preferredHour:10,preferredMinute:0,timeZoneId:'',callEnabled:false,consentAcceptedAt:0,lastCallNotes:'',lastCallAt:0};
+      Object.keys(cp).forEach(function(k){full[k]=cp[k]});
+      var tries=0;
+      function pick(){var code=newCode();tries++;return F.getDoc(F.doc(db,'circles',code)).then(function(s){return s.exists()&&tries<5?pick():code})}
+      return pick().then(function(code){
+        circleId=code;
+        return F.setDoc(F.doc(db,'circles',code),{ownerUid:uid,userName:d.name,userPhone:d.phone,createdAt:now,source:'web',callProfile:full});
+      }).then(function(){
+        return F.setDoc(userRef,{circleId:circleId,profile:'ADULTO_MAYOR'});
+      });
+    }).then(function(){
+      if(!d.loved)return;
+      return F.setDoc(F.doc(db,'circles',circleId,'members','web-'+d.rphone.replace(/\D/g,'')),{userId:'',name:d.rname,phone:d.rphone,photoUrl:'',role:'GUARDIAN',notifyOnPanic:true,fcmToken:''},{merge:true});
+    }).then(function(){return circleId});
+  }
+
   form.addEventListener('submit',function(e){
     e.preventDefault();say('');
-    var ok=[vName(),vPhone(),vOtp(),vCaptcha()];
-    if(ok.indexOf(false)>-1){[name,phone,otp][ok.indexOf(false)]&&[name,phone,otp][ok.indexOf(false)].focus();return}
+    var loved=who==='loved';
+    var checks=[];
+    if(loved){checks.push([vName(rname),rname]);checks.push([vPhone(rphone,rcountry),rphone])}
+    checks.push([vName(name),name]);checks.push([vPhone(phone,country),phone]);checks.push([vOtp(),otp]);checks.push([vConsent(),consent]);
+    if(CONFIG.firebase.apiKey&&!confirmation&&otp.value.length===6){setErr('otp',T.eNoCode);checks.push([false,sendBtn])}
+    var bad=checks.filter(function(c){return !c[0]})[0];
+    if(bad){bad[1].focus();return}
+
+    var hm=hour.value.split(':');
+    var d={loved:loved,name:name.value.trim(),phone:e164(phone,country),h:parseInt(hm[0],10),m:parseInt(hm[1],10),tz:tz.value,rname:rname.value.trim(),rphone:loved?e164(rphone,rcountry):''};
     var lbl=submitBtn.querySelector('.lbl');
-    submitBtn.classList.add('loading');submitBtn.disabled=true;submitBtn.setAttribute('aria-busy','true');lbl.textContent=T.submitting;
-    var job=CONFIG.registerUrl
-      ?post(CONFIG.registerUrl,{name:name.value.trim(),phone:fullPhone(),code:otp.value,captcha:captchaToken}).then(function(){return true})
-      :wait(1400).then(function(){return false});
-    job.then(function(created){say(created?T.done:T.notYet,created);if(created)form.reset(),syncPhone()})
-       .catch(function(){say(T.fail)})
-       .then(function(){submitBtn.classList.remove('loading');submitBtn.disabled=false;submitBtn.removeAttribute('aria-busy');lbl.textContent=T.submit});
+    function busy(on){submitBtn.classList.toggle('loading',on);submitBtn.disabled=on;on?submitBtn.setAttribute('aria-busy','true'):submitBtn.removeAttribute('aria-busy');lbl.textContent=on?T.submitting:T.submit}
+    busy(true);
+
+    loadFb().then(function(fb){
+      if(!fb)return new Promise(function(r){setTimeout(function(){r(null)},1400)});
+      return confirmation.confirm(otp.value).then(function(cred){
+        return saveAll(fb,cred.user.uid,d);
+      }).then(function(code){
+        fb.A.signOut(fb.auth).catch(function(){});
+        return code;
+      });
+    }).then(function(code){
+      busy(false);
+      if(!code){say(T.notYet);return}
+      doneInfo={loved:loved,name:d.name,h:d.h,m:d.m,tz:d.tz,code:code,today:localNow(d.tz)<d.h*60+d.m};
+      renderDone();
+      $('formBody').hidden=true;$('done').hidden=false;$('done').focus();
+    }).catch(function(err){
+      busy(false);
+      var m=errMsg(err);
+      if(m===T.eCodeBad||m===T.eCodeExpired)setErr('otp',m);else say(m);
+    });
   });
 
-  // Captcha (Cloudflare Turnstile) — only loads when a site key is set
-  if(CONFIG.turnstileSiteKey){
-    window.onTurnstileReady=function(){
-      var box=$('captcha');box.textContent='';box.classList.add('live');
-      turnstile.render(box,{sitekey:CONFIG.turnstileSiteKey,callback:function(t){captchaToken=t;setErr('captcha','')},'expired-callback':function(){captchaToken=''}});
-    };
-    var s=document.createElement('script');s.src='https://challenges.cloudflare.com/turnstile/v0/api.js?onload=onTurnstileReady&render=explicit';s.async=true;document.head.appendChild(s);
-  }
+  $('againBtn').addEventListener('click',function(){
+    form.reset();doneInfo=null;confirmation=null;sentTo='';who='self';tzTouched=false;
+    if(region){country.value=region;rcountry.value=region}
+    syncLen(phone,country);syncLen(rphone,rcountry);hour.value='';tz.value='';buildSelects();renderWho();clearErrs();say('');resetVerifier();
+    if(timer){clearInterval(timer);timer=null}sendBtn.disabled=false;sendBtn.querySelector('.lbl').textContent=T.send;
+    $('done').hidden=true;$('formBody').hidden=false;name.focus();
+  });
 })();
 </script>
 </body>
