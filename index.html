@@ -189,6 +189,20 @@ footer a:hover{color:var(--ink)}
 .code-box{display:flex;flex-direction:column;gap:4px;padding:14px 22px;border-radius:14px;background:var(--bg-3);font-size:13px;color:var(--muted)}
 .code-box strong{font-size:26px;letter-spacing:.14em;color:var(--ink);font-variant-numeric:tabular-nums}
 
+/* Optional profile ("tell Alicia more") */
+.prefs{width:100%;text-align:left;display:flex;flex-direction:column;gap:16px;margin-top:6px;padding-top:22px;border-top:1px solid var(--line-2)}
+.prefs h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0}
+.prefs .hint{margin-top:-10px}
+.field-pair{display:flex;flex-direction:column;gap:16px}
+.lbl-like{font-size:14px;font-weight:500;color:var(--ink-2)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink-2);font:inherit;font-size:14px;cursor:pointer;transition:background .2s,color .2s,border-color .2s}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.reg textarea{width:100%;min-width:0;padding:12px 14px;border:1px solid var(--line);border-radius:12px;font:inherit;font-size:16px;line-height:1.45;color:var(--ink);resize:vertical;background:#fff}
+.reg textarea:focus{outline:0;border-color:var(--ink);box-shadow:0 0 0 4px rgba(176,80,45,.16)}
+.reg textarea::placeholder{color:#a1a1a6}
+.prefs-saved{display:flex;align-items:center;gap:10px;font-size:15px;color:#1d5c37;background:#eaf5ee;padding:12px 14px;border-radius:12px;text-align:left}
+
 /* Mobile */
 @media (max-width:960px){
   .lang{margin-left:auto;margin-right:6px}
@@ -325,6 +339,45 @@ footer a:hover{color:var(--ink)}
           <p id="doneText"></p>
           <div class="code-box"><span id="doneCodeLabel"></span><strong id="doneCode"></strong></div>
           <p class="hint" id="doneCodeHint"></p>
+
+          <div class="prefs" id="prefs">
+            <h3 data-t="pTitle">Tell Alicia a little more</h3>
+            <p class="hint" data-t="pSub">Optional — it makes every conversation more personal.</p>
+            <div class="field" id="f-treat">
+              <label for="treat" id="l-treat">What should Alicia call them?</label>
+              <input id="treat" type="text" maxlength="40" autocapitalize="words">
+            </div>
+            <div class="field" id="f-origin">
+              <label for="origin" id="l-origin">Country of origin</label>
+              <input id="origin" type="text" maxlength="40" autocapitalize="words">
+            </div>
+            <div class="field">
+              <span class="lbl-like" id="l-likes">Things they enjoy</span>
+              <div class="chips" id="chips" role="group" aria-labelledby="l-likes"></div>
+              <input id="likesMore" type="text" maxlength="200" aria-labelledby="l-likes">
+            </div>
+            <div class="field" id="f-family">
+              <label for="family" id="l-family">Family</label>
+              <textarea id="family" rows="3" maxlength="600"></textarea>
+            </div>
+            <div id="g-emerg" class="field-pair">
+              <div class="field" id="f-ename">
+                <label for="ename" data-t="eName">Emergency contact (name)</label>
+                <input id="ename" type="text" maxlength="80" autocapitalize="words">
+              </div>
+              <div class="field" id="f-ephone">
+                <label for="ephone" data-t="ePhone">Emergency contact (mobile)</label>
+                <div class="row">
+                  <select id="ecountry" aria-label="Country code"></select>
+                  <input id="ephone" type="tel" inputmode="numeric" aria-describedby="e-ephone">
+                </div>
+                <div class="err" id="e-ephone" role="alert"></div>
+              </div>
+            </div>
+            <button type="button" class="btn" id="prefsBtn"><span class="spin"></span><span class="lbl" data-t="pSave">Save</span></button>
+            <div class="msg" id="pmsg" role="status" aria-live="polite"></div>
+          </div>
+
           <button type="button" class="btn2" id="againBtn"></button>
         </div>
       </form>
@@ -490,7 +543,15 @@ var CONFIG={
     today:'hoy',tomorrow:'mañana',
     doneCodeLabel:'Código del círculo',
     doneCodeHint:'Guárdalo: sirve para conectar la app y ver el resumen de cada llamada.',
-    again:'Registrar a otra persona'
+    again:'Registrar a otra persona',
+    pTitle:'Cuéntale a Alicia un poco más',pSub:'Opcional — así cada conversación será más personal.',
+    treatSelf:'¿Cómo te gusta que te digan?',treatLoved:'¿Cómo le gusta que le digan?',treatPh:'Ej. Doña Rosa, Rosita, Profe',
+    originSelf:'¿De qué país eres?',originLoved:'¿De qué país es?',originPh:'Ej. Colombia',
+    likesSelf:'¿Qué te gusta?',likesLoved:'¿Qué le gusta?',likesPh:'Otros gustos o temas de conversación',
+    familySelf:'Tu familia',familyLoved:'Su familia',familyPh:'Nombres y quién es quién. Ej. Hija Laura (vive en Miami), nieto Tomás (8 años)',
+    eName:'Contacto de emergencia (nombre)',ePhone:'Contacto de emergencia (celular)',
+    pSave:'Guardar',pSaving:'Guardando…',pSaved:'¡Guardado! Alicia lo tendrá en cuenta desde la próxima llamada.',
+    likes:['Música','Viajes','Cocina','Jardín','Libros','Películas','Fotografía','Fútbol','Ejercicio','Mascotas','Manualidades','Teatro y arte','Naturaleza','Bienestar','Rock y metal']
   },en:{
     title:'Create your account',sub:'Alicia will call every day at the time you choose.',
     whoLegend:'Who is it for?',forMe:'For me',forLoved:'For a loved one',
@@ -522,7 +583,15 @@ var CONFIG={
     today:'today',tomorrow:'tomorrow',
     doneCodeLabel:'Circle code',
     doneCodeHint:'Keep it: it connects the app so you can see a summary of every call.',
-    again:'Register someone else'
+    again:'Register someone else',
+    pTitle:'Tell Alicia a little more',pSub:'Optional — it makes every conversation more personal.',
+    treatSelf:'What do you like to be called?',treatLoved:'What do they like to be called?',treatPh:'e.g. Miss Rose, Grandpa Joe',
+    originSelf:'Where are you from?',originLoved:'Where are they from?',originPh:'e.g. Colombia',
+    likesSelf:'What do you enjoy?',likesLoved:'What do they enjoy?',likesPh:'Other interests or conversation topics',
+    familySelf:'Your family',familyLoved:'Their family',familyPh:'Names and who is who. e.g. Daughter Laura (lives in Miami), grandson Tom (8)',
+    eName:'Emergency contact (name)',ePhone:'Emergency contact (mobile)',
+    pSave:'Save',pSaving:'Saving…',pSaved:'Saved! Alicia will use this from the next call.',
+    likes:['Music','Travel','Cooking','Gardening','Books','Movies','Photography','Soccer','Exercise','Pets','Crafts','Theater & art','Nature','Wellness','Rock & metal']
   }};
   var T=L.en,LANG='en';
 
@@ -608,13 +677,20 @@ var CONFIG={
     $('doneText').textContent=(d.loved?T.doneLoved:T.doneSelf).replace('{name}',d.name).replace('{time}',fmtTime(d.h,d.m)).replace('{tz}',tzLabel(d.tz)).replace('{when}',d.today?T.today:T.tomorrow);
     $('doneCodeLabel').textContent=T.doneCodeLabel;$('doneCode').textContent=d.code;
     $('doneCodeHint').textContent=T.doneCodeHint;$('againBtn').textContent=T.again;
+    var lv=d.loved;
+    $('l-treat').textContent=lv?T.treatLoved:T.treatSelf;$('treat').placeholder=T.treatPh;
+    $('l-origin').textContent=lv?T.originLoved:T.originSelf;$('origin').placeholder=T.originPh;
+    $('l-likes').textContent=lv?T.likesLoved:T.likesSelf;$('likesMore').placeholder=T.likesPh;
+    $('l-family').textContent=lv?T.familyLoved:T.familySelf;$('family').placeholder=T.familyPh;
+    if(!$('prefs').querySelector('.prefs-saved'))$('g-emerg').hidden=!!d.hasEmergency;
+    buildChips();
   }
 
   function applyLang(l,save){
     LANG=l;T=L[l];document.documentElement.lang=l;
     PAGE.forEach(function(r){r.els.forEach(function(el,i){el.innerHTML=r[l][i]})});
     document.title=META[l][0];desc.content=META[l][1];
-    form.querySelectorAll('[data-t]').forEach(function(el){el.textContent=T[el.getAttribute('data-t')]});
+    form.querySelectorAll('[data-t]').forEach(function(el){var v=T[el.getAttribute('data-t')];if(typeof v==='string')el.textContent=v});
     $('legal').innerHTML=T.legal;
     name.placeholder=T.namePh;rname.placeholder=T.namePh;
     var cc=l==='es'?'Indicativo del país':'Country code';country.setAttribute('aria-label',cc);rcountry.setAttribute('aria-label',cc);
@@ -764,13 +840,14 @@ var CONFIG={
       return confirmation.confirm(otp.value).then(function(cred){
         return saveAll(fb,cred.user.uid,d);
       }).then(function(code){
-        fb.A.signOut(fb.auth).catch(function(){});
+        session={fb:fb,circleId:code};
         return code;
       });
     }).then(function(code){
       busy(false);
       if(!code){say(T.notYet);return}
-      doneInfo={loved:loved,name:d.name,h:d.h,m:d.m,tz:d.tz,code:code,today:localNow(d.tz)<d.h*60+d.m};
+      doneInfo={loved:loved,name:d.name,h:d.h,m:d.m,tz:d.tz,code:code,today:localNow(d.tz)<d.h*60+d.m,hasEmergency:loved};
+      resetPrefs();prefillPrefs();
       renderDone();
       $('formBody').hidden=true;$('done').hidden=false;$('done').focus();
     }).catch(function(err){
@@ -780,7 +857,82 @@ var CONFIG={
     });
   });
 
+  // ---- Optional profile: same fields the app sends to Retell (treatment, origin_country, interests, family_info, emergency contact) ----
+  var session=null,picked={};
+  var treat=$('treat'),origin=$('origin'),likesMore=$('likesMore'),family=$('family'),ename=$('ename'),ecountry=$('ecountry'),ephone=$('ephone'),prefsBtn=$('prefsBtn');
+  fillCountries(ecountry);if(region)ecountry.value=region;syncLen(ephone,ecountry);
+  function buildChips(){
+    var box=$('chips');box.textContent='';
+    T.likes.forEach(function(lbl,i){
+      var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=lbl;
+      b.setAttribute('aria-pressed',picked[i]?'true':'false');
+      b.addEventListener('click',function(){picked[i]=!picked[i];b.setAttribute('aria-pressed',picked[i]?'true':'false')});
+      box.appendChild(b);
+    });
+  }
+  var LETTERS_DOT=/[^\p{L}\s'’.-]/gu;
+  [treat,origin,ename].forEach(function(el){el.addEventListener('input',function(){el.value=el.value.replace(LETTERS_DOT,'').replace(/\s{2,}/g,' ')})});
+  ephone.addEventListener('input',function(){ephone.value=ephone.value.replace(/\D/g,'').slice(0,cur(ecountry)[2]);setErr('ephone','')});
+  ecountry.addEventListener('change',function(){syncLen(ephone,ecountry);setErr('ephone','')});
+  function resetPrefs(){
+    picked={};[treat,origin,likesMore,family,ename,ephone].forEach(function(el){el.value=''});
+    $('pmsg').textContent='';$('pmsg').classList.remove('ok');setErr('ephone','');
+    var saved=$('prefs').querySelector('.prefs-saved');if(saved)saved.remove();
+    [].forEach.call($('prefs').children,function(c){c.hidden=false});
+  }
+  // On a re-registration, show what's already saved so it can be edited instead of retyped
+  function prefillPrefs(){
+    if(!session)return;
+    var F=session.fb.F;
+    F.getDoc(F.doc(session.fb.db,'circles',session.circleId)).then(function(s){
+      var cp=(s.exists()&&s.data().callProfile)||{};
+      if(cp.treatment)treat.value=cp.treatment;
+      if(cp.originCountry)origin.value=cp.originCountry;
+      if(cp.familyInfo)family.value=cp.familyInfo;
+      if(cp.interests){
+        var rest=[];
+        cp.interests.split(',').map(function(x){return x.trim()}).filter(Boolean).forEach(function(x){
+          var i=L.es.likes.indexOf(x);if(i<0)i=L.en.likes.indexOf(x);
+          if(i>-1)picked[i]=true;else rest.push(x);
+        });
+        likesMore.value=rest.join(', ');buildChips();
+      }
+      if(cp.emergencyContactPhone){if(doneInfo)doneInfo.hasEmergency=true;$('g-emerg').hidden=true}
+    }).catch(function(e){console.warn('prefill',e)});
+  }
+  function endSession(){if(session){session.fb.A.signOut(session.fb.auth).catch(function(){});session=null}}
+  window.addEventListener('pagehide',endSession);
+
+  prefsBtn.addEventListener('click',function(){
+    var pm=$('pmsg');pm.textContent='';pm.classList.remove('ok');
+    var showEm=!$('g-emerg').hidden;
+    if(showEm&&ephone.value&&ephone.value.length!==cur(ecountry)[2]){setErr('ephone',T.ePhoneLen.replace('{n}',cur(ecountry)[2]));ephone.focus();return}
+    var likes=T.likes.filter(function(_,i){return picked[i]});
+    if(likesMore.value.trim())likes.push(likesMore.value.trim());
+    var cp={};
+    if(treat.value.trim())cp.treatment=treat.value.trim();
+    if(origin.value.trim())cp.originCountry=origin.value.trim();
+    if(likes.length)cp.interests=likes.join(', ');
+    if(family.value.trim())cp.familyInfo=family.value.trim();
+    if(showEm&&ename.value.trim()&&ephone.value){cp.emergencyContactName=ename.value.trim();cp.emergencyContactPhone=e164(ephone,ecountry)}
+    if(!Object.keys(cp).length){treat.focus();return}
+    if(!session){pm.textContent=T.eSetup;return}
+    var lbl=prefsBtn.querySelector('.lbl');
+    prefsBtn.classList.add('loading');prefsBtn.disabled=true;lbl.textContent=T.pSaving;
+    var F=session.fb.F;
+    F.setDoc(F.doc(session.fb.db,'circles',session.circleId),{callProfile:cp},{merge:true}).then(function(){
+      prefsBtn.classList.remove('loading');prefsBtn.disabled=false;lbl.textContent=T.pSave;
+      [].forEach.call($('prefs').children,function(c){if(c.tagName!=='H3')c.hidden=true});
+      var ok=document.createElement('div');ok.className='prefs-saved';ok.setAttribute('role','status');ok.textContent=T.pSaved;$('prefs').appendChild(ok);
+      endSession();
+    }).catch(function(err){
+      prefsBtn.classList.remove('loading');prefsBtn.disabled=false;lbl.textContent=T.pSave;
+      pm.textContent=errMsg(err);
+    });
+  });
+
   $('againBtn').addEventListener('click',function(){
+    endSession();resetPrefs();
     form.reset();doneInfo=null;confirmation=null;sentTo='';who='self';tzTouched=false;
     if(region){country.value=region;rcountry.value=region}
     syncLen(phone,country);syncLen(rphone,rcountry);hour.value='';tz.value='';buildSelects();renderWho();clearErrs();say('');resetVerifier();
