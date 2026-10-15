@@ -35,6 +35,11 @@ const db = getFirestore();
 const RETELL_API_KEY = defineSecret("RETELL_API_KEY");
 const RETELL_AGENT_ID = defineString("RETELL_AGENT_ID");
 const RETELL_FROM_NUMBER = defineString("RETELL_FROM_NUMBER");
+// Número propio (p. ej. de Bogotá, +57…) conectado a Retell por SIP trunk (Twilio).
+// Los números que vende Retell no pueden llamar a Colombia ni a casi toda Latinoamérica
+// ("Call country not supported"); con este, toda llamada que NO sea a +1 sale desde aquí.
+// Vacío = todas las llamadas salen desde RETELL_FROM_NUMBER, como antes.
+const RETELL_FROM_NUMBER_LATAM = defineString("RETELL_FROM_NUMBER_LATAM", { default: "" });
 
 // Avisos a la familia por SMS (Twilio). Si TWILIO_ACCOUNT_SID queda vacío, no se
 // envía nada y todo lo demás funciona igual (solo queda un log).
@@ -158,6 +163,12 @@ export const dailyCallScheduler = onSchedule(
   }
 );
 
+/** EE. UU./Canadá (+1) → número de Retell; resto de países → número latinoamericano si está configurado. */
+function pickFromNumber(to: string): string {
+  const latam = RETELL_FROM_NUMBER_LATAM.value();
+  return latam && !to.startsWith("+1") ? latam : RETELL_FROM_NUMBER.value();
+}
+
 async function createRetellCall(circleId: string, profile: CallProfile): Promise<void> {
   const response = await fetch(RETELL_CREATE_CALL_URL, {
     method: "POST",
@@ -166,7 +177,7 @@ async function createRetellCall(circleId: string, profile: CallProfile): Promise
       "Content-Type": "application/json",
     },
     body: JSON.stringify({
-      from_number: RETELL_FROM_NUMBER.value(),
+      from_number: pickFromNumber(profile.phoneE164 ?? ""),
       to_number: profile.phoneE164,
       override_agent_id: RETELL_AGENT_ID.value(),
       metadata: { circleId },

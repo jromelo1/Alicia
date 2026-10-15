@@ -59,6 +59,32 @@ https://us-central1-alicia-53950.cloudfunctions.net/retellWebhook
 Pégala en la configuración de tu agente en Retell, como webhook del agente
 (o del número), para el evento `call_analyzed` como mínimo.
 
+## Llamar a Latinoamérica (número propio por SIP trunk)
+
+Los números que vende Retell son de EE. UU./Canadá y **no pueden llamar a
+Colombia ni a casi toda Latinoamérica** (error `Call country not supported: CO`).
+La solución de Retell es conectar un número propio por SIP trunk. Con Twilio:
+
+1. **Comprar un número de Bogotá** — Twilio Console → Phone Numbers → Buy a
+   number → Colombia. Pide cédula y un recibo de servicios con dirección en la
+   zona del número (regulación colombiana).
+2. **Permisos de país** — Voice → Settings → Geo Permissions: activar Colombia
+   (y los demás países a los que vas a llamar).
+3. **Crear el trunk** — Elastic SIP Trunking → Trunks → Create:
+   - *Termination*: elegir un Termination SIP URI (`algo.pstn.twilio.com`) y crear
+     una Credential List (usuario y contraseña).
+   - *Origination*: agregar `sip:sip.retellai.com`.
+   - *Numbers*: asociar el número de Bogotá.
+4. **Conectarlo en Retell** — Phone Numbers → + → *Connect to your number via SIP
+   trunking*: el número (+57…), el Termination URI de Twilio, el usuario y la
+   contraseña. Asignar el agente de Alicia para llamadas salientes.
+5. **En `functions/.env`:**
+   ```
+   RETELL_FROM_NUMBER_LATAM=+57XXXXXXXXXX
+   ```
+   Con esto, las llamadas a cualquier número que no sea +1 salen desde el número
+   colombiano; las de EE. UU./Canadá siguen saliendo desde `RETELL_FROM_NUMBER`.
+
 ## Avisos a la familia por SMS (Twilio)
 
 Después de cada llamada, `retellWebhook` le escribe por SMS al contacto de
