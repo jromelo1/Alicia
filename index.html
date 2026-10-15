@@ -203,6 +203,26 @@ footer a:hover{color:var(--ink)}
 .reg textarea::placeholder{color:#a1a1a6}
 .prefs-saved{display:flex;align-items:center;gap:10px;font-size:15px;color:#1d5c37;background:#eaf5ee;padding:12px 14px;border-radius:12px;text-align:left}
 
+/* Pricing */
+.pricing{padding:clamp(96px,11vw,160px) 0;background:var(--bg-2)}
+.plans{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;align-items:stretch}
+.plan{position:relative;background:#fff;border:1px solid var(--line-2);border-radius:28px;padding:36px 30px 30px;display:flex;flex-direction:column;gap:22px}
+.plan.featured{border:2px solid var(--ink);box-shadow:0 18px 50px rgba(0,0,0,.08)}
+.badge{position:absolute;top:-14px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;font-size:12px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;padding:7px 14px;border-radius:999px;white-space:nowrap}
+.plan h3{font-size:22px;font-weight:600;letter-spacing:-.01em}
+.price{display:flex;align-items:baseline;gap:4px;margin-top:-10px}
+.amt{font-size:clamp(40px,4vw,52px);font-weight:600;letter-spacing:-.035em}
+.per{font-size:16px;color:var(--muted)}
+.plan ul{list-style:none;margin:0;padding:22px 0 0;border-top:1px solid var(--line-2);display:flex;flex-direction:column;gap:13px;flex:1}
+.plan li{position:relative;padding-left:30px;font-size:16px;line-height:1.4;color:var(--ink-2)}
+.plan li::before{content:"";position:absolute;left:0;top:1px;width:20px;height:20px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23B0502D' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M5 12.5l4.5 4.5L19 7.5'/%3E%3C/svg%3E") no-repeat center/contain}
+.plan li.em{font-weight:600;color:var(--ink)}
+.plan .btn{width:100%;min-height:52px;font-size:16px}
+.plan:not(.featured) .btn{background:#fff;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.plan:not(.featured) .btn:hover{background:var(--ink);color:#fff}
+.pricing .note{margin-top:32px;text-align:center;font-size:14px;line-height:1.5;color:var(--muted)}
+.plan-pick{font-size:14px;font-weight:500;color:var(--accent);background:#fbf1ec;border-radius:10px;padding:8px 12px;margin-top:-6px}
+
 /* Mobile */
 @media (max-width:960px){
   .lang{margin-left:auto;margin-right:6px}
@@ -218,6 +238,7 @@ footer a:hover{color:var(--ink)}
   .ctas .btn,.cta .btn{width:100%}
   .head{flex-direction:column;align-items:flex-start;gap:16px}
   .grid{grid-template-columns:repeat(1,minmax(0,1fr));row-gap:40px}
+  .plans{grid-template-columns:minmax(0,1fr);gap:28px;max-width:460px;margin:0 auto}
   .gallery{grid-template-columns:1fr;grid-template-rows:380px 260px 260px;gap:16px}
   .tile{border-radius:28px}.tile.big{grid-row:auto}
   footer .wrap{flex-direction:column-reverse;align-items:flex-start}
@@ -238,7 +259,7 @@ footer a:hover{color:var(--ink)}
     <nav class="links" id="links" aria-label="Main">
       <a href="#intro">How it works</a>
       <a href="#features">Features</a>
-      <a href="#moments">Moments</a>
+      <a href="#pricing">Pricing</a>
       <a href="#register" class="btn sm">Get early access</a>
     </nav>
     <div class="lang" role="group" aria-label="Language / Idioma">
@@ -258,6 +279,7 @@ footer a:hover{color:var(--ink)}
         <div id="formBody" class="reg-body">
         <h2 data-t="title">Start Alicia’s calls</h2>
         <p class="sub" data-t="sub">Two minutes to set up — for your mom, your dad, or yourself.</p>
+        <p class="plan-pick" id="planPick" hidden></p>
 
         <fieldset class="who">
           <legend class="sr" data-t="whoLegend">Who is it for?</legend>
@@ -456,6 +478,58 @@ footer a:hover{color:var(--ink)}
     </div>
   </section>
 
+  <section class="pricing" id="pricing">
+    <div class="wrap">
+      <div class="center">
+        <h2 class="h2 reveal">Choose how often Alicia calls.</h2>
+        <p class="reveal d1">Every plan starts with a 7-day free trial.</p>
+      </div>
+      <div class="plans">
+        <div class="plan reveal">
+          <h3>Essential</h3>
+          <div class="price"><span class="amt">$19.99</span><span class="per">/month</span></div>
+          <ul>
+            <li class="em">3 calls a week</li>
+            <li class="em">Up to 8 min per call</li>
+            <li>Their Spanish, from home</li>
+            <li>Remembers your last conversation</li>
+            <li>A note for you after every call</li>
+            <li>Alerts when something’s off</li>
+          </ul>
+          <a href="#register" class="btn" data-plan="esencial">Start a 7-day free trial</a>
+        </div>
+        <div class="plan reveal featured">
+          <span class="badge">Most popular</span>
+          <h3>Daily</h3>
+          <div class="price"><span class="amt">$34.99</span><span class="per">/month</span></div>
+          <ul>
+            <li class="em">A call every day</li>
+            <li class="em">Up to 5 min per call</li>
+            <li>Their Spanish, from home</li>
+            <li>Remembers your last conversation</li>
+            <li>A note for you after every call</li>
+            <li>Alerts when something’s off</li>
+          </ul>
+          <a href="#register" class="btn" data-plan="diario">Start a 7-day free trial</a>
+        </div>
+        <div class="plan reveal">
+          <h3>Plus</h3>
+          <div class="price"><span class="amt">$59.99</span><span class="per">/month</span></div>
+          <ul>
+            <li class="em">A call every day</li>
+            <li class="em">Up to 10 min per call</li>
+            <li>Their Spanish, from home</li>
+            <li>Remembers your last conversation</li>
+            <li>A note for you after every call</li>
+            <li>Alerts when something’s off</li>
+          </ul>
+          <a href="#register" class="btn" data-plan="plus">Start a 7-day free trial</a>
+        </div>
+      </div>
+      <p class="note reveal">Prices in US dollars. Cancel anytime. Early access: no card needed during the pilot.</p>
+    </div>
+  </section>
+
   <section class="cta" id="start">
     <div class="wrap">
       <h2 class="h2 reveal">Give your parents someone to talk to — every single day.</h2>
@@ -544,6 +618,7 @@ var CONFIG={
     doneCodeLabel:'Código del círculo',
     doneCodeHint:'Guárdalo: sirve para conectar la app y ver el resumen de cada llamada.',
     again:'Registrar a otra persona',
+    planPick:'Plan {plan} · 7 días gratis',plans:{esencial:'Esencial',diario:'Diario',plus:'Plus'},
     pTitle:'Cuéntale a Alicia un poco más',pSub:'Opcional — así cada conversación será más personal.',
     treatSelf:'¿Cómo te gusta que te digan?',treatLoved:'¿Cómo le gusta que le digan?',treatPh:'Ej. Doña Rosa, Rosita, Profe',
     originSelf:'¿De qué país eres?',originLoved:'¿De qué país es?',originPh:'Ej. Colombia',
@@ -584,6 +659,7 @@ var CONFIG={
     doneCodeLabel:'Circle code',
     doneCodeHint:'Keep it: it connects the app so you can see a summary of every call.',
     again:'Register someone else',
+    planPick:'{plan} plan · 7-day free trial',plans:{esencial:'Essential',diario:'Daily',plus:'Plus'},
     pTitle:'Tell Alicia a little more',pSub:'Optional — it makes every conversation more personal.',
     treatSelf:'What do you like to be called?',treatLoved:'What do they like to be called?',treatPh:'e.g. Miss Rose, Grandpa Joe',
     originSelf:'Where are you from?',originLoved:'Where are they from?',originPh:'e.g. Colombia',
@@ -597,7 +673,7 @@ var CONFIG={
 
   // Spanish version of the rest of the page. English is the text already in the HTML.
   var PAGE_ES=[
-    ['.links a',['Cómo funciona','Características','Momentos','Acceso anticipado']],
+    ['.links a',['Cómo funciona','Características','Precios','Acceso anticipado']],
     ['.hero h1',['Tú lejos.<br>Ellos acompañados.']],
     ['.hero .lede',['Alicia llama a tus papás todos los días, en el español de su tierra, y te cuenta cómo están, vivas donde vivas.']],
     ['.hero .link',['Mira cómo funciona ›']],
@@ -612,6 +688,14 @@ var CONFIG={
     ['.tile .ph',['[Foto: una mujer riendo al teléfono en la mesa de su cocina]','[Foto: manos cuidando un jardín]','[Foto: una mujer en el exterior sonriendo al leer un mensaje]']],
     ['.tile small',['9:00 a.m. · Bogotá','1:30 p.m. · Lima','Para ti · 7:05 p.m. · Miami']],
     ['.tile strong',['El café de la mañana, en compañía.','¿Cómo van los tomates?','“Tu mamá habló de su jardín. Está bien.”']],
+    ['.pricing .h2',['Elige cada cuánto llama Alicia.']],
+    ['.pricing .center p',['Todos los planes empiezan con 7 días gratis.']],
+    ['.plan h3',['Esencial','Diario','Plus']],
+    ['.plan .per',['/mes','/mes','/mes']],
+    ['.plan li',["3 llamadas por semana", "Hasta 8 min por llamada", "Su español, el de su tierra", "Recuerda la conversación anterior", "Una nota para ti después de cada llamada", "Alertas si algo no está bien", "Llamada todos los días", "Hasta 5 min por llamada", "Su español, el de su tierra", "Recuerda la conversación anterior", "Una nota para ti después de cada llamada", "Alertas si algo no está bien", "Llamada todos los días", "Hasta 10 min por llamada", "Su español, el de su tierra", "Recuerda la conversación anterior", "Una nota para ti después de cada llamada", "Alertas si algo no está bien"]],
+    ['.plan .btn',['Empieza 7 días gratis','Empieza 7 días gratis','Empieza 7 días gratis']],
+    ['.badge',['Más popular']],
+    ['.pricing .note',['Precios en dólares (US$). Cancela cuando quieras. Acceso anticipado: no pedimos tarjeta durante el piloto.']],
     ['.cta .h2',['Dales a tus papás alguien con quien hablar, todos los días.']],
     ['.cta .btn',['Acceso anticipado']],
     ['.cta p',['En pruebas con familias en Estados Unidos y Colombia.']],
@@ -687,6 +771,9 @@ var CONFIG={
     buildChips();
   }
 
+  var selectedPlan='';
+  function renderPlan(){var el=$('planPick');if(!selectedPlan){el.hidden=true;return}el.hidden=false;el.textContent=T.planPick.replace('{plan}',T.plans[selectedPlan])}
+  document.querySelectorAll('[data-plan]').forEach(function(b){b.addEventListener('click',function(){selectedPlan=b.getAttribute('data-plan');renderPlan()})});
   function applyLang(l,save){
     LANG=l;T=L[l];document.documentElement.lang=l;
     PAGE.forEach(function(r){r.els.forEach(function(el,i){el.innerHTML=r[l][i]})});
@@ -696,7 +783,7 @@ var CONFIG={
     name.placeholder=T.namePh;rname.placeholder=T.namePh;
     var cc=l==='es'?'Indicativo del país':'Country code';country.setAttribute('aria-label',cc);rcountry.setAttribute('aria-label',cc);
     tz.setAttribute('aria-label',l==='es'?'Zona horaria':'Time zone');
-    buildSelects();renderWho();renderDone();clearErrs();say('');
+    buildSelects();renderWho();renderDone();renderPlan();clearErrs();say('');
     if(timer){clearInterval(timer);timer=null;sendBtn.disabled=false}
     document.querySelectorAll('[data-lang]').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-lang')===l?'true':'false')});
     if(save)try{localStorage.setItem('lang',l)}catch(e){}
@@ -802,7 +889,8 @@ var CONFIG={
       if(!old.consentAcceptedAt)cp.consentAcceptedAt=now;
       if(d.loved&&!old.emergencyContactPhone){cp.emergencyContactName=d.rname;cp.emergencyContactPhone=d.rphone}
       if(circleId){
-        return F.setDoc(F.doc(db,'circles',circleId),{callProfile:cp},{merge:true});
+        var upd={callProfile:cp};if(selectedPlan)upd.plan=selectedPlan;
+        return F.setDoc(F.doc(db,'circles',circleId),upd,{merge:true});
       }
       var full={fullName:'',treatment:'',originCountry:'',interests:'',familyInfo:'',emergencyContactName:'',emergencyContactPhone:'',phoneE164:'',preferredHour:10,preferredMinute:0,timeZoneId:'',callEnabled:false,consentAcceptedAt:0,lastCallNotes:'',lastCallAt:0};
       Object.keys(cp).forEach(function(k){full[k]=cp[k]});
@@ -810,7 +898,7 @@ var CONFIG={
       function pick(){var code=newCode();tries++;return F.getDoc(F.doc(db,'circles',code)).then(function(s){return s.exists()&&tries<5?pick():code})}
       return pick().then(function(code){
         circleId=code;
-        return F.setDoc(F.doc(db,'circles',code),{ownerUid:uid,userName:d.name,userPhone:d.phone,createdAt:now,source:'web',callProfile:full});
+        return F.setDoc(F.doc(db,'circles',code),{ownerUid:uid,userName:d.name,userPhone:d.phone,createdAt:now,source:'web',plan:selectedPlan||'',trialStartedAt:now,callProfile:full});
       }).then(function(){
         return F.setDoc(userRef,{circleId:circleId,profile:'ADULTO_MAYOR'});
       });
