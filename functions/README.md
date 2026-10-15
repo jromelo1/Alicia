@@ -1,6 +1,6 @@
 # Cloud Functions — Llamada diaria de Alicia
 
-Dos funciones (`src/index.ts`):
+Dos funciones (`src/index.ts`) y los avisos a la familia (`src/familyNotify.ts`):
 
 - **`dailyCallScheduler`** — corre cada 15 minutos, revisa qué círculos tienen la
   llamada diaria activada y a quién le toca según su hora local, y le pide a
@@ -58,6 +58,54 @@ https://us-central1-alicia-53950.cloudfunctions.net/retellWebhook
 
 Pégala en la configuración de tu agente en Retell, como webhook del agente
 (o del número), para el evento `call_analyzed` como mínimo.
+
+## Avisos a la familia por SMS (Twilio)
+
+Después de cada llamada, `retellWebhook` le escribe por SMS al contacto de
+emergencia y a los miembros del círculo con avisos activados:
+
+| Aviso | Cuándo |
+|---|---|
+| **Alerta** | Retell marcó la llamada con `alerta = true` (caída, dolor fuerte, maltrato, ideas de hacerse daño…). |
+| **No contestó** | La persona no contestó o entró el buzón de voz. |
+| **Resumen** | La llamada salió bien. Se apaga con `FAMILY_SMS_SUMMARIES=false`. |
+
+Las fallas técnicas de nuestro lado (sin saldo en Retell, errores de red) **no**
+se le avisan a la familia; quedan en `firebase functions:log`. Cada llamada envía
+como máximo un aviso, aunque Retell reintente el webhook.
+
+### 1. Twilio
+Crea una cuenta en twilio.com, compra un número con SMS y copia el **Account SID**
+y el **Auth Token** (Console → Account Info). Para enviar SMS a números de
+**Estados Unidos**, Twilio exige registrar el número (A2P 10DLC o verificación
+toll-free) — mientras tanto, los SMS a EE. UU. pueden ser bloqueados.
+
+### 2. Configuración en Firebase
+```bash
+firebase functions:secrets:set TWILIO_AUTH_TOKEN
+```
+Y en `functions/.env` (no se sube al repositorio):
+```
+TWILIO_ACCOUNT_SID=ACxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
+TWILIO_FROM=+1XXXXXXXXXX
+FAMILY_SMS_SUMMARIES=true
+```
+`TWILIO_FROM` puede ser el número de Twilio o un Messaging Service SID (`MG…`).
+Si `TWILIO_ACCOUNT_SID` queda vacío, no se envían SMS y todo lo demás sigue igual.
+
+### 3. Campos de análisis en Retell
+En el agente → **Post-Call Analysis** → agregar:
+- `alerta` — tipo **Boolean**. Descripción: *"true si la persona mencionó una
+  caída, dolor fuerte, dolor de pecho, dificultad para respirar, que no quiere
+  vivir o piensa hacerse daño, maltrato, amenazas, que alguien le quita dinero,
+  o si mostró confusión fuera de lo normal. Si no, false."*
+- `motivo_alerta` — tipo **Text**. Descripción: *"Si alerta es true, una frase
+  corta y concreta en español que describa lo que dijo la persona. Si no, vacío."*
+
+### 4. Desplegar
+```bash
+firebase deploy --only functions
+```
 
 ## Probar localmente
 
