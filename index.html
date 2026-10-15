@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Call Me Alicia — Someone to talk to, every single day</title>
-<meta name="description" content="Alicia is a warm AI voice companion that calls the people you love at the hour they choose — in English or Spanish.">
+<title>Call Me Alicia — Daily company for your parents back home</title>
+<meta name="description" content="Alicia calls your parents back home every day, in their own Spanish, and tells you how they’re doing — wherever you live.">
 <meta property="og:title" content="Call Me Alicia">
-<meta property="og:description" content="Someone to talk to. Every single day.">
+<meta property="og:description" content="You’re far away. They’re never alone.">
 <meta property="og:url" content="https://callmealicia.com">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23B0502D'/%3E%3Cg stroke='white' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M10 14v4M14 11v10M18 9v14M22 13v6'/%3E%3C/g%3E%3C/svg%3E">
@@ -256,15 +256,15 @@ footer a:hover{color:var(--ink)}
     <div class="wrap">
       <form class="reg reveal" id="register" novalidate>
         <div id="formBody" class="reg-body">
-        <h2 data-t="title">Create your account</h2>
-        <p class="sub" data-t="sub">Sign up to start receiving Alicia’s calls.</p>
+        <h2 data-t="title">Start Alicia’s calls</h2>
+        <p class="sub" data-t="sub">Two minutes to set up — for your mom, your dad, or yourself.</p>
 
         <fieldset class="who">
           <legend class="sr" data-t="whoLegend">Who is it for?</legend>
-          <input type="radio" name="who" id="who-self" value="self" checked>
+          <input type="radio" name="who" id="who-loved" value="loved" checked>
+          <label for="who-loved" data-t="forLoved">For my mom or dad</label>
+          <input type="radio" name="who" id="who-self" value="self">
           <label for="who-self" data-t="forMe">For me</label>
-          <input type="radio" name="who" id="who-loved" value="loved">
-          <label for="who-loved" data-t="forLoved">For a loved one</label>
         </fieldset>
 
         <div id="g-reg" class="group" hidden>
@@ -384,8 +384,8 @@ footer a:hover{color:var(--ink)}
 
       <div class="hero-main">
       <div class="eyebrow reveal">Call Me Alicia</div>
-      <h1 class="reveal d1">Someone to talk to.<br>Every single day.</h1>
-      <p class="lede reveal d2">Alicia is a warm AI voice companion that calls the people you love at the hour they choose — in English or Spanish.</p>
+      <h1 class="reveal d1">You’re far away.<br>They’re never alone.</h1>
+      <p class="lede reveal d2">Alicia calls your parents back home every day, in the Spanish they grew up with — and tells you how they’re doing, wherever you live.</p>
       <div class="ctas reveal d2">
         <a href="#intro" class="link">See how it works ›</a>
       </div>
@@ -403,7 +403,7 @@ footer a:hover{color:var(--ink)}
             <line x1="254" y1="200" x2="254" y2="260"/><line x1="270" y1="218" x2="270" y2="242"/>
           </g>
         </svg>
-        <div class="pill"><i></i><span>Alicia is calling · 9:00 a.m.</span></div>
+        <div class="pill"><i></i><span>Calling Mom in Bogotá · 9:00 a.m.</span></div>
       </div>
       </div>
     </div>
@@ -411,23 +411,23 @@ footer a:hover{color:var(--ink)}
 
   <section class="intro" id="intro">
     <div class="wrap">
-      <p class="reveal">A phone call is the simplest thing in the world. <span>Alicia makes sure the phone keeps ringing — with a voice that listens, takes its time, and is always glad to hear from them.</span></p>
+      <p class="reveal">You call when you can. Alicia calls every day. <span>A warm voice that sounds like home, listens without rushing, and lets you know how they’re really doing.</span></p>
     </div>
   </section>
 
   <section class="features" id="features">
     <div class="wrap">
       <div class="head">
-        <h2 class="h2 reveal">Designed around one call a day.</h2>
-        <p class="reveal d1">Everything Alicia does is built to make that single moment feel easy, familiar and human.</p>
+        <h2 class="h2 reveal">Made for families who love from afar.</h2>
+        <p class="reveal d1">Everything Alicia does is designed so they feel accompanied — and you feel close.</p>
       </div>
       <div class="grid">
-        <div class="feat reveal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><h3>Their time, every day</h3><p>Calls arrive at the hour they pick, so every day has something to look forward to.</p></div>
-        <div class="feat reveal d1"><svg viewBox="0 0 24 24"><path d="M4 5h9a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M17 9h3a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1v3l-3-3h-2"/></svg><h3>English &amp; Español</h3><p>Alicia speaks both languages naturally and follows the person’s lead.</p></div>
-        <div class="feat reveal d2"><svg viewBox="0 0 24 24"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><h3>Just answer the phone</h3><p>Nothing to learn on the call itself. The phone rings, they pick up, they talk.</p></div>
-        <div class="feat reveal"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg><h3>Consent comes first</h3><p>Calls begin only after the person themselves says yes.</p></div>
-        <div class="feat reveal d1"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M10 18h4"/></svg><h3>A short, simple setup</h3><p>One quick onboarding in the app: their profile, their consent, their preferred call time.</p></div>
-        <div class="feat reveal d2"><svg viewBox="0 0 24 24"><path d="M3 12h2M7 8v8M11 5v14M15 9v6M19 7v10"/></svg><h3>A warm, patient voice</h3><p>Unhurried conversation that listens as much as it speaks.</p></div>
+        <div class="feat reveal"><svg viewBox="0 0 24 24"><path d="M4 5h9a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M17 9h3a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1v3l-3-3h-2"/></svg><h3>Their Spanish, from home</h3><p>Alicia speaks with the everyday expressions of their country — Colombian, Mexican, Peruvian — and switches to English if they do.</p></div>
+        <div class="feat reveal d1"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M9 7h6M9 11h6M9 15h3"/></svg><h3>A note for you after every call</h3><p>A short text tells you how the conversation went — and lets you know if they didn’t pick up.</p></div>
+        <div class="feat reveal d2"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><h3>Alerts when something’s off</h3><p>If they mention a fall, strong pain or something worrying, you’ll hear about it right away.</p></div>
+        <div class="feat reveal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><h3>Across borders and time zones</h3><p>You live in Miami, Madrid or Toronto; they live in Bogotá, Lima or Guatemala City. Alicia calls at the hour that suits them.</p></div>
+        <div class="feat reveal d1"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg><h3>On guard against scams</h3><p>Alicia never asks for money or personal data, and helps them spot “fake relative” calls and suspicious requests.</p></div>
+        <div class="feat reveal d2"><svg viewBox="0 0 24 24"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><h3>Honest, simple, their choice</h3><p>No app to learn — they just answer the phone. Alicia always says she’s an AI, and calls start only when they say yes.</p></div>
       </div>
     </div>
   </section>
@@ -435,22 +435,22 @@ footer a:hover{color:var(--ink)}
   <section class="moments" id="moments">
     <div class="wrap">
       <div class="center">
-        <h2 class="h2 reveal">Moments worth a call.</h2>
-        <p class="reveal d1">Small conversations that shape a whole day.</p>
+        <h2 class="h2 reveal">One call, two kinds of calm.</h2>
+        <p class="reveal d1">Company for them. Peace of mind for you.</p>
       </div>
       <div class="gallery">
         <!-- To add a photo: put the image in the /img folder and add <img src="img/morning.jpg" alt="..."> inside the tile, then remove the .ph line -->
         <figure class="tile big reveal" style="margin:0">
           <span class="ph">[Photo: a woman laughing on the phone at her kitchen table]</span>
-          <figcaption class="cap"><small>9:00 a.m.</small><strong>Morning coffee, together.</strong></figcaption>
+          <figcaption class="cap"><small>9:00 a.m. · Bogotá</small><strong>Morning coffee, together.</strong></figcaption>
         </figure>
         <figure class="tile reveal d1" style="margin:0">
           <span class="ph">[Photo: hands tending a garden]</span>
-          <figcaption class="cap"><small>1:30 p.m.</small><strong>How are the tomatoes?</strong></figcaption>
+          <figcaption class="cap"><small>1:30 p.m. · Lima</small><strong>How are the tomatoes?</strong></figcaption>
         </figure>
         <figure class="tile dark reveal d2" style="margin:0">
-          <span class="ph">[Photo: a quiet living room at dusk]</span>
-          <figcaption class="cap"><small>7:00 p.m.</small><strong>Tell me about your day.</strong></figcaption>
+          <span class="ph">[Photo: a woman abroad smiling at a text on her phone]</span>
+          <figcaption class="cap"><small>For you · 7:05 p.m. · Miami</small><strong>“Mom talked about her garden. She’s doing well.”</strong></figcaption>
         </figure>
       </div>
     </div>
@@ -458,9 +458,9 @@ footer a:hover{color:var(--ink)}
 
   <section class="cta" id="start">
     <div class="wrap">
-      <h2 class="h2 reveal">Give someone a reason to pick up the phone.</h2>
+      <h2 class="h2 reveal">Give your parents someone to talk to — every single day.</h2>
       <a href="#register" class="btn reveal d1">Get early access</a>
-      <p class="reveal d2">Now testing in the United States and Colombia.</p>
+      <p class="reveal d2">Now testing with families in the United States and Colombia.</p>
     </div>
   </section>
 </main>
@@ -513,8 +513,8 @@ var CONFIG={
 
 (function(){
   var L={es:{
-    title:'Crea tu cuenta',sub:'Alicia llamará todos los días a la hora que elijas.',
-    whoLegend:'¿Para quién es?',forMe:'Para mí',forLoved:'Para un ser querido',
+    title:'Activa las llamadas de Alicia',sub:'Se configura en dos minutos, para tu mamá, tu papá o para ti.',
+    whoLegend:'¿Para quién es?',forMe:'Para mí',forLoved:'Para mi mamá o papá',
     rname:'Tu nombre',rphone:'Tu número de celular',rphoneHint:'Lo guardaremos como contacto de emergencia.',
     nameSelf:'Nombre completo',nameLoved:'Nombre de tu ser querido',
     phoneSelf:'Número de celular',phoneLoved:'Celular de tu ser querido',
@@ -553,8 +553,8 @@ var CONFIG={
     pSave:'Guardar',pSaving:'Guardando…',pSaved:'¡Guardado! Alicia lo tendrá en cuenta desde la próxima llamada.',
     likes:['Música','Viajes','Cocina','Jardín','Libros','Películas','Fotografía','Fútbol','Ejercicio','Mascotas','Manualidades','Teatro y arte','Naturaleza','Bienestar','Rock y metal']
   },en:{
-    title:'Create your account',sub:'Alicia will call every day at the time you choose.',
-    whoLegend:'Who is it for?',forMe:'For me',forLoved:'For a loved one',
+    title:'Start Alicia’s calls',sub:'Two minutes to set up — for your mom, your dad, or yourself.',
+    whoLegend:'Who is it for?',forMe:'For me',forLoved:'For my mom or dad',
     rname:'Your name',rphone:'Your mobile number',rphoneHint:'We’ll save it as the emergency contact.',
     nameSelf:'Full name',nameLoved:'Your loved one’s name',
     phoneSelf:'Mobile number',phoneLoved:'Your loved one’s mobile',
@@ -598,27 +598,28 @@ var CONFIG={
   // Spanish version of the rest of the page. English is the text already in the HTML.
   var PAGE_ES=[
     ['.links a',['Cómo funciona','Características','Momentos','Acceso anticipado']],
-    ['.hero h1',['Alguien con quien hablar.<br>Todos los días.']],
-    ['.hero .lede',['Alicia es una compañera de voz con IA, cálida y cercana, que llama a las personas que quieres a la hora que ellas elijan — en español o en inglés.']],
+    ['.hero h1',['Tú lejos.<br>Ellos acompañados.']],
+    ['.hero .lede',['Alicia llama a tus papás todos los días, en el español de su tierra, y te cuenta cómo están, vivas donde vivas.']],
     ['.hero .link',['Mira cómo funciona ›']],
-    ['.pill span',['Alicia está llamando · 9:00 a.m.']],
-    ['.intro p',['Una llamada es lo más sencillo del mundo. <span>Alicia se asegura de que el teléfono siga sonando — con una voz que escucha, se toma su tiempo y siempre se alegra de saludar.</span>']],
-    ['.features .h2',['Diseñada alrededor de una llamada al día.']],
-    ['.features .head p',['Todo lo que hace Alicia está pensado para que ese momento se sienta fácil, familiar y humano.']],
-    ['.feat h3',['A su hora, todos los días','Español e inglés','Solo hay que contestar','El consentimiento va primero','Un registro corto y sencillo','Una voz cálida y paciente']],
-    ['.feat p',['Las llamadas llegan a la hora que la persona elija, para que cada día tenga algo que esperar.','Alicia habla ambos idiomas con naturalidad y sigue el ritmo de la persona.','No hay nada que aprender en la llamada. El teléfono suena, contestan y conversan.','Las llamadas empiezan solo cuando la propia persona dice que sí.','Un registro rápido en la app: su perfil, su consentimiento y su hora preferida.','Conversación sin afán, que escucha tanto como habla.']],
-    ['.moments .h2',['Momentos que merecen una llamada.']],
-    ['.moments .center p',['Pequeñas conversaciones que le dan forma al día.']],
-    ['.tile .ph',['[Foto: una mujer riendo al teléfono en la mesa de su cocina]','[Foto: manos cuidando un jardín]','[Foto: una sala tranquila al atardecer]']],
-    ['.tile strong',['El café de la mañana, en compañía.','¿Cómo van los tomates?','Cuéntame cómo estuvo tu día.']],
-    ['.cta .h2',['Dale a alguien una razón para contestar el teléfono.']],
+    ['.pill span',['Llamando a mamá en Bogotá · 9:00 a.m.']],
+    ['.intro p',['Tú llamas cuando puedes. Alicia llama todos los días. <span>Una voz cálida que suena a casa, escucha sin afán y te cuenta cómo están de verdad.</span>']],
+    ['.features .h2',['Pensada para familias que cuidan a distancia.']],
+    ['.features .head p',['Todo lo que hace Alicia está pensado para que ellos se sientan acompañados y tú, cerca.']],
+    ['.feat h3',['Su español, el de su tierra','Una nota para ti después de cada llamada','Alertas cuando algo no está bien','Entre países y zonas horarias','Atenta a las estafas','Honesta, sencilla y con su permiso']],
+    ['.feat p',['Alicia habla con las expresiones de todos los días de su país —colombianas, mexicanas, peruanas— y cambia al inglés si ellos lo hacen.','Un mensaje corto te cuenta cómo estuvo la conversación, y te avisa si no contestaron.','Si mencionan una caída, un dolor fuerte o algo preocupante, te enteras de inmediato.','Tú vives en Miami, Madrid o Toronto; ellos en Bogotá, Lima o Ciudad de Guatemala. Alicia llama a la hora que les queda bien.','Alicia nunca pide dinero ni datos personales, y les ayuda a reconocer llamadas del “falso familiar” y pedidos sospechosos.','No hay app que aprender: solo contestan el teléfono. Alicia siempre dice que es una IA, y las llamadas empiezan solo cuando ellos dicen que sí.']],
+    ['.moments .h2',['Una llamada, dos tranquilidades.']],
+    ['.moments .center p',['Compañía para ellos. Tranquilidad para ti.']],
+    ['.tile .ph',['[Foto: una mujer riendo al teléfono en la mesa de su cocina]','[Foto: manos cuidando un jardín]','[Foto: una mujer en el exterior sonriendo al leer un mensaje]']],
+    ['.tile small',['9:00 a.m. · Bogotá','1:30 p.m. · Lima','Para ti · 7:05 p.m. · Miami']],
+    ['.tile strong',['El café de la mañana, en compañía.','¿Cómo van los tomates?','“Tu mamá habló de su jardín. Está bien.”']],
+    ['.cta .h2',['Dales a tus papás alguien con quien hablar, todos los días.']],
     ['.cta .btn',['Acceso anticipado']],
-    ['.cta p',['En pruebas en Estados Unidos y Colombia.']],
+    ['.cta p',['En pruebas con familias en Estados Unidos y Colombia.']],
     ['footer nav a',['Privacidad','Términos','Contacto']]
   ];
   var PAGE=PAGE_ES.map(function(r){var els=[].slice.call(document.querySelectorAll(r[0]));return {els:els,es:r[1],en:els.map(function(e){return e.innerHTML})}});
   var desc=document.querySelector('meta[name="description"]');
-  var META={en:[document.title,desc.content],es:['Call Me Alicia — Alguien con quien hablar, todos los días',PAGE_ES[2][1][0]]};
+  var META={en:[document.title,desc.content],es:['Call Me Alicia — Compañía diaria para tus papás, estés donde estés',PAGE_ES[2][1][0]]};
 
   // [country, dial code, national digits, default time zone]
   var C=[['US','+1',10,'America/New_York'],['CO','+57',10,'America/Bogota'],['MX','+52',10,'America/Mexico_City'],['PE','+51',9,'America/Lima'],['EC','+593',9,'America/Guayaquil'],['CR','+506',8,'America/Costa_Rica'],['GT','+502',8,'America/Guatemala'],['PA','+507',8,'America/Panama'],['SV','+503',8,'America/El_Salvador'],['HN','+504',8,'America/Tegucigalpa'],['NI','+505',8,'America/Managua']];
@@ -630,7 +631,7 @@ var CONFIG={
   var form=$('register'),name=$('name'),country=$('country'),phone=$('phone'),otp=$('otp'),
       rname=$('rname'),rcountry=$('rcountry'),rphone=$('rphone'),hour=$('hour'),tz=$('tz'),consent=$('consent'),
       sendBtn=$('sendBtn'),submitBtn=$('submitBtn'),msg=$('msg');
-  var who='self',confirmation=null,sentTo='',tzTouched=false,verifier=null,fbP=null,timer=null,doneInfo=null;
+  var who='loved',confirmation=null,sentTo='',tzTouched=false,verifier=null,fbP=null,timer=null,doneInfo=null;
   var browserTz='';try{browserTz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
 
   function inList(z){return TZ.some(function(t){return t[0]===z})}
@@ -933,7 +934,7 @@ var CONFIG={
 
   $('againBtn').addEventListener('click',function(){
     endSession();resetPrefs();
-    form.reset();doneInfo=null;confirmation=null;sentTo='';who='self';tzTouched=false;
+    form.reset();doneInfo=null;confirmation=null;sentTo='';who='loved';tzTouched=false;
     if(region){country.value=region;rcountry.value=region}
     syncLen(phone,country);syncLen(rphone,rcountry);hour.value='';tz.value='';buildSelects();renderWho();clearErrs();say('');resetVerifier();
     if(timer){clearInterval(timer);timer=null}sendBtn.disabled=false;sendBtn.querySelector('.lbl').textContent=T.send;
