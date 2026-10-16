@@ -47,18 +47,22 @@ h1,h2,h3,p{margin:0}
 .flang button{border:0;background:none;padding:6px 0;font:inherit;color:inherit;cursor:pointer}
 .flang button:hover,.flang button[aria-pressed="true"]{color:var(--ink)}
 .flang button[aria-pressed="true"]{font-weight:500}
-.hero h1{text-wrap:balance}
-html[lang="es"] .hero h1{font-size:clamp(42px,6.4vw,88px)}
+.hero h1{text-wrap:balance;margin:0}
+html[lang="es"] .hero h1{font-size:clamp(40px,4.6vw,66px)}
 .menu-btn{display:none;width:44px;height:44px;margin-right:-10px;border:0;background:none;cursor:pointer;align-items:center;justify-content:center}
 .menu-btn svg{transition:transform .3s var(--ease)}
 
 /* Hero */
-.hero{padding:clamp(64px,9vw,120px) 0 clamp(88px,10vw,140px)}
+.hero{padding:clamp(48px,7vw,104px) 0 clamp(80px,9vw,128px)}
 .hero .wrap{display:block}
-.hero-main{text-align:center;padding-top:clamp(8px,2vw,32px);display:flex;flex-direction:column}
+.hero-main{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);gap:clamp(32px,5vw,72px);align-items:center;text-align:left}
 .eyebrow{font-size:clamp(17px,1.6vw,21px);font-weight:500;color:var(--accent);margin-bottom:18px}
-.hero h1{font-size:clamp(46px,7vw,96px);line-height:1.03;font-weight:600;letter-spacing:-.04em;margin:0 auto}
-.hero .lede{margin:24px auto 0;font-size:clamp(18px,1.9vw,23px);line-height:1.45;color:var(--muted);max-width:680px}
+.hero h1{font-size:clamp(42px,5vw,72px);line-height:1.03;font-weight:600;letter-spacing:-.04em;margin:0 auto}
+.hero .lede{margin:22px 0 0;font-size:clamp(18px,1.7vw,22px);line-height:1.45;color:var(--ink-2);max-width:600px}
+.hero-list{list-style:none;margin:26px 0 0;padding:0;display:flex;flex-direction:column;gap:12px;max-width:600px}
+.hero-list li{position:relative;padding-left:32px;font-size:clamp(16px,1.3vw,18px);line-height:1.45;color:var(--ink-2)}
+.hero-list li::before{content:"";position:absolute;left:0;top:2px;width:22px;height:22px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Ccircle cx='12' cy='12' r='11' fill='%23B0502D'/%3E%3Cpath d='M7 12.5l3.2 3.2L17 9' fill='none' stroke='white' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") no-repeat center/contain}
+.hero .h1-wrap{margin:0}
 
 /* Registration form */
 .reg{border:1px solid var(--line-2);border-radius:28px;padding:clamp(22px,2.4vw,30px);background:#fff;box-shadow:0 12px 40px rgba(0,0,0,.05);display:flex;flex-direction:column;gap:18px;scroll-margin-top:88px}
@@ -93,11 +97,11 @@ html[lang="es"] .hero h1{font-size:clamp(42px,6.4vw,88px)}
 .msg:empty{display:none}
 .msg.ok{background:#eaf5ee;color:#1d5c37}
 .legal{font-size:12px;line-height:1.45;color:var(--muted);text-align:center}
-.ctas{margin-top:40px;display:flex;align-items:center;justify-content:center;gap:28px;flex-wrap:wrap}
+.ctas{margin-top:34px;display:flex;align-items:center;justify-content:flex-start;gap:28px;flex-wrap:wrap}
 .ctas .btn{min-height:52px;padding:0 30px;font-size:17px}
 .link{font-size:17px;font-weight:500;color:var(--accent)}
 .link:hover{text-decoration:underline;text-underline-offset:4px}
-.orb{margin:clamp(40px,5vw,64px) auto 0;width:min(380px,78vw);aspect-ratio:1;position:relative}
+.orb{margin:0 auto;width:min(420px,78vw);aspect-ratio:1;position:relative}
 .orb svg{width:100%;height:100%;display:block}
 .orb .core{transform-origin:230px 230px;animation:breathe 4.5s ease-in-out infinite}
 .orb .halo{transform-origin:230px 230px;animation:halo 4.5s ease-in-out infinite}
@@ -245,7 +249,9 @@ footer a:hover{color:var(--ink)}
   .menu-btn{display:flex}
   .hero .wrap{grid-template-columns:minmax(0,1fr)}
   .reg{max-width:460px;width:100%;justify-self:start}
-  .ctas{flex-direction:column;gap:14px}
+  .hero-main{grid-template-columns:minmax(0,1fr);gap:48px}
+  .ctas{flex-direction:column;align-items:stretch;gap:14px}
+  .ctas .link{text-align:center}
   .ctas .btn,.cta .btn{width:100%}
   .head{flex-direction:column;align-items:flex-start;gap:16px}
   .grid{grid-template-columns:repeat(1,minmax(0,1fr));row-gap:40px}
@@ -288,12 +294,20 @@ footer a:hover{color:var(--ink)}
     <div class="wrap">
 
       <div class="hero-main">
-      <div class="eyebrow reveal">Call Me Alicia</div>
+      <div class="hero-text">
+      <div class="eyebrow reveal">AI phone companion for your parents</div>
       <h1 class="reveal d1">You’re far away.<br>They’re never alone.</h1>
-      <p class="lede reveal d2">Alicia calls your parents back home every day, in the Spanish they grew up with — and tells you how they’re doing, wherever you live.</p>
+      <p class="lede reveal d2">Alicia is an AI companion that phones your parents every day — she chats with them, asks how they’re doing, and tells you how it went.</p>
+      <ul class="hero-list reveal d2">
+        <li>A daily phone call. No apps, no internet — they just pick up.</li>
+        <li>Warm, patient conversation in the Spanish they grew up with.</li>
+        <li>A short note for you after every call, and an alert if something’s off.</li>
+        <li>Alicia always says she’s an AI. No tricks, ever.</li>
+      </ul>
       <div class="ctas reveal d2">
         <a href="#pricing" class="btn">Choose your plan</a>
         <a href="#intro" class="link">See how it works ›</a>
+      </div>
       </div>
       <div class="orb reveal d3" aria-hidden="true">
         <svg viewBox="0 0 460 460">
@@ -696,8 +710,10 @@ var CONFIG={
   // Spanish version of the rest of the page. English is the text already in the HTML.
   var PAGE_ES=[
     ['.links a',['Cómo funciona','Características','Precios','Acceso anticipado']],
+    ['.hero .eyebrow',['Compañía telefónica con IA para tus papás']],
     ['.hero h1',['Tú lejos.<br>Ellos acompañados.']],
-    ['.hero .lede',['Alicia llama a tus papás todos los días, en el español de su tierra, y te cuenta cómo están, vivas donde vivas.']],
+    ['.hero .lede',['Alicia es una compañera con inteligencia artificial que llama por teléfono a tus papás todos los días: conversa con ellos, les pregunta cómo están y te cuenta cómo les fue.']],
+    ['.hero-list li',['Una llamada diaria por teléfono. Sin apps ni internet: solo contestan.','Conversación cálida y paciente, en el español de su tierra.','Una nota para ti después de cada llamada, y un aviso si algo no está bien.','Alicia siempre dice que es una IA. Sin engaños, nunca.']],
     ['.hero .ctas .btn',['Elige tu plan']],
     ['.hero .link',['Mira cómo funciona ›']],
     ['.pill span',['Llamando a mamá en Bogotá · 9:00 a.m.']],
