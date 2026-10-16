@@ -35,7 +35,8 @@ import {
   buildNotice, collectRecipients, displayName, readAlert, resolveCallStatus, sendTwilioSms, Lang,
 } from "./familyNotify";
 import {
-  MP_API, PlanId, billingFromPreapproval, buildPreapprovalBody, canCall, isEmail, isPlanId,
+  MP_API, PlanId, billingFromPreapproval, buildPreapprovalBody, canCall, cancelledAndExpired, isEmail, isPlanId,
+  paidUntilOnCancel,
   parseSignatureHeader, signatureManifest,
 } from "./mercadoPago";
 import { isCallDay, maxCallDurationMs, planRule } from "./plans";
@@ -146,6 +147,7 @@ export const dailyCallScheduler = onSchedule(
       snapshot.docs.map(async (doc) => {
         const circleId = doc.id;
         const profile = doc.data().callProfile as CallProfile | undefined;
+        if (cancelledAndExpired(doc.data(), nowMs)) return; // plan cancelado: no se llama más
         if (enforceBilling && !canCall(doc.data(), nowMs)) {
           logger.info(`dailyCallScheduler: ${circleId} sin suscripción activa tras la prueba, se salta`);
           return;
@@ -497,7 +499,13 @@ async function syncPreapproval(preapprovalId: string, extra: Record<string, unkn
     logger.info(`mercadoPagoWebhook: ${p.id} (${p.status}) no es la suscripción vigente de ${circleId}, se ignora`);
     return;
   }
-  await circleRef.set({ billing: { ...billingFromPreapproval(p, current?.plan ?? snap.get("plan"), Date.now()), ...extra } }, { merge: true });
+  const next: Record<string, unknown> = { ...billingFromPreapproval(p, current?.plan ?? snap.get("plan"), Date.now()), ...extra };
+  if (p.status === "cancelled" && current?.status !== "cancelled") {
+    // Cancelada desde Mercado Pago: si ya había pagado el mes, Alicia sigue hasta el fin de ese periodo.
+    next.paidUntil = paidUntilOnCancel(current as { status?: string; nextPaymentDate?: string }, Date.now());
+    next.cancelledAt = Date.now();
+  }
+  await circleRef.set({ billing: next }, { merge: true });
   logger.info(`mercadoPagoWebhook: ${circleId} → ${p.status}`);
 }
 
@@ -532,6 +540,53 @@ export const mercadoPagoWebhook = onRequest(
     } catch (err) {
       logger.error("mercadoPagoWebhook: error", err);
       res.status(500).send("error");
+    }
+  }
+);
+
+/**
+ * Botón "Cancelar plan" de callmealicia.com/cuenta.html. Body: { circleId }.
+ * Cancela la suscripción en Mercado Pago (si existe) y marca el círculo como
+ * cancelado. Si el mes ya estaba pagado, las llamadas siguen hasta que termine.
+ */
+export const cancelSubscription = onRequest(
+  { secrets: [MP_ACCESS_TOKEN], cors: WEB_ORIGINS },
+  async (req, res) => {
+    if (req.method !== "POST") { res.status(405).json({ error: "method" }); return; }
+    try {
+      const token = (req.headers.authorization ?? "").replace(/^Bearer\s+/i, "");
+      if (!token) { res.status(401).json({ error: "auth" }); return; }
+      const { uid } = await getAuth().verifyIdToken(token);
+      const { circleId } = (req.body ?? {}) as { circleId?: string };
+      if (typeof circleId !== "string") { res.status(400).json({ error: "input" }); return; }
+      const user = await db.collection("users").doc(uid).get();
+      if (user.get("circleId") !== circleId) { logger.warn(`cancelSubscription: ${uid} no pertenece a ${circleId}`); res.status(403).json({ error: "circle" }); return; }
+
+      const circleRef = db.collection("circles").doc(circleId);
+      const circle = (await circleRef.get()).data() ?? {};
+      const prev = circle.billing as { status?: string; preapprovalId?: string; nextPaymentDate?: string } | undefined;
+      if (prev?.status === "cancelled") { res.status(200).json({ status: "cancelled", paidUntil: circle.billing.paidUntil ?? Date.now() }); return; }
+
+      if (prev?.preapprovalId) {
+        try {
+          await mpFetch(`/preapproval/${encodeURIComponent(prev.preapprovalId)}`, { method: "PUT", body: { status: "cancelled" } });
+        } catch (err) {
+          // Una suscripción "pending" que nunca se pagó puede no aceptar el cambio: igual se cancela aquí.
+          logger.warn(`cancelSubscription: Mercado Pago no canceló ${prev.preapprovalId}`, err);
+          if (prev.status === "authorized" || prev.status === "paused") throw err;
+        }
+      }
+      const now = Date.now();
+      const paidUntil = paidUntilOnCancel(prev, now);
+      await circleRef.set(
+        { billing: { status: "cancelled", plan: circle.plan ?? "", provider: "mercadopago", cancelledAt: now, cancelledBy: uid, paidUntil, updatedAt: now } },
+        { merge: true }
+      );
+      logger.info(`cancelSubscription: ${circleId} cancelado (llamadas hasta ${new Date(paidUntil).toISOString()})`);
+      res.status(200).json({ status: "cancelled", paidUntil });
+    } catch (err) {
+      logger.error("cancelSubscription: error", err);
+      res.status(500).json({ error: "server" });
     }
   }
 );

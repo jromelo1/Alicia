@@ -34,7 +34,30 @@ export function trialEndsAt(trialStartedAt: number | undefined): number {
  *  - Círculos creados desde la app Android o sin plan (piloto) → siempre sí.
  *  - Con plan elegido en la web → sí durante la prueba, o si la suscripción está autorizada.
  */
-export function canCall(circle: { source?: string; plan?: string; trialStartedAt?: number; billing?: { status?: string } }, nowMs: number): boolean {
+type BillingLike = { status?: string; paidUntil?: number };
+
+/**
+ * Plan cancelado y ya pasó lo pagado → no se llama más, aunque BILLING_ENFORCE
+ * esté apagado (cancelar siempre detiene las llamadas). Si se cancela un mes ya
+ * pagado, Alicia sigue llamando hasta `paidUntil`.
+ */
+export function cancelledAndExpired(circle: { billing?: BillingLike }, nowMs: number): boolean {
+  const b = circle.billing;
+  return b?.status === "cancelled" && nowMs >= (b.paidUntil ?? 0);
+}
+
+/** Hasta cuándo puede seguir llamando un plan que se cancela ahora. */
+export function paidUntilOnCancel(prev: { status?: string; nextPaymentDate?: string } | undefined, nowMs: number): number {
+  if (prev?.status === "authorized" && prev.nextPaymentDate) {
+    const t = Date.parse(prev.nextPaymentDate);
+    if (Number.isFinite(t) && t > nowMs) return t;
+  }
+  return nowMs; // prueba gratis o sin pagar → se detiene ya
+}
+
+export function canCall(circle: { source?: string; plan?: string; trialStartedAt?: number; billing?: BillingLike }, nowMs: number): boolean {
+  if (cancelledAndExpired(circle, nowMs)) return false;
+  if (circle.billing?.status === "cancelled") return true; // mes ya pagado, sigue hasta paidUntil
   if (circle.source !== "web" || !circle.plan) return true;
   if (nowMs < trialEndsAt(circle.trialStartedAt)) return true;
   return circle.billing?.status === "authorized";

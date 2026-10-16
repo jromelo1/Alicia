@@ -164,6 +164,14 @@ web cuya prueba terminó sin suscripción autorizada. Los círculos de la app An
 plan nunca se bloquean. Las reglas de Firestore impiden que el navegador escriba `billing`
 o mueva `trialStartedAt`.
 
+## Cancelar el plan
+
+`cancelSubscription` (botón "Cancelar plan" en cuenta.html) cancela la suscripción en
+Mercado Pago y guarda `billing.status = "cancelled"` y `billing.paidUntil`. Durante la
+prueba las llamadas se detienen el mismo día; si el mes ya estaba pagado, Alicia sigue
+hasta `paidUntil`. Cancelar siempre detiene las llamadas, aunque `BILLING_ENFORCE=false`.
+Si se cancela desde Mercado Pago, el webhook hace lo mismo.
+
 ## Reglas de cada plan
 
 `src/plans.ts` aplica lo que prometen los Términos: **Esencial** llama lunes, miércoles y
