@@ -133,6 +133,37 @@ En el agente → **Post-Call Analysis** → agregar:
 firebase deploy --only functions
 ```
 
+## Cobro mensual con Mercado Pago Suscripciones
+
+Después del registro, la web le pide un correo a la familia y llama a `createSubscription`.
+Esa función crea una suscripción mensual en Mercado Pago (`POST /preapproval`, sin plan
+asociado, `external_reference` = código del círculo) cuyo **primer cobro es el día en que
+terminan los 7 días gratis**, y devuelve el link de pago (`init_point`). Mercado Pago avisa
+cada cambio a `mercadoPagoWebhook`, que verifica la firma (`x-signature`) y guarda el estado
+en `circles/{id}.billing` (`pending` → `authorized`, o `paused` / `cancelled`).
+
+Configuración:
+
+1. Mercado Pago → Tus integraciones → Crear aplicación (producto: Suscripciones).
+2. Credenciales de prueba → copia el **Access Token** y guárdalo como secreto (no lo pegues en ningún chat):
+   `firebase functions:secrets:set MP_ACCESS_TOKEN`
+3. Webhooks → URL `https://mercadopagowebhook-…run.app` (sale al desplegar), evento
+   "Planes y suscripciones". Copia la **clave secreta** que muestra y guárdala:
+   `firebase functions:secrets:set MP_WEBHOOK_SECRET`
+4. Precios (moneda de tu cuenta, Colombia = COP sin decimales) en `functions/.env`:
+   ```
+   MP_PRICE_ESENCIAL=79900
+   MP_PRICE_DIARIO=139900
+   MP_PRICE_PLUS=239900
+   BILLING_ENFORCE=false
+   ```
+5. `firebase deploy --only functions,firestore:rules`
+
+`BILLING_ENFORCE=true` hace que el scheduler deje de llamar a los círculos creados en la
+web cuya prueba terminó sin suscripción autorizada. Los círculos de la app Android o sin
+plan nunca se bloquean. Las reglas de Firestore impiden que el navegador escriba `billing`
+o mueva `trialStartedAt`.
+
 ## Probar localmente
 
 ```bash

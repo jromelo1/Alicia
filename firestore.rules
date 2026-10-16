@@ -18,8 +18,15 @@ service cloud.firestore {
       // Cualquier cuenta autenticada puede crear un círculo nuevo (Adulto Mayor,
       // al terminar el onboarding) o consultar si un código existe (paso previo
       // a unirse). Solo un miembro ya vinculado puede modificarlo después.
-      allow get, create: if request.auth != null;
-      allow update: if isCircleMember(circleId);
+      // `billing` (estado del pago) solo lo escriben las Cloud Functions de Mercado
+      // Pago; `trialStartedAt` no se puede mover hacia adelante para alargar la prueba.
+      allow get: if request.auth != null;
+      allow create: if request.auth != null
+        && !('billing' in request.resource.data)
+        && request.resource.data.get('trialStartedAt', 0) <= request.time.toMillis() + 300000;
+      allow update: if isCircleMember(circleId)
+        && request.resource.data.get('billing', null) == resource.data.get('billing', null)
+        && request.resource.data.get('trialStartedAt', 0) == resource.data.get('trialStartedAt', 0);
       allow list, delete: if false;
 
       match /members/{memberId} {

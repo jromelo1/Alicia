@@ -11,6 +11,10 @@
  *     avisa a la familia por SMS (Twilio): alerta si Retell detectó una señal de
  *     riesgo, aviso si no contestó, y un resumen corto si la llamada salió bien
  *     (lógica en familyNotify.ts).
+ *  3. `createSubscription` + `mercadoPagoWebhook` — cobro mensual con Mercado Pago
+ *     Suscripciones (lógica en mercadoPago.ts). Si BILLING_ENFORCE=true, el
+ *     scheduler deja de llamar a los círculos de la web cuya prueba de 7 días
+ *     terminó sin una suscripción autorizada.
  *
  * Configuración necesaria antes de desplegar (ver README de esta carpeta):
  *   firebase functions:secrets:set RETELL_API_KEY
@@ -23,11 +27,17 @@ import { onRequest } from "firebase-functions/v2/https";
 import { defineSecret, defineString } from "firebase-functions/params";
 import { logger } from "firebase-functions";
 import { initializeApp } from "firebase-admin/app";
+import { getAuth } from "firebase-admin/auth";
 import { getFirestore, DocumentReference } from "firebase-admin/firestore";
+import { createHmac, timingSafeEqual } from "crypto";
 import { Retell } from "retell-sdk";
 import {
   buildNotice, collectRecipients, displayName, readAlert, resolveCallStatus, sendTwilioSms, Lang,
 } from "./familyNotify";
+import {
+  MP_API, PlanId, billingFromPreapproval, buildPreapprovalBody, canCall, isEmail, isPlanId,
+  parseSignatureHeader, signatureManifest,
+} from "./mercadoPago";
 
 initializeApp();
 const db = getFirestore();
@@ -48,6 +58,20 @@ const TWILIO_FROM = defineString("TWILIO_FROM", { default: "" });
 const TWILIO_AUTH_TOKEN = defineSecret("TWILIO_AUTH_TOKEN");
 // "false" para enviar solo alertas y llamadas no contestadas (sin el resumen diario).
 const FAMILY_SMS_SUMMARIES = defineString("FAMILY_SMS_SUMMARIES", { default: "true" });
+
+// Mercado Pago Suscripciones. Precios en la moneda de la cuenta de Mercado Pago
+// (Colombia → COP, sin decimales). Se cambian en functions/.env y se vuelve a desplegar.
+const MP_ACCESS_TOKEN = defineSecret("MP_ACCESS_TOKEN");
+const MP_WEBHOOK_SECRET = defineSecret("MP_WEBHOOK_SECRET");
+const MP_CURRENCY = defineString("MP_CURRENCY", { default: "COP" });
+const MP_PRICE_ESENCIAL = defineString("MP_PRICE_ESENCIAL", { default: "79900" });
+const MP_PRICE_DIARIO = defineString("MP_PRICE_DIARIO", { default: "139900" });
+const MP_PRICE_PLUS = defineString("MP_PRICE_PLUS", { default: "239900" });
+const MP_BACK_URL = defineString("MP_BACK_URL", { default: "https://callmealicia.com/?pago=listo" });
+// "true" = sin pago no hay llamadas después de la prueba. Por defecto "false" para
+// no cortarle a nadie las llamadas mientras se prueba el cobro.
+const BILLING_ENFORCE = defineString("BILLING_ENFORCE", { default: "false" });
+const WEB_ORIGINS = ["https://callmealicia.com", "https://www.callmealicia.com", "http://localhost:8080"];
 
 const RETELL_CREATE_CALL_URL = "https://api.retellai.com/v2/create-phone-call";
 // La ventana debe ser igual al intervalo del scheduler — si se cambia uno, cambiar el otro.
@@ -115,11 +139,16 @@ export const dailyCallScheduler = onSchedule(
     }
 
     const nowMs = Date.now();
+    const enforceBilling = BILLING_ENFORCE.value() === "true";
 
     await Promise.all(
       snapshot.docs.map(async (doc) => {
         const circleId = doc.id;
         const profile = doc.data().callProfile as CallProfile | undefined;
+        if (enforceBilling && !canCall(doc.data(), nowMs)) {
+          logger.info(`dailyCallScheduler: ${circleId} sin suscripción activa tras la prueba, se salta`);
+          return;
+        }
         if (!profile || !profile.phoneE164 || !profile.timeZoneId) {
           logger.warn(`dailyCallScheduler: perfil incompleto en ${circleId}, se salta`);
           return;
@@ -358,3 +387,141 @@ async function notifyFamily(
     logger.error("notifyFamily: error avisando a la familia", err);
   }
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+//  3. Mercado Pago — crear la suscripción y recibir sus cambios
+// ─────────────────────────────────────────────────────────────────────────────
+
+function priceFor(plan: PlanId): number {
+  const raw = { esencial: MP_PRICE_ESENCIAL, diario: MP_PRICE_DIARIO, plus: MP_PRICE_PLUS }[plan].value();
+  return Number(raw);
+}
+
+async function mpFetch(path: string, init: { method?: string; body?: unknown } = {}): Promise<any> {
+  const res = await fetch(`${MP_API}${path}`, {
+    method: init.method ?? "GET",
+    headers: { Authorization: `Bearer ${MP_ACCESS_TOKEN.value()}`, "Content-Type": "application/json" },
+    body: init.body === undefined ? undefined : JSON.stringify(init.body),
+  });
+  const text = await res.text();
+  if (!res.ok) throw new Error(`Mercado Pago respondió ${res.status} en ${path}: ${text}`);
+  return text ? JSON.parse(text) : {};
+}
+
+/**
+ * La web la llama justo después del registro, con la sesión de Firebase de quien se
+ * registró (header Authorization: Bearer <ID token>) y { circleId, email, lang }.
+ * Devuelve { url } = página de pago de Mercado Pago. El plan y el precio se leen del
+ * servidor (circles/{id}.plan y los parámetros MP_PRICE_*), nunca del navegador.
+ */
+export const createSubscription = onRequest(
+  { secrets: [MP_ACCESS_TOKEN], cors: WEB_ORIGINS },
+  async (req, res) => {
+    if (req.method !== "POST") { res.status(405).json({ error: "method" }); return; }
+    try {
+      const token = (req.headers.authorization ?? "").replace(/^Bearer\s+/i, "");
+      if (!token) { res.status(401).json({ error: "auth" }); return; }
+      const { uid } = await getAuth().verifyIdToken(token);
+
+      const { circleId, email, lang } = (req.body ?? {}) as { circleId?: string; email?: string; lang?: string };
+      if (typeof circleId !== "string" || !isEmail(email)) { res.status(400).json({ error: "input" }); return; }
+
+      const user = await db.collection("users").doc(uid).get();
+      if (user.get("circleId") !== circleId) { res.status(403).json({ error: "circle" }); return; }
+
+      const circleRef = db.collection("circles").doc(circleId);
+      const circle = (await circleRef.get()).data() ?? {};
+      const plan = circle.plan;
+      if (!isPlanId(plan)) { res.status(400).json({ error: "plan" }); return; }
+      if (circle.billing?.status === "authorized") { res.status(409).json({ error: "already_active" }); return; }
+
+      const amount = priceFor(plan);
+      if (!(amount > 0)) throw new Error(`Precio inválido para ${plan}`);
+      const l = lang === "en" ? "en" : "es";
+      const backUrl = MP_BACK_URL.value() + (MP_BACK_URL.value().includes("?") ? "&" : "?") + "lang=" + l;
+
+      const pre = await mpFetch("/preapproval", {
+        method: "POST",
+        body: buildPreapprovalBody({
+          circleId, plan, amount, currency: MP_CURRENCY.value(), payerEmail: email.trim(),
+          backUrl, trialStartedAt: circle.trialStartedAt, lang: l, nowMs: Date.now(),
+        }),
+      });
+      if (!pre.init_point) throw new Error("Mercado Pago no devolvió init_point");
+
+      await circleRef.set(
+        { billing: { ...billingFromPreapproval(pre, plan, Date.now()), payerEmail: email.trim(), initPoint: pre.init_point } },
+        { merge: true }
+      );
+      logger.info(`createSubscription: ${circleId} → preapproval ${pre.id} (${plan}, ${amount} ${MP_CURRENCY.value()})`);
+      res.status(200).json({ url: pre.init_point });
+    } catch (err) {
+      logger.error("createSubscription: error", err);
+      res.status(500).json({ error: "server" });
+    }
+  }
+);
+
+function validMpSignature(req: { headers: Record<string, unknown> }, dataId: string): boolean {
+  const sig = parseSignatureHeader(req.headers["x-signature"] as string | undefined);
+  if (!sig) return false;
+  const requestId = (req.headers["x-request-id"] as string | undefined) ?? "";
+  const expected = createHmac("sha256", MP_WEBHOOK_SECRET.value())
+    .update(signatureManifest(dataId, requestId, sig.ts))
+    .digest("hex");
+  const a = Buffer.from(expected), b = Buffer.from(sig.v1);
+  return a.length === b.length && timingSafeEqual(a, b);
+}
+
+/** Consulta la suscripción en Mercado Pago y guarda su estado en el círculo. */
+async function syncPreapproval(preapprovalId: string, extra: Record<string, unknown> = {}): Promise<void> {
+  const p = await mpFetch(`/preapproval/${encodeURIComponent(preapprovalId)}`);
+  const circleId = p.external_reference as string | undefined;
+  if (!circleId) { logger.warn(`mercadoPagoWebhook: preapproval ${preapprovalId} sin external_reference`); return; }
+  const circleRef = db.collection("circles").doc(circleId);
+  const snap = await circleRef.get();
+  if (!snap.exists) { logger.warn(`mercadoPagoWebhook: círculo ${circleId} no existe`); return; }
+  const current = snap.get("billing") as { preapprovalId?: string; status?: string; plan?: string } | undefined;
+  // Un aviso viejo de otra suscripción (p. ej. un link anterior sin pagar) no pisa la vigente.
+  if (current?.preapprovalId && current.preapprovalId !== p.id && p.status !== "authorized") {
+    logger.info(`mercadoPagoWebhook: ${p.id} (${p.status}) no es la suscripción vigente de ${circleId}, se ignora`);
+    return;
+  }
+  await circleRef.set({ billing: { ...billingFromPreapproval(p, current?.plan ?? snap.get("plan"), Date.now()), ...extra } }, { merge: true });
+  logger.info(`mercadoPagoWebhook: ${circleId} → ${p.status}`);
+}
+
+/**
+ * URL a configurar en Mercado Pago → Tus integraciones → (tu aplicación) → Webhooks,
+ * con los eventos "Planes y suscripciones". Responde 200 rápido; si algo falla
+ * responde 500 y Mercado Pago reintenta.
+ */
+export const mercadoPagoWebhook = onRequest(
+  { secrets: [MP_ACCESS_TOKEN, MP_WEBHOOK_SECRET] },
+  async (req, res) => {
+    const type = String(req.query.type ?? req.query.topic ?? req.body?.type ?? "");
+    const dataId = String(req.query["data.id"] ?? req.body?.data?.id ?? "");
+    if (!dataId) { res.status(200).send("ok"); return; }
+    if (!validMpSignature(req, dataId)) {
+      logger.warn(`mercadoPagoWebhook: firma inválida (type=${type}, id=${dataId})`);
+      res.status(401).send("firma inválida");
+      return;
+    }
+    try {
+      if (type === "subscription_preapproval") {
+        await syncPreapproval(dataId);
+      } else if (type === "subscription_authorized_payment") {
+        const pay = await mpFetch(`/authorized_payments/${encodeURIComponent(dataId)}`);
+        if (pay.preapproval_id) {
+          await syncPreapproval(pay.preapproval_id, {
+            lastPayment: { id: String(pay.id ?? dataId), status: pay.status ?? "", amount: pay.transaction_amount ?? 0, at: Date.now() },
+          });
+        }
+      }
+      res.status(200).send("ok");
+    } catch (err) {
+      logger.error("mercadoPagoWebhook: error", err);
+      res.status(500).send("error");
+    }
+  }
+);
