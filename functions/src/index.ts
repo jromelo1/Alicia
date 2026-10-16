@@ -38,6 +38,7 @@ import {
   MP_API, PlanId, billingFromPreapproval, buildPreapprovalBody, canCall, isEmail, isPlanId,
   parseSignatureHeader, signatureManifest,
 } from "./mercadoPago";
+import { isCallDay, maxCallDurationMs, planRule } from "./plans";
 
 initializeApp();
 const db = getFirestore();
@@ -154,7 +155,9 @@ export const dailyCallScheduler = onSchedule(
           return;
         }
 
-        const { hour, minute, dateStr } = localTimeParts(profile.timeZoneId, nowMs);
+        const { hour, minute, dateStr, weekday } = localTimeParts(profile.timeZoneId, nowMs);
+        const plan = doc.data().plan;
+        if (!isCallDay(plan, weekday)) return; // p. ej. Esencial: solo lunes, miércoles y viernes
         const lastCallDateStr = profile.lastCallAt
           ? localTimeParts(profile.timeZoneId, profile.lastCallAt).dateStr
           : null;
@@ -172,7 +175,7 @@ export const dailyCallScheduler = onSchedule(
         logger.info(`dailyCallScheduler: llamando a ${circleId} (${profile.fullName ?? "sin nombre"})`);
 
         try {
-          await createRetellCall(circleId, profile);
+          await createRetellCall(circleId, profile, plan);
           // Se marca de inmediato — si el webhook tarda o falla, igual no se
           // vuelve a marcar como "pendiente hoy" y se evita un doble marcado.
           // El webhook (retellWebhook) sobrescribe este valor con la hora real
@@ -198,7 +201,8 @@ function pickFromNumber(to: string): string {
   return latam && !to.startsWith("+1") ? latam : RETELL_FROM_NUMBER.value();
 }
 
-async function createRetellCall(circleId: string, profile: CallProfile): Promise<void> {
+async function createRetellCall(circleId: string, profile: CallProfile, plan: unknown): Promise<void> {
+  const maxMs = maxCallDurationMs(plan);
   const response = await fetch(RETELL_CREATE_CALL_URL, {
     method: "POST",
     headers: {
@@ -219,7 +223,11 @@ async function createRetellCall(circleId: string, profile: CallProfile): Promise
         emergency_contact_name: profile.emergencyContactName ?? "",
         emergency_contact_phone: profile.emergencyContactPhone ?? "",
         last_call_notes: profile.lastCallNotes ?? "",
+        // Minutos del plan: el prompt le pide a Alicia despedirse un minuto antes.
+        max_minutes: String(planRule(plan)?.minutes ?? 10),
       },
+      // Corte de seguridad por plan (minutos del plan + 1 de margen).
+      ...(maxMs ? { agent_override: { agent: { max_call_duration_ms: maxMs } } } : {}),
     }),
   });
 
@@ -230,7 +238,7 @@ async function createRetellCall(circleId: string, profile: CallProfile): Promise
 }
 
 /** Hora y fecha local de un timeZone de Android (IANA), a partir de un instante en ms. */
-function localTimeParts(timeZoneId: string, atMs: number): { hour: number; minute: number; dateStr: string } {
+function localTimeParts(timeZoneId: string, atMs: number): { hour: number; minute: number; dateStr: string; weekday: number } {
   const formatter = new Intl.DateTimeFormat("en-US", {
     timeZone: timeZoneId,
     hour: "2-digit",
@@ -239,6 +247,7 @@ function localTimeParts(timeZoneId: string, atMs: number): { hour: number; minut
     year: "numeric",
     month: "2-digit",
     day: "2-digit",
+    weekday: "short",
   });
   const parts = Object.fromEntries(
     formatter.formatToParts(new Date(atMs)).map((p) => [p.type, p.value])
@@ -247,6 +256,7 @@ function localTimeParts(timeZoneId: string, atMs: number): { hour: number; minut
     hour: parseInt(parts.hour === "24" ? "0" : parts.hour, 10),
     minute: parseInt(parts.minute, 10),
     dateStr: `${parts.year}-${parts.month}-${parts.day}`,
+    weekday: ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].indexOf(parts.weekday),
   };
 }
 
@@ -420,19 +430,19 @@ export const createSubscription = onRequest(
     if (req.method !== "POST") { res.status(405).json({ error: "method" }); return; }
     try {
       const token = (req.headers.authorization ?? "").replace(/^Bearer\s+/i, "");
-      if (!token) { res.status(401).json({ error: "auth" }); return; }
+      if (!token) { logger.warn("createSubscription: sin token"); res.status(401).json({ error: "auth" }); return; }
       const { uid } = await getAuth().verifyIdToken(token);
 
       const { circleId, email, lang } = (req.body ?? {}) as { circleId?: string; email?: string; lang?: string };
-      if (typeof circleId !== "string" || !isEmail(email)) { res.status(400).json({ error: "input" }); return; }
+      if (typeof circleId !== "string" || !isEmail(email)) { logger.warn("createSubscription: datos inválidos"); res.status(400).json({ error: "input" }); return; }
 
       const user = await db.collection("users").doc(uid).get();
-      if (user.get("circleId") !== circleId) { res.status(403).json({ error: "circle" }); return; }
+      if (user.get("circleId") !== circleId) { logger.warn(`createSubscription: ${uid} no pertenece a ${circleId}`); res.status(403).json({ error: "circle" }); return; }
 
       const circleRef = db.collection("circles").doc(circleId);
       const circle = (await circleRef.get()).data() ?? {};
       const plan = circle.plan;
-      if (!isPlanId(plan)) { res.status(400).json({ error: "plan" }); return; }
+      if (!isPlanId(plan)) { logger.warn(`createSubscription: ${circleId} sin plan válido`); res.status(400).json({ error: "plan" }); return; }
       if (circle.billing?.status === "authorized") { res.status(409).json({ error: "already_active" }); return; }
 
       const amount = priceFor(plan);

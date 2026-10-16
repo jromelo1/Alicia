@@ -164,6 +164,14 @@ web cuya prueba terminó sin suscripción autorizada. Los círculos de la app An
 plan nunca se bloquean. Las reglas de Firestore impiden que el navegador escriba `billing`
 o mueva `trialStartedAt`.
 
+## Reglas de cada plan
+
+`src/plans.ts` aplica lo que prometen los Términos: **Esencial** llama lunes, miércoles y
+viernes (hora local) con corte a los 9 min; **Diario** todos los días con corte a los 6 min;
+**Plus** todos los días con corte a los 11 min (minutos del plan + 1 de margen, vía
+`agent_override.agent.max_call_duration_ms`). El agente recibe `{{max_minutes}}` para
+despedirse a tiempo. Los círculos sin plan (app Android) llaman a diario sin corte propio.
+
 ## Probar localmente
 
 ```bash
