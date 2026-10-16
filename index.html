@@ -249,7 +249,10 @@ footer a:hover{color:var(--ink)}
 .done .save-num{font-size:15px;line-height:1.5;color:var(--ink-2);background:#fbf1ec;border-radius:12px;padding:12px 14px}
 .done .save-num strong{white-space:nowrap}
 
+.done .pay{width:100%;text-align:left;display:flex;flex-direction:column;gap:12px}
 .done .pay-btn{width:100%;min-height:54px;font-size:17px}
+.paid-banner{position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:60;width:min(560px,calc(100% - 32px));background:#1f7a4d;color:#fff;border-radius:14px;padding:14px 44px 14px 16px;font-size:15px;line-height:1.45;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.paid-banner button{position:absolute;right:8px;top:8px;background:none;border:0;color:#fff;font-size:20px;line-height:1;padding:6px;cursor:pointer}
 
 /* Mobile */
 @media (max-width:960px){
@@ -446,7 +449,7 @@ footer a:hover{color:var(--ink)}
           <a href="#register" class="btn" data-plan="plus">Start a 7-day free trial</a>
         </div>
       </div>
-      <p class="note reveal">Prices in US dollars. Cancel anytime. Early access: no card needed during the pilot.</p>
+      <p class="note reveal">Prices in US dollars for reference; you pay the equivalent in Colombian pesos through Mercado Pago. Cancel anytime.</p>
     </div>
   </section>
 
@@ -543,8 +546,16 @@ footer a:hover{color:var(--ink)}
           <div class="code-box"><span id="doneCodeLabel"></span><strong id="doneCode"></strong></div>
           <p class="hint" id="doneCodeHint"></p>
           <p class="save-num" id="doneNumber"></p>
-          <a class="btn pay-btn" id="payBtn" target="_blank" rel="noopener" hidden></a>
-          <p class="hint" id="payHint" hidden></p>
+          <div class="pay" id="pay" hidden>
+            <div class="field" id="f-email">
+              <label for="email" data-t="email">Email for your subscription</label>
+              <input id="email" type="email" inputmode="email" autocomplete="email" maxlength="254" aria-describedby="e-email">
+              <div class="err" id="e-email" role="alert"></div>
+            </div>
+            <button type="button" class="btn pay-btn" id="payBtn"><span class="spin"></span><span class="lbl"></span></button>
+            <p class="hint" id="payHint"></p>
+            <div class="msg" id="paymsg" role="status" aria-live="polite"></div>
+          </div>
 
           <div class="prefs" id="prefs">
             <h3 data-t="pTitle">Tell Alicia a little more</h3>
@@ -643,8 +654,10 @@ var CONFIG={
     appId:'1:810691887855:web:24bd5cbe9098b459ff111a'
   },
   sdk:'https://www.gstatic.com/firebasejs/10.12.2/',
-  // Mercado Pago subscription links (Suscripciones → plan → link), one per plan.
-  // Empty = no payment button yet (pilot stays free).
+  // Cloud Function that creates the Mercado Pago subscription (functions/src/index.ts → createSubscription).
+  // Empty = no payment step (pilot stays free).
+  subscribeUrl:'https://us-central1-alicia-53950.cloudfunctions.net/createSubscription',
+  // Fallback without the function: Mercado Pago no-code subscription links, one per plan.
   payLinks:{esencial:'',diario:'',plus:''}
 };
 
@@ -682,6 +695,8 @@ var CONFIG={
     doneCodeHint:'Guárdalo: sirve para conectar la app y ver el resumen de cada llamada.',
     again:'Registrar a otra persona',
     pay:'Activar mi plan · 7 días gratis',payHint:'Pago seguro con Mercado Pago. No se cobra nada durante los 7 días de prueba y puedes cancelar cuando quieras.',
+    email:'Correo para la suscripción',eEmail:'Escribe un correo válido.',payGo:'Abriendo Mercado Pago…',payActive:'Este plan ya está activo. ¡Gracias!',
+    paidBanner:'¡Gracias! Tu suscripción con Mercado Pago quedó registrada. No se cobra nada hasta que terminen los 7 días gratis.',close:'Cerrar',
     saveSelf:'Alicia te llamará desde el {num}. Guárdalo en tus contactos como “Alicia” para reconocerla.',saveLoved:'Alicia llamará desde el {num}. Pídele a {name} que lo guarde en sus contactos como “Alicia” para reconocerla.',
     planPick:'Plan {plan} · 7 días gratis',plans:{esencial:'Esencial',diario:'Diario',plus:'Plus'},
     pTitle:'Cuéntale a Alicia un poco más',pSub:'Opcional — así cada conversación será más personal.',
@@ -725,6 +740,8 @@ var CONFIG={
     doneCodeHint:'Keep it: it connects the app so you can see a summary of every call.',
     again:'Register someone else',
     pay:'Activate my plan · 7-day free trial',payHint:'Secure payment with Mercado Pago. Nothing is charged during the 7-day trial and you can cancel anytime.',
+    email:'Email for your subscription',eEmail:'Enter a valid email.',payGo:'Opening Mercado Pago…',payActive:'This plan is already active. Thank you!',
+    paidBanner:'Thank you! Your Mercado Pago subscription is set up. Nothing is charged until your 7-day free trial ends.',close:'Close',
     saveSelf:'Alicia will call you from {num}. Save it in your contacts as “Alicia” so you recognize her.',saveLoved:'Alicia will call from {num}. Ask {name} to save it in their contacts as “Alicia” so they recognize her.',
     planPick:'{plan} plan · 7-day free trial',plans:{esencial:'Essential',diario:'Daily',plus:'Plus'},
     pTitle:'Tell Alicia a little more',pSub:'Optional — it makes every conversation more personal.',
@@ -768,7 +785,7 @@ var CONFIG={
     ['.plan li',["3 llamadas por semana", "Hasta 8 min por llamada", "Su español, el de su tierra", "Recuerda la conversación anterior", "Una nota para ti después de cada llamada", "Alertas si algo no está bien", "Llamada todos los días", "Hasta 5 min por llamada", "Su español, el de su tierra", "Recuerda la conversación anterior", "Una nota para ti después de cada llamada", "Alertas si algo no está bien", "Llamada todos los días", "Hasta 10 min por llamada", "Su español, el de su tierra", "Recuerda la conversación anterior", "Una nota para ti después de cada llamada", "Alertas si algo no está bien"]],
     ['.plan .btn',['Empieza 7 días gratis','Empieza 7 días gratis','Empieza 7 días gratis']],
     ['.badge',['Más popular']],
-    ['.pricing .note',['Precios en dólares (US$). Cancela cuando quieras. Acceso anticipado: no pedimos tarjeta durante el piloto.']],
+    ['.pricing .note',['Precios de referencia en dólares (US$); el cobro se hace en pesos colombianos con Mercado Pago. Cancela cuando quieras.']],
     ['.cta .h2',['Dales a tus papás alguien con quien hablar, todos los días.']],
     ['.cta .btn',['Acceso anticipado']],
     ['.cta p',['En pruebas con familias en Estados Unidos y Colombia.']],
@@ -836,8 +853,9 @@ var CONFIG={
     $('doneCodeLabel').textContent=T.doneCodeLabel;$('doneCode').textContent=d.code;
     $('doneCodeHint').textContent=T.doneCodeHint;$('againBtn').textContent=T.again;
     var link=d.plan&&CONFIG.payLinks&&CONFIG.payLinks[d.plan];
-    $('payBtn').hidden=!link;$('payHint').hidden=!link;
-    if(link){$('payBtn').href=link;$('payBtn').textContent=T.pay;$('payHint').textContent=T.payHint}
+    var api=!!(d.plan&&CONFIG.subscribeUrl);
+    $('pay').hidden=!(api||link);$('f-email').hidden=!api;
+    $('payBtn').querySelector('.lbl').textContent=T.pay;$('payHint').textContent=T.payHint;
     var num=d.phone&&d.phone.indexOf('+1')===0?'+1 (561) 464-4320':'+1 (863) 344-5774';
     $('doneNumber').innerHTML='';var tpl=(d.loved?T.saveLoved:T.saveSelf).replace('{name}',d.name).split('{num}');
     $('doneNumber').appendChild(document.createTextNode(tpl[0]));var st=document.createElement('strong');st.textContent=num;$('doneNumber').appendChild(st);$('doneNumber').appendChild(document.createTextNode(tpl[1]||''));
@@ -1095,15 +1113,51 @@ var CONFIG={
       prefsBtn.classList.remove('loading');prefsBtn.disabled=false;lbl.textContent=T.pSave;
       [].forEach.call($('prefs').children,function(c){if(c.tagName!=='H3')c.hidden=true});
       var ok=document.createElement('div');ok.className='prefs-saved';ok.setAttribute('role','status');ok.textContent=T.pSaved;$('prefs').appendChild(ok);
-      endSession();
+      if($('pay').hidden)endSession(); // keep the session while the payment step is still available
     }).catch(function(err){
       prefsBtn.classList.remove('loading');prefsBtn.disabled=false;lbl.textContent=T.pSave;
       pm.textContent=errMsg(err);
     });
   });
 
+  // ---- Payment: Mercado Pago subscription (first charge when the 7-day trial ends) ----
+  var email=$('email'),payBtn=$('payBtn');
+  email.addEventListener('input',function(){setErr('email','')});
+  function payMsg(t){$('paymsg').textContent=t||''}
+  payBtn.addEventListener('click',function(){
+    payMsg('');
+    var link=doneInfo&&CONFIG.payLinks[doneInfo.plan];
+    if(!CONFIG.subscribeUrl){if(link)location.href=link;return}
+    var v=email.value.trim();
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){setErr('email',T.eEmail);email.focus();return}
+    var user=session&&session.fb.auth.currentUser;
+    if(!user){payMsg(T.eSetup);return}
+    var lbl=payBtn.querySelector('.lbl');
+    payBtn.classList.add('loading');payBtn.disabled=true;lbl.textContent=T.payGo;
+    function stop(t){payBtn.classList.remove('loading');payBtn.disabled=false;lbl.textContent=T.pay;payMsg(t)}
+    user.getIdToken().then(function(tok){
+      return fetch(CONFIG.subscribeUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({circleId:session.circleId,email:v,lang:LANG})});
+    }).then(function(r){
+      return r.json().catch(function(){return {}}).then(function(j){return {ok:r.ok,status:r.status,j:j}});
+    }).then(function(x){
+      if(x.ok&&x.j.url){location.href=x.j.url;return}
+      if(x.status===409){stop(T.payActive);return}
+      if(link){location.href=link;return}
+      stop(T.fail);
+    }).catch(function(err){console.error('[pay]',err);if(link){location.href=link;return}stop(navigator.onLine===false?T.eNetwork:T.fail)});
+  });
+
+  // Back from Mercado Pago (back_url = ?pago=listo)
+  if(/[?&]pago=listo/.test(location.search)){
+    var b=document.createElement('div');b.className='paid-banner';b.setAttribute('role','status');
+    var bt=document.createElement('span');bt.textContent=T.paidBanner;b.appendChild(bt);
+    var x=document.createElement('button');x.type='button';x.setAttribute('aria-label',T.close);x.textContent='×';x.addEventListener('click',function(){b.remove()});b.appendChild(x);
+    document.body.appendChild(b);
+    try{history.replaceState(null,'',location.pathname+(LANG?'?lang='+LANG:'')+location.hash)}catch(e){}
+  }
+
   $('againBtn').addEventListener('click',function(){
-    endSession();resetPrefs();
+    endSession();resetPrefs();email.value='';payMsg('');setErr('email','');
     form.reset();doneInfo=null;confirmation=null;sentTo='';who='loved';tzTouched=false;
     if(region){country.value=region;rcountry.value=region}
     syncLen(phone,country);syncLen(rphone,rcountry);hour.value='';tz.value='';buildSelects();renderWho();clearErrs();say('');resetVerifier();
