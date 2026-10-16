@@ -249,6 +249,8 @@ footer a:hover{color:var(--ink)}
 .done .save-num{font-size:15px;line-height:1.5;color:var(--ink-2);background:#fbf1ec;border-radius:12px;padding:12px 14px}
 .done .save-num strong{white-space:nowrap}
 
+.done .pay-btn{width:100%;min-height:54px;font-size:17px}
+
 /* Mobile */
 @media (max-width:960px){
   .lang{margin-left:auto;margin-right:6px}
@@ -541,6 +543,8 @@ footer a:hover{color:var(--ink)}
           <div class="code-box"><span id="doneCodeLabel"></span><strong id="doneCode"></strong></div>
           <p class="hint" id="doneCodeHint"></p>
           <p class="save-num" id="doneNumber"></p>
+          <a class="btn pay-btn" id="payBtn" target="_blank" rel="noopener" hidden></a>
+          <p class="hint" id="payHint" hidden></p>
 
           <div class="prefs" id="prefs">
             <h3 data-t="pTitle">Tell Alicia a little more</h3>
@@ -638,7 +642,10 @@ var CONFIG={
     messagingSenderId:'810691887855',
     appId:'1:810691887855:web:24bd5cbe9098b459ff111a'
   },
-  sdk:'https://www.gstatic.com/firebasejs/10.12.2/'
+  sdk:'https://www.gstatic.com/firebasejs/10.12.2/',
+  // Mercado Pago subscription links (Suscripciones → plan → link), one per plan.
+  // Empty = no payment button yet (pilot stays free).
+  payLinks:{esencial:'',diario:'',plus:''}
 };
 
 (function(){
@@ -674,6 +681,7 @@ var CONFIG={
     doneCodeLabel:'Código del círculo',
     doneCodeHint:'Guárdalo: sirve para conectar la app y ver el resumen de cada llamada.',
     again:'Registrar a otra persona',
+    pay:'Activar mi plan · 7 días gratis',payHint:'Pago seguro con Mercado Pago. No se cobra nada durante los 7 días de prueba y puedes cancelar cuando quieras.',
     saveSelf:'Alicia te llamará desde el {num}. Guárdalo en tus contactos como “Alicia” para reconocerla.',saveLoved:'Alicia llamará desde el {num}. Pídele a {name} que lo guarde en sus contactos como “Alicia” para reconocerla.',
     planPick:'Plan {plan} · 7 días gratis',plans:{esencial:'Esencial',diario:'Diario',plus:'Plus'},
     pTitle:'Cuéntale a Alicia un poco más',pSub:'Opcional — así cada conversación será más personal.',
@@ -716,6 +724,7 @@ var CONFIG={
     doneCodeLabel:'Circle code',
     doneCodeHint:'Keep it: it connects the app so you can see a summary of every call.',
     again:'Register someone else',
+    pay:'Activate my plan · 7-day free trial',payHint:'Secure payment with Mercado Pago. Nothing is charged during the 7-day trial and you can cancel anytime.',
     saveSelf:'Alicia will call you from {num}. Save it in your contacts as “Alicia” so you recognize her.',saveLoved:'Alicia will call from {num}. Ask {name} to save it in their contacts as “Alicia” so they recognize her.',
     planPick:'{plan} plan · 7-day free trial',plans:{esencial:'Essential',diario:'Daily',plus:'Plus'},
     pTitle:'Tell Alicia a little more',pSub:'Optional — it makes every conversation more personal.',
@@ -826,6 +835,9 @@ var CONFIG={
     $('doneText').textContent=(d.loved?T.doneLoved:T.doneSelf).replace('{name}',d.name).replace('{time}',fmtTime(d.h,d.m)).replace('{tz}',tzLabel(d.tz)).replace('{when}',d.today?T.today:T.tomorrow);
     $('doneCodeLabel').textContent=T.doneCodeLabel;$('doneCode').textContent=d.code;
     $('doneCodeHint').textContent=T.doneCodeHint;$('againBtn').textContent=T.again;
+    var link=d.plan&&CONFIG.payLinks&&CONFIG.payLinks[d.plan];
+    $('payBtn').hidden=!link;$('payHint').hidden=!link;
+    if(link){$('payBtn').href=link;$('payBtn').textContent=T.pay;$('payHint').textContent=T.payHint}
     var num=d.phone&&d.phone.indexOf('+1')===0?'+1 (561) 464-4320':'+1 (863) 344-5774';
     $('doneNumber').innerHTML='';var tpl=(d.loved?T.saveLoved:T.saveSelf).replace('{name}',d.name).split('{num}');
     $('doneNumber').appendChild(document.createTextNode(tpl[0]));var st=document.createElement('strong');st.textContent=num;$('doneNumber').appendChild(st);$('doneNumber').appendChild(document.createTextNode(tpl[1]||''));
@@ -1005,7 +1017,7 @@ var CONFIG={
     }).then(function(code){
       busy(false);
       if(!code){say(T.notYet);return}
-      doneInfo={loved:loved,name:d.name,phone:d.phone,h:d.h,m:d.m,tz:d.tz,code:code,today:localNow(d.tz)<d.h*60+d.m,hasEmergency:loved};
+      doneInfo={plan:selectedPlan,loved:loved,name:d.name,phone:d.phone,h:d.h,m:d.m,tz:d.tz,code:code,today:localNow(d.tz)<d.h*60+d.m,hasEmergency:loved};
       resetPrefs();prefillPrefs();
       renderDone();
       $('formBody').hidden=true;$('done').hidden=false;$('done').focus();
