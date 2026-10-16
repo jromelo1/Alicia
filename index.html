@@ -293,6 +293,7 @@ footer a:hover{color:var(--ink)}
       <a href="#intro">How it works</a>
       <a href="#features">Features</a>
       <a href="#pricing">Pricing</a>
+      <a href="cuenta.html">My account</a>
       <a href="#pricing" class="btn sm">Get early access</a>
     </nav>
     <div class="lang" role="group" aria-label="Language / Idioma">
@@ -757,7 +758,7 @@ var CONFIG={
 
   // Spanish version of the rest of the page. English is the text already in the HTML.
   var PAGE_ES=[
-    ['.links a',['Cómo funciona','Características','Precios','Acceso anticipado']],
+    ['.links a',['Cómo funciona','Características','Precios','Mi cuenta','Acceso anticipado']],
     ['.hero .eyebrow',['Compañía telefónica con IA para tus papás']],
     ['.hero h1',['Tú lejos.<br>Ellos acompañados.']],
     ['.hero .lede',['Alicia es una compañera con inteligencia artificial que llama por teléfono a tus papás todos los días: conversa con ellos, les pregunta cómo están y te cuenta cómo les fue.']],
@@ -1153,6 +1154,7 @@ var CONFIG={
 
   // Back from Mercado Pago (back_url = ?pago=listo)
   if(/[?&]pago=listo/.test(location.search)){
+    try{if(sessionStorage.getItem('payBack')==='cuenta'){sessionStorage.removeItem('payBack');location.replace('cuenta.html?pago=listo');return}}catch(e){}
     var b=document.createElement('div');b.className='paid-banner';b.setAttribute('role','status');
     var bt=document.createElement('span');bt.textContent=T.paidBanner;b.appendChild(bt);
     var x=document.createElement('button');x.type='button';x.setAttribute('aria-label',T.close);x.textContent='×';x.addEventListener('click',function(){b.remove()});b.appendChild(x);

@@ -1,0 +1,471 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mi cuenta — Call Me Alicia</title>
+<meta name="description" content="Tu plan, tus pagos, la hora de la llamada y lo que Alicia sabe de tu ser querido.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23B0502D'/%3E%3Cg stroke='white' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M10 14v4M14 11v10M18 9v14M22 13v6'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d1d1f;--ink-2:#424245;--muted:#6e6e73;--line:#d2d2d7;--line-2:#e8e8ed;--bg:#fff;--bg-2:#fbfbfd;--bg-3:#f5f5f7;--accent:#B0502D;--ok:#1d5c37;--ok-bg:#eaf5ee;--warn:#8a4b0f;--warn-bg:#fdf1e3;--bad:#c4281c;--pad:clamp(16px,5vw,48px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg-2);color:var(--ink);font-family:"Geist","Helvetica Neue",Helvetica,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line-2)}
+.nav .in{max-width:760px;margin:0 auto;padding:0 var(--pad);height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:600;font-size:17px;text-decoration:none}
+.nav-r{display:flex;align-items:center;gap:10px}
+.lang{display:flex;border:1px solid var(--line-2);border-radius:999px;padding:3px;background:#fff}
+.lang button{font:inherit;font-size:13px;border:0;background:none;padding:6px 12px;border-radius:999px;cursor:pointer;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.out{font:inherit;font-size:13px;border:0;background:none;color:var(--muted);cursor:pointer;padding:6px 4px;text-decoration:underline;text-underline-offset:3px}
+main{max-width:760px;margin:0 auto;padding:36px var(--pad) 72px;display:flex;flex-direction:column;gap:20px}
+h1{font-size:clamp(28px,5vw,40px);letter-spacing:-.025em;line-height:1.1;margin:0}
+.sub{font-size:16px;line-height:1.5;color:var(--muted);margin:-8px 0 4px}
+.card{background:#fff;border:1px solid var(--line-2);border-radius:24px;padding:clamp(20px,3vw,28px);display:flex;flex-direction:column;gap:16px}
+.card h2{font-size:20px;letter-spacing:-.01em;margin:0}
+.card-h{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+p{margin:0}
+.field{display:flex;flex-direction:column;gap:7px;min-width:0}
+.field label,.lt{font-size:14px;font-weight:500;color:var(--ink-2)}
+.row{display:flex;gap:8px}
+input,select,textarea{width:100%;min-width:0;height:50px;padding:0 14px;border:1px solid var(--line);border-radius:12px;background:#fff;color:var(--ink);font:inherit;font-size:16px;-webkit-appearance:none;appearance:none}
+textarea{height:auto;padding:12px 14px;line-height:1.45;resize:vertical}
+select{padding-right:30px;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none' stroke='%236e6e73' stroke-width='1.6' stroke-linecap='round'%3E%3Cpath d='M1 1.5l5 5 5-5'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;cursor:pointer}
+.row select.cc{flex:0 0 120px;width:120px}
+input:focus,select:focus,textarea:focus{outline:0;border-color:var(--ink);box-shadow:0 0 0 4px rgba(176,80,45,.16)}
+input::placeholder,textarea::placeholder{color:#a1a1a6}
+#otp,#code{letter-spacing:.25em;font-variant-numeric:tabular-nums}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;min-height:52px;padding:0 24px;border:0;border-radius:999px;background:var(--ink);color:#fff;font:inherit;font-size:16px;font-weight:500;cursor:pointer;text-decoration:none}
+.btn.full{width:100%}
+.btn2{flex:0 0 auto;display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:50px;padding:0 16px;border:1px solid var(--line);border-radius:12px;background:var(--bg-3);color:var(--ink);font:inherit;font-size:14px;font-weight:500;cursor:pointer;white-space:nowrap;text-decoration:none}
+.btn:disabled,.btn2:disabled{opacity:.6;cursor:not-allowed}
+.spin{display:none;width:18px;height:18px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
+.btn2 .spin{border-color:rgba(0,0,0,.15);border-top-color:var(--ink);width:16px;height:16px}
+.loading .spin{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.err{font-size:13px;color:var(--bad)} .err:empty{display:none}
+.hint{font-size:13px;line-height:1.45;color:var(--muted)} .hint:empty{display:none}
+.msg{font-size:14px;line-height:1.45;padding:12px 14px;border-radius:12px;background:var(--bg-3);color:var(--ink-2)} .msg:empty{display:none}
+.msg.ok{background:var(--ok-bg);color:var(--ok)}
+.pill{display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--bg-3);color:var(--ink-2)}
+.pill.ok{background:var(--ok-bg);color:var(--ok)} .pill.warn{background:var(--warn-bg);color:var(--warn)} .pill.bad{background:#fdecea;color:var(--bad)}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;font-size:15px;line-height:1.4}
+.kv dt{color:var(--muted)} .kv dd{margin:0;color:var(--ink);font-weight:500}
+.actions{display:flex;flex-wrap:wrap;gap:10px}
+.switch{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;border:1px solid var(--line-2);border-radius:14px}
+.switch input{width:48px;min-width:48px;height:28px;padding:0;border:0;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:background .2s;box-shadow:none}
+.switch input::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
+.switch input:checked{background:var(--ok)} .switch input:checked::after{transform:translateX(20px)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:#fff;color:var(--ink-2);font:inherit;font-size:14px;cursor:pointer}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.calls{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.calls li{padding:14px 0;border-top:1px solid var(--line-2);display:flex;flex-direction:column;gap:6px}
+.calls li:first-child{border-top:0;padding-top:0}
+.calls .when{font-size:13px;color:var(--muted);display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.calls p{font-size:15px;line-height:1.5;color:var(--ink-2)}
+.empty{font-size:15px;color:var(--muted)}
+[hidden]{display:none!important}
+.center{text-align:center}
+.foot{font-size:13px;color:var(--muted);text-align:center;margin-top:8px}
+.foot a{color:var(--muted)}
+@media (max-width:600px){.grid2{grid-template-columns:1fr}.kv{grid-template-columns:1fr;gap:2px}.kv dd{margin-bottom:10px}}
+</style>
+</head>
+<body>
+<header class="nav"><div class="in">
+  <a class="brand" href="index.html">Call Me Alicia</a>
+  <div class="nav-r">
+    <button type="button" class="out" id="outBtn" hidden></button>
+    <div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="es" aria-pressed="true">ES</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+  </div>
+</div></header>
+
+<main>
+  <!-- 1. Sign in -->
+  <section id="vLogin" class="card" hidden>
+    <h1 data-t="loginTitle"></h1>
+    <p class="sub" data-t="loginSub"></p>
+    <div class="field" id="f-phone">
+      <label for="phone" data-t="phone"></label>
+      <div class="row"><select id="country" class="cc" aria-label="País"></select><input id="phone" type="tel" inputmode="numeric" autocomplete="tel-national"></div>
+      <div class="err" id="e-phone"></div>
+    </div>
+    <div class="field" id="f-otp">
+      <label for="otp" data-t="otp"></label>
+      <div class="row"><input id="otp" type="text" inputmode="numeric" autocomplete="one-time-code" maxlength="6" placeholder="000000"><button type="button" class="btn2" id="sendBtn"><span class="spin"></span><span class="lbl" data-t="send"></span></button></div>
+      <div class="err" id="e-otp"></div>
+    </div>
+    <div id="recaptcha"></div>
+    <button type="button" class="btn full" id="loginBtn"><span class="spin"></span><span class="lbl" data-t="enter"></span></button>
+    <div class="msg" id="loginMsg" role="status"></div>
+    <p class="hint center" data-t="noAccount"></p>
+  </section>
+
+  <!-- 2. Link with circle code (family member who did not verify their own phone) -->
+  <section id="vLink" class="card" hidden>
+    <h1 data-t="linkTitle"></h1>
+    <p class="sub" data-t="linkSub"></p>
+    <div class="field" id="f-code">
+      <label for="code" data-t="code"></label>
+      <input id="code" type="text" maxlength="8" autocapitalize="characters" placeholder="ABCD2345">
+      <div class="err" id="e-code"></div>
+    </div>
+    <button type="button" class="btn full" id="linkBtn"><span class="spin"></span><span class="lbl" data-t="link"></span></button>
+    <p class="hint center" data-t="linkHelp"></p>
+  </section>
+
+  <!-- 3. Account -->
+  <div id="vAccount" hidden style="display:flex;flex-direction:column;gap:20px">
+    <div>
+      <h1 id="hello"></h1>
+      <p class="sub" id="helloSub" style="margin-top:6px"></p>
+    </div>
+
+    <section class="card" aria-labelledby="h-plan">
+      <div class="card-h"><h2 id="h-plan" data-t="planTitle"></h2><span class="pill" id="planPill"></span></div>
+      <dl class="kv" id="planKv"></dl>
+      <div id="payBox" hidden style="display:flex;flex-direction:column;gap:12px">
+        <div class="field" id="f-email">
+          <label for="email" data-t="email"></label>
+          <input id="email" type="email" inputmode="email" autocomplete="email" maxlength="254">
+          <div class="err" id="e-email"></div>
+        </div>
+        <button type="button" class="btn full" id="payBtn"><span class="spin"></span><span class="lbl" data-t="pay"></span></button>
+        <p class="hint" data-t="payHint"></p>
+      </div>
+      <div class="actions" id="mpBox" hidden><a class="btn2" href="https://www.mercadopago.com.co/subscriptions" target="_blank" rel="noopener" data-t="manage"></a></div>
+      <p class="hint" id="mpHint" hidden data-t="manageHint"></p>
+      <div class="msg" id="payMsg" role="status"></div>
+    </section>
+
+    <section class="card" aria-labelledby="h-call">
+      <h2 id="h-call" data-t="callTitle"></h2>
+      <p class="hint" id="daysLine"></p>
+      <div class="grid2">
+        <div class="field"><label for="hour" data-t="time"></label><select id="hour"></select></div>
+        <div class="field"><label for="tz" data-t="tz"></label><select id="tz"></select></div>
+      </div>
+      <label class="switch"><span><span class="lt" data-t="enabled"></span><br><span class="hint" data-t="enabledHint"></span></span><input type="checkbox" id="enabled" role="switch"></label>
+    </section>
+
+    <section class="card" aria-labelledby="h-about">
+      <h2 id="h-about" data-t="aboutTitle"></h2>
+      <p class="hint" style="margin-top:-8px" data-t="aboutSub"></p>
+      <div class="grid2">
+        <div class="field"><label for="treat" data-t="treat"></label><input id="treat" maxlength="40"></div>
+        <div class="field"><label for="origin" data-t="origin"></label><input id="origin" maxlength="40"></div>
+      </div>
+      <div class="field"><span class="lt" data-t="likes"></span><div class="chips" id="chips"></div><input id="likesMore" maxlength="200"></div>
+      <div class="field"><label for="family" data-t="family"></label><textarea id="family" rows="3" maxlength="600"></textarea></div>
+      <div class="grid2">
+        <div class="field"><label for="ename" data-t="eName"></label><input id="ename" maxlength="80"></div>
+        <div class="field" id="f-ephone"><label for="ephone" data-t="ePhone"></label><div class="row"><select id="ecountry" class="cc" aria-label="País"></select><input id="ephone" type="tel" inputmode="numeric"></div><div class="err" id="e-ephone"></div></div>
+      </div>
+    </section>
+
+    <button type="button" class="btn full" id="saveBtn"><span class="spin"></span><span class="lbl" data-t="save"></span></button>
+    <div class="msg" id="saveMsg" role="status"></div>
+
+    <section class="card" aria-labelledby="h-calls">
+      <h2 id="h-calls" data-t="callsTitle"></h2>
+      <ul class="calls" id="calls"></ul>
+    </section>
+
+    <p class="foot"><span data-t="codeLbl"></span> <strong id="circleCode"></strong> · <a href="terminos.html" data-t="terms"></a> · <a href="privacidad.html" data-t="privacy"></a> · <a href="mailto:hello@callmealicia.com">hello@callmealicia.com</a></p>
+  </div>
+
+  <section id="vLoading" class="card center"><p class="hint" data-t="loading"></p></section>
+</main>
+
+<script>
+var CONFIG={
+  firebase:{apiKey:'AIzaSyBhv_oCg5DHLhDABmAo-T95wWpudblk9NQ',authDomain:'alicia-53950.firebaseapp.com',projectId:'alicia-53950',messagingSenderId:'810691887855',appId:'1:810691887855:web:24bd5cbe9098b459ff111a'},
+  sdk:'https://www.gstatic.com/firebasejs/10.12.2/',
+  subscribeUrl:'https://us-central1-alicia-53950.cloudfunctions.net/createSubscription'
+};
+(function(){
+  var L={es:{
+    title:'Mi cuenta — Call Me Alicia',out:'Cerrar sesión',loading:'Cargando…',
+    loginTitle:'Mi cuenta',loginSub:'Entra con tu número de celular. Te enviamos un código por SMS.',
+    phone:'Número de celular',otp:'Código de verificación',send:'Enviar código',resend:'Reenviar en {s}s',enter:'Entrar',entering:'Entrando…',
+    noAccount:'¿Aún no tienes cuenta? Regístrate en callmealicia.com.',
+    sent:'Te enviamos un código por SMS.',ePhone:'Revisa el número: debe tener {n} dígitos.',eOtp:'Escribe el código de 6 dígitos.',eNoCode:'Primero toca “Enviar código”.',
+    eCodeBad:'El código no es correcto.',eExpired:'El código venció. Pide uno nuevo.',eTooMany:'Demasiados intentos. Espera unos minutos.',eNet:'Sin conexión. Revisa tu internet.',fail:'Algo salió mal. Inténtalo de nuevo.',
+    linkTitle:'Conecta tu cuenta',linkSub:'Este número todavía no está conectado a ningún círculo. Escribe el código del círculo que te mostramos al registrarte.',
+    code:'Código del círculo',link:'Conectar',linkHelp:'¿No lo tienes? Pídeselo a quien hizo el registro o escríbenos a hello@callmealicia.com.',eCode:'No encontramos ese código. Revísalo.',
+    hello:'Hola',helloSub:'Alicia llama a {name}.',
+    planTitle:'Tu plan',plans:{esencial:'Esencial',diario:'Diario',plus:'Plus'},planNone:'Piloto (sin plan)',
+    kPlan:'Plan',kPrice:'Valor',kStatus:'Estado',kNext:'Próximo cobro',kTrial:'Prueba gratis hasta',kPayer:'Pagado por',
+    sTrial:'Prueba gratis',sTrialOver:'Prueba terminada',sActive:'Activo',sPending:'Pago pendiente',sPaused:'Pausado',sCancelled:'Cancelado',sPilot:'Piloto',
+    perMonth:'/mes',email:'Correo de tu cuenta de Mercado Pago',pay:'Activar mi plan',payGo:'Abriendo Mercado Pago…',eEmail:'Escribe un correo válido.',
+    payHint:'Pago seguro con Mercado Pago. No se cobra nada hasta que terminen los 7 días gratis.',payActive:'Este plan ya está activo.',
+    manage:'Ver o cancelar en Mercado Pago',manageHint:'Para cancelar o cambiar la tarjeta, entra a Mercado Pago con la cuenta que paga → Suscripciones.',
+    paidOk:'¡Gracias! Tu suscripción quedó registrada. Puede tardar un minuto en aparecer como activa.',
+    callTitle:'La llamada',time:'Hora',tz:'Zona horaria',daysEss:'Alicia llama los lunes, miércoles y viernes, hasta 8 minutos.',daysDiario:'Alicia llama todos los días, hasta 5 minutos.',daysPlus:'Alicia llama todos los días, hasta 10 minutos.',daysNone:'Alicia llama todos los días.',
+    enabled:'Llamadas activas',enabledHint:'Apágalo para pausar las llamadas (por ejemplo, en un viaje).',
+    aboutTitle:'Lo que Alicia sabe',aboutSub:'Así cada conversación es más personal. Todo es opcional.',
+    treat:'Cómo le gusta que le digan',origin:'País de origen',likes:'Gustos',family:'Familia',eName:'Contacto de emergencia (nombre)',ePhoneL:'Contacto de emergencia (celular)',
+    treatPh:'Ej. Doña Rosa',originPh:'Ej. Colombia',likesPh:'Otros gustos o temas',familyPh:'Ej. Hija Laura (vive en Miami), nieto Tomás (8 años)',
+    save:'Guardar cambios',saving:'Guardando…',saved:'¡Guardado! Alicia lo tendrá en cuenta desde la próxima llamada.',
+    callsTitle:'Últimas llamadas',noCalls:'Todavía no hay llamadas. Aquí verás el resumen de cada una.',
+    cCompleted:'Conversaron',cMissed:'No contestó',cFailed:'No se pudo llamar',cAlert:'Alerta',min:'min',
+    codeLbl:'Código del círculo:',terms:'Términos',privacy:'Privacidad',
+    likesList:['Música','Viajes','Cocina','Jardín','Libros','Películas','Fotografía','Fútbol','Ejercicio','Mascotas','Manualidades','Teatro y arte','Naturaleza','Bienestar','Rock y metal']
+  },en:{
+    title:'My account — Call Me Alicia',out:'Sign out',loading:'Loading…',
+    loginTitle:'My account',loginSub:'Sign in with your mobile number. We’ll text you a code.',
+    phone:'Mobile number',otp:'Verification code',send:'Send code',resend:'Resend in {s}s',enter:'Sign in',entering:'Signing in…',
+    noAccount:'No account yet? Sign up at callmealicia.com.',
+    sent:'We texted you a code.',ePhone:'Check the number: it should have {n} digits.',eOtp:'Enter the 6-digit code.',eNoCode:'Tap “Send code” first.',
+    eCodeBad:'That code isn’t right.',eExpired:'The code expired. Ask for a new one.',eTooMany:'Too many attempts. Wait a few minutes.',eNet:'You’re offline. Check your connection.',fail:'Something went wrong. Please try again.',
+    linkTitle:'Connect your account',linkSub:'This number isn’t connected to a circle yet. Enter the circle code we showed you when you signed up.',
+    code:'Circle code',link:'Connect',linkHelp:'Don’t have it? Ask whoever signed up, or email hello@callmealicia.com.',eCode:'We couldn’t find that code. Please check it.',
+    hello:'Hi',helloSub:'Alicia calls {name}.',
+    planTitle:'Your plan',plans:{esencial:'Essential',diario:'Daily',plus:'Plus'},planNone:'Pilot (no plan)',
+    kPlan:'Plan',kPrice:'Price',kStatus:'Status',kNext:'Next charge',kTrial:'Free trial until',kPayer:'Paid by',
+    sTrial:'Free trial',sTrialOver:'Trial ended',sActive:'Active',sPending:'Payment pending',sPaused:'Paused',sCancelled:'Cancelled',sPilot:'Pilot',
+    perMonth:'/month',email:'Email of your Mercado Pago account',pay:'Activate my plan',payGo:'Opening Mercado Pago…',eEmail:'Enter a valid email.',
+    payHint:'Secure payment with Mercado Pago. Nothing is charged until your 7-day free trial ends.',payActive:'This plan is already active.',
+    manage:'View or cancel in Mercado Pago',manageHint:'To cancel or change your card, sign in to Mercado Pago with the paying account → Subscriptions.',
+    paidOk:'Thank you! Your subscription is set up. It may take a minute to show as active.',
+    callTitle:'The call',time:'Time',tz:'Time zone',daysEss:'Alicia calls on Mondays, Wednesdays and Fridays, up to 8 minutes.',daysDiario:'Alicia calls every day, up to 5 minutes.',daysPlus:'Alicia calls every day, up to 10 minutes.',daysNone:'Alicia calls every day.',
+    enabled:'Calls on',enabledHint:'Turn off to pause calls (for example, during a trip).',
+    aboutTitle:'What Alicia knows',aboutSub:'It makes every conversation more personal. Everything is optional.',
+    treat:'What they like to be called',origin:'Country of origin',likes:'Interests',family:'Family',eName:'Emergency contact (name)',ePhoneL:'Emergency contact (mobile)',
+    treatPh:'e.g. Miss Rose',originPh:'e.g. Colombia',likesPh:'Other interests or topics',familyPh:'e.g. Daughter Laura (lives in Miami), grandson Tom (8)',
+    save:'Save changes',saving:'Saving…',saved:'Saved! Alicia will use this from the next call.',
+    callsTitle:'Recent calls',noCalls:'No calls yet. You’ll see a summary of each one here.',
+    cCompleted:'Talked',cMissed:'No answer',cFailed:'Couldn’t call',cAlert:'Alert',min:'min',
+    codeLbl:'Circle code:',terms:'Terms',privacy:'Privacy',
+    likesList:['Music','Travel','Cooking','Gardening','Books','Movies','Photography','Soccer','Exercise','Pets','Crafts','Theater & art','Nature','Wellness','Rock & metal']
+  }};
+  var PRICES={esencial:79900,diario:139900,plus:239900};
+  var C=[['US','+1',10,'America/New_York'],['CO','+57',10,'America/Bogota'],['MX','+52',10,'America/Mexico_City'],['PE','+51',9,'America/Lima'],['EC','+593',9,'America/Guayaquil'],['CR','+506',8,'America/Costa_Rica'],['GT','+502',8,'America/Guatemala'],['PA','+507',8,'America/Panama'],['SV','+503',8,'America/El_Salvador'],['HN','+504',8,'America/Tegucigalpa'],['NI','+505',8,'America/Managua']];
+  var TZ=[['America/Bogota','Colombia','Colombia'],['America/Mexico_City','México','Mexico'],['America/Lima','Perú','Peru'],['America/Guayaquil','Ecuador','Ecuador'],['America/Panama','Panamá','Panama'],['America/Costa_Rica','Costa Rica','Costa Rica'],['America/Guatemala','Guatemala','Guatemala'],['America/El_Salvador','El Salvador','El Salvador'],['America/Tegucigalpa','Honduras','Honduras'],['America/Managua','Nicaragua','Nicaragua'],['America/New_York','EE. UU. Este','US Eastern'],['America/Chicago','EE. UU. Centro','US Central'],['America/Denver','EE. UU. Montaña','US Mountain'],['America/Phoenix','Arizona','Arizona'],['America/Los_Angeles','EE. UU. Pacífico','US Pacific']];
+  var DAY=86400000,T=L.es,LANG='es';
+  var $=function(id){return document.getElementById(id)};
+  var fb=null,user=null,circleId=null,circle=null,picked={},confirmation=null,verifier=null,timer=null;
+
+  function show(v){['vLoading','vLogin','vLink','vAccount'].forEach(function(id){$(id).hidden=id!==v});$('outBtn').hidden=!(v==='vAccount'||v==='vLink')}
+  function setErr(f,t){var e=$('e-'+f);if(e)e.textContent=t||''}
+  function fillCC(sel){C.forEach(function(c){var o=document.createElement('option');o.value=c[0];o.textContent=c[0]+' '+c[1];sel.appendChild(o)})}
+  function cur(sel){return C.filter(function(c){return c[0]===sel.value})[0]}
+  function syncLen(inp,sel){var n=cur(sel)[2];inp.maxLength=n;inp.placeholder='0'.repeat(n);inp.value=inp.value.slice(0,n)}
+  function splitE164(p){var best=null;C.forEach(function(c){if(p&&p.indexOf(c[1])===0&&(!best||c[1].length>best[1].length))best=c});return best?{cc:best[0],num:p.slice(best[1].length)}:null}
+  function fmtTime(h,m){return new Date(2000,0,1,h,m).toLocaleTimeString(LANG==='es'?'es-CO':'en-US',{hour:'numeric',minute:'2-digit'})}
+  function fmtDate(ms){return new Date(ms).toLocaleDateString(LANG==='es'?'es-CO':'en-US',{day:'numeric',month:'long',year:'numeric'})}
+  function fmtDateTime(ms,tz){try{return new Date(ms).toLocaleString(LANG==='es'?'es-CO':'en-US',{timeZone:tz||undefined,weekday:'short',day:'numeric',month:'short',hour:'numeric',minute:'2-digit'})}catch(e){return fmtDate(ms)}}
+  function money(n){return 'COP $'+n.toLocaleString(LANG==='es'?'es-CO':'en-US')}
+  function errMsg(err){var c=(err&&err.code)||'';console.error(c,err);
+    if(c==='auth/invalid-verification-code')return T.eCodeBad;if(c==='auth/code-expired')return T.eExpired;
+    if(c==='auth/too-many-requests'||c==='auth/quota-exceeded')return T.eTooMany;if(c==='auth/network-request-failed'||c==='unavailable')return T.eNet;return T.fail}
+
+  // ---- language ----
+  function applyLang(l,save){
+    LANG=l;T=L[l];document.documentElement.lang=l;document.title=T.title;
+    document.querySelectorAll('[data-t]').forEach(function(el){var v=T[el.getAttribute('data-t')];if(typeof v==='string')el.textContent=v});
+    $('outBtn').textContent=T.out;$('f-ephone').querySelector('label').textContent=T.ePhoneL;
+    $('treat').placeholder=T.treatPh;$('origin').placeholder=T.originPh;$('likesMore').placeholder=T.likesPh;$('family').placeholder=T.familyPh;
+    document.querySelectorAll('[data-lang]').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-lang')===l?'true':'false')});
+    if(save)try{localStorage.setItem('lang',l)}catch(e){}
+    if(fb)fb.auth.languageCode=l;
+    buildTime();if(circle)render();
+  }
+
+  // ---- selects ----
+  function buildTime(){
+    var hour=$('hour'),tz=$('tz'),hv=hour.value,zv=tz.value;hour.textContent='';
+    for(var h=7;h<=21;h++){for(var m=0;m<60;m+=30){if(h===21&&m>0)break;var o=document.createElement('option');o.value=h+':'+(m<10?'0':'')+m;o.textContent=fmtTime(h,m);hour.appendChild(o)}}
+    if(hv)hour.value=hv;tz.textContent='';
+    TZ.forEach(function(t){var o=document.createElement('option');o.value=t[0];o.textContent=LANG==='es'?t[1]:t[2];tz.appendChild(o)});
+    if(zv)tz.value=zv;
+  }
+  function buildChips(){var box=$('chips');box.textContent='';T.likesList.forEach(function(lbl,i){var b=document.createElement('button');b.type='button';b.className='chip';b.textContent=lbl;b.setAttribute('aria-pressed',picked[i]?'true':'false');b.addEventListener('click',function(){picked[i]=!picked[i];b.setAttribute('aria-pressed',picked[i]?'true':'false')});box.appendChild(b)})}
+
+  // ---- Firebase ----
+  function loadFb(){
+    return Promise.all([import(CONFIG.sdk+'firebase-app.js'),import(CONFIG.sdk+'firebase-auth.js'),import(CONFIG.sdk+'firebase-firestore.js')]).then(function(m){
+      var app=m[0].initializeApp(CONFIG.firebase);var auth=m[1].getAuth(app);auth.languageCode=LANG;
+      fb={A:m[1],F:m[2],auth:auth,db:m[2].getFirestore(app)};return fb;
+    });
+  }
+
+  function afterAuth(u){
+    user=u;var F=fb.F;show('vLoading');
+    return F.getDoc(F.doc(fb.db,'users',u.uid)).then(function(s){
+      var id=s.exists()&&s.data().circleId;
+      if(!id){show('vLink');return}
+      return openCircle(id);
+    }).catch(function(e){console.error(e);show('vLink')});
+  }
+  function openCircle(id){
+    var F=fb.F;
+    return F.getDoc(F.doc(fb.db,'circles',id)).then(function(s){
+      if(!s.exists()){show('vLink');return}
+      circleId=id;circle=s.data();fillForm();render();show('vAccount');loadCalls();
+      if(/[?&]pago=listo/.test(location.search)){$('payMsg').className='msg ok';$('payMsg').textContent=T.paidOk;try{history.replaceState(null,'','cuenta.html')}catch(e){}}
+    });
+  }
+
+  // ---- account rendering ----
+  function status(){
+    var c=circle,b=c.billing||{},now=Date.now(),trialEnd=(c.trialStartedAt||0)+7*DAY;
+    if(!c.plan)return {k:'pilot',cls:''};
+    if(b.status==='authorized')return {k:'active',cls:'ok'};
+    if(b.status==='paused')return {k:'paused',cls:'warn'};
+    if(b.status==='cancelled')return {k:'cancelled',cls:'bad'};
+    if(now<trialEnd)return {k:'trial',cls:'ok',until:trialEnd};
+    return {k:'trialOver',cls:'warn'};
+  }
+  function render(){
+    var c=circle,cp=c.callProfile||{},b=c.billing||{},st=status();
+    var fn=firstName();$('hello').textContent=T.hello+(fn?', '+fn:'');
+    $('helloSub').textContent=T.helloSub.replace('{name}',cp.treatment||cp.fullName||'');
+    var lbl={pilot:T.sPilot,active:T.sActive,paused:T.sPaused,cancelled:T.sCancelled,trial:T.sTrial,trialOver:T.sTrialOver}[st.k];
+    if(st.k==='trial'&&b.status==='pending'&&b.preapprovalId)lbl=T.sTrial;
+    $('planPill').textContent=lbl;$('planPill').className='pill '+st.cls;
+    var kv=$('planKv');kv.textContent='';
+    function add(k,v){if(!v)return;var dt=document.createElement('dt');dt.textContent=k;var dd=document.createElement('dd');dd.textContent=v;kv.appendChild(dt);kv.appendChild(dd)}
+    add(T.kPlan,c.plan?T.plans[c.plan]:T.planNone);
+    if(c.plan)add(T.kPrice,money(b.amount||PRICES[c.plan]||0)+' '+T.perMonth);
+    if(st.k==='trial')add(T.kTrial,fmtDate(st.until));
+    if(st.k==='active'&&b.nextPaymentDate)add(T.kNext,fmtDate(Date.parse(b.nextPaymentDate)));
+    if(b.payerEmail&&(st.k==='active'||st.k==='paused'))add(T.kPayer,b.payerEmail);
+    var needsPay=!!c.plan&&st.k!=='active'&&st.k!=='paused'&&!!CONFIG.subscribeUrl;
+    $('payBox').hidden=!needsPay;$('mpBox').hidden=!(st.k==='active'||st.k==='paused');$('mpHint').hidden=$('mpBox').hidden;
+    if(needsPay&&!$('email').value&&b.payerEmail)$('email').value=b.payerEmail;
+    $('daysLine').textContent={esencial:T.daysEss,diario:T.daysDiario,plus:T.daysPlus}[c.plan]||T.daysNone;
+    $('circleCode').textContent=circleId;
+    buildChips();
+  }
+  function firstName(){var cp=circle.callProfile||{};var ph=user&&user.phoneNumber;
+    if(ph&&cp.phoneE164===ph)return (cp.treatment||cp.fullName||'').split(' ')[0];
+    if(ph&&cp.emergencyContactPhone===ph)return (cp.emergencyContactName||'').split(' ')[0];
+    return (circle.userName||'').split(' ')[0]}
+  function fillForm(){
+    var cp=circle.callProfile||{};
+    $('hour').value=(cp.preferredHour!=null?cp.preferredHour:10)+':'+((cp.preferredMinute||0)<10?'0':'')+(cp.preferredMinute||0);
+    if(!$('hour').value){var o=document.createElement('option');o.value=cp.preferredHour+':'+cp.preferredMinute;o.textContent=fmtTime(cp.preferredHour,cp.preferredMinute);$('hour').appendChild(o);$('hour').value=o.value}
+    $('tz').value=cp.timeZoneId||'America/Bogota';
+    $('enabled').checked=cp.callEnabled!==false;
+    $('treat').value=cp.treatment||'';$('origin').value=cp.originCountry||'';$('family').value=cp.familyInfo||'';
+    $('ename').value=cp.emergencyContactName||'';
+    var sp=splitE164(cp.emergencyContactPhone||'');if(sp){$('ecountry').value=sp.cc;syncLen($('ephone'),$('ecountry'));$('ephone').value=sp.num}
+    picked={};var rest=[];
+    (cp.interests||'').split(',').map(function(x){return x.trim()}).filter(Boolean).forEach(function(x){var i=L.es.likesList.indexOf(x);if(i<0)i=L.en.likesList.indexOf(x);if(i>-1)picked[i]=true;else rest.push(x)});
+    $('likesMore').value=rest.join(', ');
+  }
+  function loadCalls(){
+    var F=fb.F,ul=$('calls');ul.textContent='';
+    F.getDocs(F.query(F.collection(fb.db,'circles',circleId,'callHistory'),F.orderBy('startedAt','desc'),F.limit(10))).then(function(qs){
+      if(qs.empty){var li=document.createElement('li');li.className='empty';li.textContent=T.noCalls;ul.appendChild(li);return}
+      var tz=(circle.callProfile||{}).timeZoneId;
+      qs.forEach(function(d){var c=d.data(),li=document.createElement('li');
+        var w=document.createElement('div');w.className='when';
+        var t=document.createElement('span');t.textContent=fmtDateTime(c.startedAt||c.endedAt,tz);w.appendChild(t);
+        var p=document.createElement('span');var ok=c.status==='COMPLETED';
+        p.className='pill '+(c.alert?'bad':ok?'ok':'warn');
+        p.textContent=c.alert?T.cAlert:ok?T.cCompleted+(c.durationSeconds?' · '+Math.max(1,Math.round(c.durationSeconds/60))+' '+T.min:''):(c.status==='FAILED'?T.cFailed:T.cMissed);
+        w.appendChild(p);li.appendChild(w);
+        var txt=c.alert&&c.alertReason?c.alertReason:c.summary;
+        if(txt){var s=document.createElement('p');s.textContent=txt;li.appendChild(s)}
+        ul.appendChild(li)});
+    }).catch(function(e){console.warn('calls',e);var li=document.createElement('li');li.className='empty';li.textContent=T.noCalls;ul.appendChild(li)});
+  }
+
+  // ---- sign in ----
+  var country=$('country'),phone=$('phone'),otp=$('otp');
+  fillCC(country);fillCC($('ecountry'));
+  var region=((navigator.language||'').split('-')[1]||'').toUpperCase();if(C.some(function(c){return c[0]===region})){country.value=region;$('ecountry').value=region}else{country.value='CO';$('ecountry').value='CO'}
+  syncLen(phone,country);syncLen($('ephone'),$('ecountry'));
+  country.addEventListener('change',function(){syncLen(phone,country);confirmation=null});
+  $('ecountry').addEventListener('change',function(){syncLen($('ephone'),$('ecountry'))});
+  phone.addEventListener('input',function(){phone.value=phone.value.replace(/\D/g,'');setErr('phone','');confirmation=null});
+  $('ephone').addEventListener('input',function(){$('ephone').value=$('ephone').value.replace(/\D/g,'');setErr('ephone','')});
+  otp.addEventListener('input',function(){otp.value=otp.value.replace(/\D/g,'').slice(0,6);setErr('otp','')});
+  $('code').addEventListener('input',function(){$('code').value=$('code').value.toUpperCase().replace(/[^0-9A-Z]/g,'');setErr('code','')});
+
+  $('sendBtn').addEventListener('click',function(){
+    var n=cur(country)[2];if(phone.value.length!==n){setErr('phone',T.ePhone.replace('{n}',n));phone.focus();return}
+    var btn=$('sendBtn');btn.classList.add('loading');btn.disabled=true;$('loginMsg').textContent='';
+    if(!verifier)verifier=new fb.A.RecaptchaVerifier(fb.auth,'recaptcha',{size:'invisible'});
+    fb.A.signInWithPhoneNumber(fb.auth,cur(country)[1]+phone.value,verifier).then(function(r){
+      confirmation=r;btn.classList.remove('loading');$('loginMsg').textContent=T.sent;$('loginMsg').className='msg ok';otp.focus();
+      var s=30,lbl=btn.querySelector('.lbl');lbl.textContent=T.resend.replace('{s}',s);
+      timer=setInterval(function(){s--;if(s<=0){clearInterval(timer);lbl.textContent=T.send;btn.disabled=false;return}lbl.textContent=T.resend.replace('{s}',s)},1000);
+    }).catch(function(e){btn.classList.remove('loading');btn.disabled=false;try{verifier.clear()}catch(x){}verifier=null;$('recaptcha').textContent='';$('loginMsg').className='msg';$('loginMsg').textContent=errMsg(e)});
+  });
+  $('loginBtn').addEventListener('click',function(){
+    if(otp.value.length!==6){setErr('otp',T.eOtp);otp.focus();return}
+    if(!confirmation){setErr('otp',T.eNoCode);return}
+    var btn=$('loginBtn'),lbl=btn.querySelector('.lbl');btn.classList.add('loading');btn.disabled=true;lbl.textContent=T.entering;
+    confirmation.confirm(otp.value).then(function(cred){btn.classList.remove('loading');btn.disabled=false;lbl.textContent=T.enter;return afterAuth(cred.user)})
+      .catch(function(e){btn.classList.remove('loading');btn.disabled=false;lbl.textContent=T.enter;var m=errMsg(e);if(m===T.eCodeBad||m===T.eExpired)setErr('otp',m);else{$('loginMsg').className='msg';$('loginMsg').textContent=m}});
+  });
+
+  // ---- link with circle code ----
+  $('linkBtn').addEventListener('click',function(){
+    var code=$('code').value.trim();if(code.length!==8){setErr('code',T.eCode);return}
+    var F=fb.F,btn=$('linkBtn');btn.classList.add('loading');btn.disabled=true;
+    F.getDoc(F.doc(fb.db,'circles',code)).then(function(s){
+      if(!s.exists())throw {code:'nf'};
+      return F.setDoc(F.doc(fb.db,'users',user.uid),{circleId:code,profile:'FAMILIAR'}).then(function(){return openCircle(code)});
+    }).then(function(){btn.classList.remove('loading');btn.disabled=false})
+      .catch(function(e){btn.classList.remove('loading');btn.disabled=false;setErr('code',e&&e.code==='nf'?T.eCode:errMsg(e))});
+  });
+
+  // ---- save ----
+  $('saveBtn').addEventListener('click',function(){
+    var m=$('saveMsg');m.textContent='';m.className='msg';
+    var en=cur($('ecountry'))[2],ep=$('ephone').value;
+    if(ep&&ep.length!==en){setErr('ephone',T.ePhone.replace('{n}',en));$('ephone').focus();return}
+    var hm=$('hour').value.split(':'),likes=T.likesList.filter(function(_,i){return picked[i]});
+    if($('likesMore').value.trim())likes.push($('likesMore').value.trim());
+    var cp={preferredHour:parseInt(hm[0],10),preferredMinute:parseInt(hm[1],10),timeZoneId:$('tz').value,callEnabled:$('enabled').checked,
+      treatment:$('treat').value.trim(),originCountry:$('origin').value.trim(),interests:likes.join(', '),familyInfo:$('family').value.trim(),
+      emergencyContactName:$('ename').value.trim(),emergencyContactPhone:ep?cur($('ecountry'))[1]+ep:''};
+    var btn=$('saveBtn'),lbl=btn.querySelector('.lbl');btn.classList.add('loading');btn.disabled=true;lbl.textContent=T.saving;
+    var F=fb.F;
+    F.setDoc(F.doc(fb.db,'circles',circleId),{callProfile:cp},{merge:true}).then(function(){
+      Object.keys(cp).forEach(function(k){circle.callProfile[k]=cp[k]});
+      btn.classList.remove('loading');btn.disabled=false;lbl.textContent=T.save;m.className='msg ok';m.textContent=T.saved;render();
+    }).catch(function(e){btn.classList.remove('loading');btn.disabled=false;lbl.textContent=T.save;m.textContent=errMsg(e)});
+  });
+
+  // ---- pay ----
+  $('email').addEventListener('input',function(){setErr('email','')});
+  $('payBtn').addEventListener('click',function(){
+    var v=$('email').value.trim(),pm=$('payMsg');pm.textContent='';pm.className='msg';
+    if(!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)){setErr('email',T.eEmail);$('email').focus();return}
+    var btn=$('payBtn'),lbl=btn.querySelector('.lbl');btn.classList.add('loading');btn.disabled=true;lbl.textContent=T.payGo;
+    function stop(t){btn.classList.remove('loading');btn.disabled=false;lbl.textContent=T.pay;pm.textContent=t}
+    user.getIdToken().then(function(tok){
+      return fetch(CONFIG.subscribeUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({circleId:circleId,email:v,lang:LANG})});
+    }).then(function(r){return r.json().catch(function(){return {}}).then(function(j){return {ok:r.ok,status:r.status,j:j}})})
+      .then(function(x){if(x.ok&&x.j.url){try{sessionStorage.setItem('payBack','cuenta')}catch(e){}location.href=x.j.url;return}
+        if(x.status===409){stop(T.payActive);return}stop(T.fail+' ('+x.status+(x.j&&x.j.error?' · '+x.j.error:'')+')')})
+      .catch(function(e){console.error(e);stop(T.fail)});
+  });
+
+  $('outBtn').addEventListener('click',function(){fb.A.signOut(fb.auth).then(function(){location.reload()})});
+  document.querySelectorAll('[data-lang]').forEach(function(b){b.addEventListener('click',function(){applyLang(b.getAttribute('data-lang'),true)})});
+
+  // ---- start ----
+  var q=(location.search.match(/[?&]lang=(es|en)/)||[])[1],s=null;try{s=localStorage.getItem('lang')}catch(e){}
+  applyLang(q||(s==='es'||s==='en'?s:((navigator.language||'es').toLowerCase().indexOf('en')===0?'en':'es')));
+  loadFb().then(function(){
+    var first=true;
+    fb.A.onAuthStateChanged(fb.auth,function(u){if(!first)return;first=false;if(u)afterAuth(u);else show('vLogin')});
+  }).catch(function(e){console.error(e);show('vLogin');$('loginMsg').textContent=T.fail});
+})();
+</script>
+</body>
+</html>
