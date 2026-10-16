@@ -1143,8 +1143,8 @@ var CONFIG={
       if(x.ok&&x.j.url){location.href=x.j.url;return}
       if(x.status===409){stop(T.payActive);return}
       if(link){location.href=link;return}
-      stop(T.fail);
-    }).catch(function(err){console.error('[pay]',err);if(link){location.href=link;return}stop(navigator.onLine===false?T.eNetwork:T.fail)});
+      stop(T.fail+' ('+x.status+(x.j&&x.j.error?' · '+x.j.error:'')+')');
+    }).catch(function(err){console.error('[pay]',err);if(link){location.href=link;return}stop(navigator.onLine===false?T.eNetwork:T.fail+' ('+((err&&err.code)||(err&&err.message)||'red')+')')});
   });
 
   // Back from Mercado Pago (back_url = ?pago=listo)
