@@ -40,6 +40,7 @@ import {
   parseSignatureHeader, signatureManifest,
 } from "./mercadoPago";
 import { isCallDay, maxCallDurationMs, planRule } from "./plans";
+import { voiceFor } from "./voices";
 
 initializeApp();
 const db = getFirestore();
@@ -74,6 +75,9 @@ const MP_BACK_URL = defineString("MP_BACK_URL", { default: "https://callmealicia
 // no cortarle a nadie las llamadas mientras se prueba el cobro.
 const BILLING_ENFORCE = defineString("BILLING_ENFORCE", { default: "false" });
 const WEB_ORIGINS = ["https://callmealicia.com", "https://www.callmealicia.com", "http://localhost:8080"];
+
+// Voz (acento) por país: "CO=voice_id,MX=voice_id". Vacío = la voz del agente. Ver voices.ts.
+const RETELL_VOICES = defineString("RETELL_VOICES", { default: "" });
 
 const RETELL_CREATE_CALL_URL = "https://api.retellai.com/v2/create-phone-call";
 // La ventana debe ser igual al intervalo del scheduler — si se cambia uno, cambiar el otro.
@@ -205,6 +209,10 @@ function pickFromNumber(to: string): string {
 
 async function createRetellCall(circleId: string, profile: CallProfile, plan: unknown): Promise<void> {
   const maxMs = maxCallDurationMs(plan);
+  const voiceId = voiceFor(RETELL_VOICES.value(), profile.originCountry, profile.phoneE164);
+  const agentOverride: Record<string, unknown> = {};
+  if (maxMs) agentOverride.max_call_duration_ms = maxMs;
+  if (voiceId) agentOverride.voice_id = voiceId;
   const response = await fetch(RETELL_CREATE_CALL_URL, {
     method: "POST",
     headers: {
@@ -229,7 +237,7 @@ async function createRetellCall(circleId: string, profile: CallProfile, plan: un
         max_minutes: String(planRule(plan)?.minutes ?? 10),
       },
       // Corte de seguridad por plan (minutos del plan + 1 de margen).
-      ...(maxMs ? { agent_override: { agent: { max_call_duration_ms: maxMs } } } : {}),
+      ...(Object.keys(agentOverride).length ? { agent_override: { agent: agentOverride } } : {}),
     }),
   });
 

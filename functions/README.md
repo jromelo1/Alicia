@@ -172,6 +172,12 @@ prueba las llamadas se detienen el mismo día; si el mes ya estaba pagado, Alici
 hasta `paidUntil`. Cancelar siempre detiene las llamadas, aunque `BILLING_ENFORCE=false`.
 Si se cancela desde Mercado Pago, el webhook hace lo mismo.
 
+## Acento por país
+
+`RETELL_VOICES` en `functions/.env` (p. ej. `RETELL_VOICES=CO=voice_id,MX=voice_id`) elige la
+voz de Alicia en cada llamada con `agent_override.agent.voice_id`. El país sale del "País de
+origen" y, si no se reconoce, del indicativo del celular. Países sin voz → la voz del agente.
+
 ## Reglas de cada plan
 
 `src/plans.ts` aplica lo que prometen los Términos: **Esencial** llama lunes, miércoles y
