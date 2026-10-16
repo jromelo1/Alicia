@@ -688,9 +688,9 @@ var CONFIG={
     notYet:'El registro aún no está abierto. Muy pronto podrás crear tu cuenta.',
     fail:'Algo salió mal. Inténtalo de nuevo.',
     doneTitle:'¡Listo!',
-    doneSelf:'Alicia te llamará todos los días a las {time} (hora de {tz}). La primera llamada será {when}.',
-    doneLoved:'Alicia llamará a {name} todos los días a las {time} (hora de {tz}). La primera llamada será {when}.',
-    today:'hoy',tomorrow:'mañana',
+    doneSelf:'Alicia te llamará {days} a las {time} (hora de {tz}). La primera llamada será {when}.',
+    doneLoved:'Alicia llamará a {name} {days} a las {time} (hora de {tz}). La primera llamada será {when}.',
+    today:'hoy',tomorrow:'mañana',daysAll:'todos los días',daysEss:'los lunes, miércoles y viernes',wd:['el domingo','el lunes','el martes','el miércoles','el jueves','el viernes','el sábado'],
     doneCodeLabel:'Código del círculo',
     doneCodeHint:'Guárdalo: sirve para conectar la app y ver el resumen de cada llamada.',
     again:'Registrar a otra persona',
@@ -733,9 +733,9 @@ var CONFIG={
     notYet:'Registration isn’t open yet. You’ll be able to create your account soon.',
     fail:'Something went wrong. Please try again.',
     doneTitle:'All set!',
-    doneSelf:'Alicia will call you every day at {time} ({tz} time). The first call will be {when}.',
-    doneLoved:'Alicia will call {name} every day at {time} ({tz} time). The first call will be {when}.',
-    today:'today',tomorrow:'tomorrow',
+    doneSelf:'Alicia will call you {days} at {time} ({tz} time). The first call will be {when}.',
+    doneLoved:'Alicia will call {name} {days} at {time} ({tz} time). The first call will be {when}.',
+    today:'today',tomorrow:'tomorrow',daysAll:'every day',daysEss:'on Mondays, Wednesdays and Fridays',wd:['on Sunday','on Monday','on Tuesday','on Wednesday','on Thursday','on Friday','on Saturday'],
     doneCodeLabel:'Circle code',
     doneCodeHint:'Keep it: it connects the app so you can see a summary of every call.',
     again:'Register someone else',
@@ -849,7 +849,7 @@ var CONFIG={
     if(!doneInfo)return;
     var d=doneInfo;
     $('doneTitle').textContent=T.doneTitle;
-    $('doneText').textContent=(d.loved?T.doneLoved:T.doneSelf).replace('{name}',d.name).replace('{time}',fmtTime(d.h,d.m)).replace('{tz}',tzLabel(d.tz)).replace('{when}',d.today?T.today:T.tomorrow);
+    $('doneText').textContent=(d.loved?T.doneLoved:T.doneSelf).replace('{name}',d.name).replace('{days}',d.plan==='esencial'?T.daysEss:T.daysAll).replace('{time}',fmtTime(d.h,d.m)).replace('{tz}',tzLabel(d.tz)).replace('{when}',d.first===0?T.today:d.first===1?T.tomorrow:T.wd[d.firstWd]);
     $('doneCodeLabel').textContent=T.doneCodeLabel;$('doneCode').textContent=d.code;
     $('doneCodeHint').textContent=T.doneCodeHint;$('againBtn').textContent=T.again;
     var link=d.plan&&CONFIG.payLinks&&CONFIG.payLinks[d.plan];
@@ -977,6 +977,8 @@ var CONFIG={
     return (parseInt(p.hour==='24'?'0':p.hour,10))*60+parseInt(p.minute,10);
   }
 
+  function localWd(zone){var w=new Intl.DateTimeFormat('en-US',{timeZone:zone,weekday:'short'}).format(new Date());return ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'].indexOf(w)}
+
   function saveAll(fb,uid,d){
     var F=fb.F,db=fb.db,now=Date.now(),userRef=F.doc(db,'users',uid),circleId=null,existing=null;
     return F.getDoc(userRef).then(function(u){
@@ -1035,7 +1037,9 @@ var CONFIG={
     }).then(function(code){
       busy(false);
       if(!code){say(T.notYet);return}
-      doneInfo={plan:selectedPlan,loved:loved,name:d.name,phone:d.phone,h:d.h,m:d.m,tz:d.tz,code:code,today:localNow(d.tz)<d.h*60+d.m,hasEmergency:loved};
+      doneInfo={plan:selectedPlan,loved:loved,name:d.name,phone:d.phone,h:d.h,m:d.m,tz:d.tz,code:code,hasEmergency:loved};
+      (function(){var later=localNow(d.tz)<d.h*60+d.m,wd=localWd(d.tz),days=selectedPlan==='esencial'?[1,3,5]:[0,1,2,3,4,5,6];
+        for(var k=later?0:1;k<8;k++){if(days.indexOf((wd+k)%7)>-1){doneInfo.first=k;doneInfo.firstWd=(wd+k)%7;break}}})();
       resetPrefs();prefillPrefs();
       renderDone();
       $('formBody').hidden=true;$('done').hidden=false;$('done').focus();
