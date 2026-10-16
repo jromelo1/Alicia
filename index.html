@@ -48,17 +48,17 @@ h1,h2,h3,p{margin:0}
 .flang button:hover,.flang button[aria-pressed="true"]{color:var(--ink)}
 .flang button[aria-pressed="true"]{font-weight:500}
 .hero h1{text-wrap:balance}
-html[lang="es"] .hero h1{font-size:clamp(38px,4.3vw,58px)}
+html[lang="es"] .hero h1{font-size:clamp(42px,6.4vw,88px)}
 .menu-btn{display:none;width:44px;height:44px;margin-right:-10px;border:0;background:none;cursor:pointer;align-items:center;justify-content:center}
 .menu-btn svg{transition:transform .3s var(--ease)}
 
 /* Hero */
-.hero{padding:clamp(32px,4.5vw,64px) 0 clamp(88px,10vw,140px)}
-.hero .wrap{display:grid;grid-template-columns:minmax(0,380px) minmax(0,1fr);gap:clamp(36px,5vw,72px);align-items:start}
+.hero{padding:clamp(64px,9vw,120px) 0 clamp(88px,10vw,140px)}
+.hero .wrap{display:block}
 .hero-main{text-align:center;padding-top:clamp(8px,2vw,32px);display:flex;flex-direction:column}
 .eyebrow{font-size:clamp(17px,1.6vw,21px);font-weight:500;color:var(--accent);margin-bottom:18px}
-.hero h1{font-size:clamp(42px,5vw,68px);line-height:1.03;font-weight:600;letter-spacing:-.04em;margin:0 auto}
-.hero .lede{margin:22px auto 0;font-size:clamp(18px,1.6vw,21px);line-height:1.45;color:var(--muted);max-width:560px}
+.hero h1{font-size:clamp(46px,7vw,96px);line-height:1.03;font-weight:600;letter-spacing:-.04em;margin:0 auto}
+.hero .lede{margin:24px auto 0;font-size:clamp(18px,1.9vw,23px);line-height:1.45;color:var(--muted);max-width:680px}
 
 /* Registration form */
 .reg{border:1px solid var(--line-2);border-radius:28px;padding:clamp(22px,2.4vw,30px);background:#fff;box-shadow:0 12px 40px rgba(0,0,0,.05);display:flex;flex-direction:column;gap:18px;scroll-margin-top:88px}
@@ -223,6 +223,17 @@ footer a:hover{color:var(--ink)}
 .pricing .note{margin-top:32px;text-align:center;font-size:14px;line-height:1.5;color:var(--muted)}
 .plan-pick{font-size:14px;font-weight:500;color:var(--accent);background:#fbf1ec;border-radius:10px;padding:8px 12px;margin-top:-6px}
 
+/* Step 2: sign-up after choosing a plan */
+.signup{padding:clamp(48px,6vw,88px) 0 clamp(72px,8vw,120px);background:#fff}
+.signup .wrap{display:flex;justify-content:center}
+.signup .reg{width:100%;max-width:540px}
+.step-lbl{display:inline-block;font-size:13px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--accent)}
+.pricing .step-lbl{margin-bottom:10px}
+.step-head{display:flex;align-items:center;flex-wrap:wrap;gap:6px 10px;padding-bottom:16px;border-bottom:1px solid var(--line-2)}
+.step-head .plan-pick{margin:0;padding:6px 12px;font-size:14px}
+.step-head .change{font-size:14px;font-weight:500;color:var(--ink-2);text-decoration:underline;text-underline-offset:3px;padding:10px 4px}
+.step-head .change:hover{color:var(--ink)}
+
 /* Mobile */
 @media (max-width:960px){
   .lang{margin-left:auto;margin-right:6px}
@@ -260,7 +271,7 @@ footer a:hover{color:var(--ink)}
       <a href="#intro">How it works</a>
       <a href="#features">Features</a>
       <a href="#pricing">Pricing</a>
-      <a href="#register" class="btn sm">Get early access</a>
+      <a href="#pricing" class="btn sm">Get early access</a>
     </nav>
     <div class="lang" role="group" aria-label="Language / Idioma">
       <button type="button" data-lang="en" aria-pressed="true" aria-label="English">EN</button>
@@ -275,11 +286,146 @@ footer a:hover{color:var(--ink)}
 <main id="top">
   <section class="hero">
     <div class="wrap">
-      <form class="reg reveal" id="register" novalidate>
+
+      <div class="hero-main">
+      <div class="eyebrow reveal">Call Me Alicia</div>
+      <h1 class="reveal d1">You’re far away.<br>They’re never alone.</h1>
+      <p class="lede reveal d2">Alicia calls your parents back home every day, in the Spanish they grew up with — and tells you how they’re doing, wherever you live.</p>
+      <div class="ctas reveal d2">
+        <a href="#pricing" class="btn">Choose your plan</a>
+        <a href="#intro" class="link">See how it works ›</a>
+      </div>
+      <div class="orb reveal d3" aria-hidden="true">
+        <svg viewBox="0 0 460 460">
+          <circle cx="230" cy="230" r="228" fill="none" stroke="#B0502D" stroke-opacity=".08"/>
+          <g class="halo">
+            <circle cx="230" cy="230" r="186" fill="#B0502D" fill-opacity=".03" stroke="#B0502D" stroke-opacity=".12"/>
+            <circle cx="230" cy="230" r="140" fill="#B0502D" fill-opacity=".06"/>
+          </g>
+          <circle class="core" cx="230" cy="230" r="96" fill="#B0502D"/>
+          <g class="bars" stroke="#fff" stroke-width="5" stroke-linecap="round">
+            <line x1="190" y1="222" x2="190" y2="238"/><line x1="206" y1="208" x2="206" y2="252"/>
+            <line x1="222" y1="196" x2="222" y2="264"/><line x1="238" y1="212" x2="238" y2="248"/>
+            <line x1="254" y1="200" x2="254" y2="260"/><line x1="270" y1="218" x2="270" y2="242"/>
+          </g>
+        </svg>
+        <div class="pill"><i></i><span>Calling Mom in Bogotá · 9:00 a.m.</span></div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="intro" id="intro">
+    <div class="wrap">
+      <p class="reveal">You call when you can. Alicia calls every day. <span>A warm voice that sounds like home, listens without rushing, and lets you know how they’re really doing.</span></p>
+    </div>
+  </section>
+
+  <section class="features" id="features">
+    <div class="wrap">
+      <div class="head">
+        <h2 class="h2 reveal">Made for families who love from afar.</h2>
+        <p class="reveal d1">Everything Alicia does is designed so they feel accompanied — and you feel close.</p>
+      </div>
+      <div class="grid">
+        <div class="feat reveal"><svg viewBox="0 0 24 24"><path d="M4 5h9a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M17 9h3a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1v3l-3-3h-2"/></svg><h3>Their Spanish, from home</h3><p>Alicia speaks with the everyday expressions of their country — Colombian, Mexican, Peruvian — and switches to English if they do.</p></div>
+        <div class="feat reveal d1"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M9 7h6M9 11h6M9 15h3"/></svg><h3>A note for you after every call</h3><p>A short text tells you how the conversation went — and lets you know if they didn’t pick up.</p></div>
+        <div class="feat reveal d2"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><h3>Alerts when something’s off</h3><p>If they mention a fall, strong pain or something worrying, you’ll hear about it right away.</p></div>
+        <div class="feat reveal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><h3>Across borders and time zones</h3><p>You live in Miami, Madrid or Toronto; they live in Bogotá, Lima or Guatemala City. Alicia calls at the hour that suits them.</p></div>
+        <div class="feat reveal d1"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg><h3>On guard against scams</h3><p>Alicia never asks for money or personal data, and helps them spot “fake relative” calls and suspicious requests.</p></div>
+        <div class="feat reveal d2"><svg viewBox="0 0 24 24"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><h3>Honest, simple, their choice</h3><p>No app to learn — they just answer the phone. Alicia always says she’s an AI, and calls start only when they say yes.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="moments" id="moments">
+    <div class="wrap">
+      <div class="center">
+        <h2 class="h2 reveal">One call, two kinds of calm.</h2>
+        <p class="reveal d1">Company for them. Peace of mind for you.</p>
+      </div>
+      <div class="gallery">
+        <!-- To add a photo: put the image in the /img folder and add <img src="img/morning.jpg" alt="..."> inside the tile, then remove the .ph line -->
+        <figure class="tile big reveal" style="margin:0">
+          <span class="ph">[Photo: a woman laughing on the phone at her kitchen table]</span>
+          <figcaption class="cap"><small>9:00 a.m. · Bogotá</small><strong>Morning coffee, together.</strong></figcaption>
+        </figure>
+        <figure class="tile reveal d1" style="margin:0">
+          <span class="ph">[Photo: hands tending a garden]</span>
+          <figcaption class="cap"><small>1:30 p.m. · Lima</small><strong>How are the tomatoes?</strong></figcaption>
+        </figure>
+        <figure class="tile dark reveal d2" style="margin:0">
+          <span class="ph">[Photo: a woman abroad smiling at a text on her phone]</span>
+          <figcaption class="cap"><small>For you · 7:05 p.m. · Miami</small><strong>“Mom talked about her garden. She’s doing well.”</strong></figcaption>
+        </figure>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing" id="pricing">
+    <div class="wrap">
+      <div class="center">
+        <span class="step-lbl reveal">Step 1 of 2</span>
+        <h2 class="h2 reveal">Choose how often Alicia calls.</h2>
+        <p class="reveal d1">Every plan starts with a 7-day free trial.</p>
+      </div>
+      <div class="plans">
+        <div class="plan reveal">
+          <h3>Essential</h3>
+          <div class="price"><span class="amt">$19.99</span><span class="per">/month</span></div>
+          <ul>
+            <li class="em">3 calls a week</li>
+            <li class="em">Up to 8 min per call</li>
+            <li>Their Spanish, from home</li>
+            <li>Remembers your last conversation</li>
+            <li>A note for you after every call</li>
+            <li>Alerts when something’s off</li>
+          </ul>
+          <a href="#register" class="btn" data-plan="esencial">Start a 7-day free trial</a>
+        </div>
+        <div class="plan reveal featured">
+          <span class="badge">Most popular</span>
+          <h3>Daily</h3>
+          <div class="price"><span class="amt">$34.99</span><span class="per">/month</span></div>
+          <ul>
+            <li class="em">A call every day</li>
+            <li class="em">Up to 5 min per call</li>
+            <li>Their Spanish, from home</li>
+            <li>Remembers your last conversation</li>
+            <li>A note for you after every call</li>
+            <li>Alerts when something’s off</li>
+          </ul>
+          <a href="#register" class="btn" data-plan="diario">Start a 7-day free trial</a>
+        </div>
+        <div class="plan reveal">
+          <h3>Plus</h3>
+          <div class="price"><span class="amt">$59.99</span><span class="per">/month</span></div>
+          <ul>
+            <li class="em">A call every day</li>
+            <li class="em">Up to 10 min per call</li>
+            <li>Their Spanish, from home</li>
+            <li>Remembers your last conversation</li>
+            <li>A note for you after every call</li>
+            <li>Alerts when something’s off</li>
+          </ul>
+          <a href="#register" class="btn" data-plan="plus">Start a 7-day free trial</a>
+        </div>
+      </div>
+      <p class="note reveal">Prices in US dollars. Cancel anytime. Early access: no card needed during the pilot.</p>
+    </div>
+  </section>
+
+  <section class="signup" id="signup" hidden>
+    <div class="wrap">
+      <form class="reg" id="register" novalidate>
         <div id="formBody" class="reg-body">
-        <h2 data-t="title">Start Alicia’s calls</h2>
-        <p class="sub" data-t="sub">Two minutes to set up — for your mom, your dad, or yourself.</p>
-        <p class="plan-pick" id="planPick" hidden></p>
+        <div class="step-head">
+          <span class="step-lbl" data-t="step">Step 2 of 2</span>
+          <span class="plan-pick" id="planPick"></span>
+          <a href="#pricing" class="change" data-t="change">Change</a>
+        </div>
+        <h2 data-t="title">Call details</h2>
+        <p class="sub" data-t="sub">Tell us who Alicia will call, and when.</p>
 
         <fieldset class="who">
           <legend class="sr" data-t="whoLegend">Who is it for?</legend>
@@ -403,137 +549,13 @@ footer a:hover{color:var(--ink)}
           <button type="button" class="btn2" id="againBtn"></button>
         </div>
       </form>
-
-      <div class="hero-main">
-      <div class="eyebrow reveal">Call Me Alicia</div>
-      <h1 class="reveal d1">You’re far away.<br>They’re never alone.</h1>
-      <p class="lede reveal d2">Alicia calls your parents back home every day, in the Spanish they grew up with — and tells you how they’re doing, wherever you live.</p>
-      <div class="ctas reveal d2">
-        <a href="#intro" class="link">See how it works ›</a>
-      </div>
-      <div class="orb reveal d3" aria-hidden="true">
-        <svg viewBox="0 0 460 460">
-          <circle cx="230" cy="230" r="228" fill="none" stroke="#B0502D" stroke-opacity=".08"/>
-          <g class="halo">
-            <circle cx="230" cy="230" r="186" fill="#B0502D" fill-opacity=".03" stroke="#B0502D" stroke-opacity=".12"/>
-            <circle cx="230" cy="230" r="140" fill="#B0502D" fill-opacity=".06"/>
-          </g>
-          <circle class="core" cx="230" cy="230" r="96" fill="#B0502D"/>
-          <g class="bars" stroke="#fff" stroke-width="5" stroke-linecap="round">
-            <line x1="190" y1="222" x2="190" y2="238"/><line x1="206" y1="208" x2="206" y2="252"/>
-            <line x1="222" y1="196" x2="222" y2="264"/><line x1="238" y1="212" x2="238" y2="248"/>
-            <line x1="254" y1="200" x2="254" y2="260"/><line x1="270" y1="218" x2="270" y2="242"/>
-          </g>
-        </svg>
-        <div class="pill"><i></i><span>Calling Mom in Bogotá · 9:00 a.m.</span></div>
-      </div>
-      </div>
-    </div>
-  </section>
-
-  <section class="intro" id="intro">
-    <div class="wrap">
-      <p class="reveal">You call when you can. Alicia calls every day. <span>A warm voice that sounds like home, listens without rushing, and lets you know how they’re really doing.</span></p>
-    </div>
-  </section>
-
-  <section class="features" id="features">
-    <div class="wrap">
-      <div class="head">
-        <h2 class="h2 reveal">Made for families who love from afar.</h2>
-        <p class="reveal d1">Everything Alicia does is designed so they feel accompanied — and you feel close.</p>
-      </div>
-      <div class="grid">
-        <div class="feat reveal"><svg viewBox="0 0 24 24"><path d="M4 5h9a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M17 9h3a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1v3l-3-3h-2"/></svg><h3>Their Spanish, from home</h3><p>Alicia speaks with the everyday expressions of their country — Colombian, Mexican, Peruvian — and switches to English if they do.</p></div>
-        <div class="feat reveal d1"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M9 7h6M9 11h6M9 15h3"/></svg><h3>A note for you after every call</h3><p>A short text tells you how the conversation went — and lets you know if they didn’t pick up.</p></div>
-        <div class="feat reveal d2"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><h3>Alerts when something’s off</h3><p>If they mention a fall, strong pain or something worrying, you’ll hear about it right away.</p></div>
-        <div class="feat reveal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><h3>Across borders and time zones</h3><p>You live in Miami, Madrid or Toronto; they live in Bogotá, Lima or Guatemala City. Alicia calls at the hour that suits them.</p></div>
-        <div class="feat reveal d1"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg><h3>On guard against scams</h3><p>Alicia never asks for money or personal data, and helps them spot “fake relative” calls and suspicious requests.</p></div>
-        <div class="feat reveal d2"><svg viewBox="0 0 24 24"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg><h3>Honest, simple, their choice</h3><p>No app to learn — they just answer the phone. Alicia always says she’s an AI, and calls start only when they say yes.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <section class="moments" id="moments">
-    <div class="wrap">
-      <div class="center">
-        <h2 class="h2 reveal">One call, two kinds of calm.</h2>
-        <p class="reveal d1">Company for them. Peace of mind for you.</p>
-      </div>
-      <div class="gallery">
-        <!-- To add a photo: put the image in the /img folder and add <img src="img/morning.jpg" alt="..."> inside the tile, then remove the .ph line -->
-        <figure class="tile big reveal" style="margin:0">
-          <span class="ph">[Photo: a woman laughing on the phone at her kitchen table]</span>
-          <figcaption class="cap"><small>9:00 a.m. · Bogotá</small><strong>Morning coffee, together.</strong></figcaption>
-        </figure>
-        <figure class="tile reveal d1" style="margin:0">
-          <span class="ph">[Photo: hands tending a garden]</span>
-          <figcaption class="cap"><small>1:30 p.m. · Lima</small><strong>How are the tomatoes?</strong></figcaption>
-        </figure>
-        <figure class="tile dark reveal d2" style="margin:0">
-          <span class="ph">[Photo: a woman abroad smiling at a text on her phone]</span>
-          <figcaption class="cap"><small>For you · 7:05 p.m. · Miami</small><strong>“Mom talked about her garden. She’s doing well.”</strong></figcaption>
-        </figure>
-      </div>
-    </div>
-  </section>
-
-  <section class="pricing" id="pricing">
-    <div class="wrap">
-      <div class="center">
-        <h2 class="h2 reveal">Choose how often Alicia calls.</h2>
-        <p class="reveal d1">Every plan starts with a 7-day free trial.</p>
-      </div>
-      <div class="plans">
-        <div class="plan reveal">
-          <h3>Essential</h3>
-          <div class="price"><span class="amt">$19.99</span><span class="per">/month</span></div>
-          <ul>
-            <li class="em">3 calls a week</li>
-            <li class="em">Up to 8 min per call</li>
-            <li>Their Spanish, from home</li>
-            <li>Remembers your last conversation</li>
-            <li>A note for you after every call</li>
-            <li>Alerts when something’s off</li>
-          </ul>
-          <a href="#register" class="btn" data-plan="esencial">Start a 7-day free trial</a>
-        </div>
-        <div class="plan reveal featured">
-          <span class="badge">Most popular</span>
-          <h3>Daily</h3>
-          <div class="price"><span class="amt">$34.99</span><span class="per">/month</span></div>
-          <ul>
-            <li class="em">A call every day</li>
-            <li class="em">Up to 5 min per call</li>
-            <li>Their Spanish, from home</li>
-            <li>Remembers your last conversation</li>
-            <li>A note for you after every call</li>
-            <li>Alerts when something’s off</li>
-          </ul>
-          <a href="#register" class="btn" data-plan="diario">Start a 7-day free trial</a>
-        </div>
-        <div class="plan reveal">
-          <h3>Plus</h3>
-          <div class="price"><span class="amt">$59.99</span><span class="per">/month</span></div>
-          <ul>
-            <li class="em">A call every day</li>
-            <li class="em">Up to 10 min per call</li>
-            <li>Their Spanish, from home</li>
-            <li>Remembers your last conversation</li>
-            <li>A note for you after every call</li>
-            <li>Alerts when something’s off</li>
-          </ul>
-          <a href="#register" class="btn" data-plan="plus">Start a 7-day free trial</a>
-        </div>
-      </div>
-      <p class="note reveal">Prices in US dollars. Cancel anytime. Early access: no card needed during the pilot.</p>
     </div>
   </section>
 
   <section class="cta" id="start">
     <div class="wrap">
       <h2 class="h2 reveal">Give your parents someone to talk to — every single day.</h2>
-      <a href="#register" class="btn reveal d1">Get early access</a>
+      <a href="#pricing" class="btn reveal d1">Get early access</a>
       <p class="reveal d2">Now testing with families in the United States and Colombia.</p>
     </div>
   </section>
@@ -587,7 +609,7 @@ var CONFIG={
 
 (function(){
   var L={es:{
-    title:'Activa las llamadas de Alicia',sub:'Se configura en dos minutos, para tu mamá, tu papá o para ti.',
+    title:'Datos de la llamada',sub:'Cuéntanos a quién llamará Alicia y a qué hora.',step:'Paso 2 de 2',change:'Cambiar',
     whoLegend:'¿Para quién es?',forMe:'Para mí',forLoved:'Para mi mamá o papá',
     rname:'Tu nombre',rphone:'Tu número de celular',rphoneHint:'Lo guardaremos como contacto de emergencia.',
     nameSelf:'Nombre completo',nameLoved:'Nombre de tu ser querido',
@@ -628,7 +650,7 @@ var CONFIG={
     pSave:'Guardar',pSaving:'Guardando…',pSaved:'¡Guardado! Alicia lo tendrá en cuenta desde la próxima llamada.',
     likes:['Música','Viajes','Cocina','Jardín','Libros','Películas','Fotografía','Fútbol','Ejercicio','Mascotas','Manualidades','Teatro y arte','Naturaleza','Bienestar','Rock y metal']
   },en:{
-    title:'Start Alicia’s calls',sub:'Two minutes to set up — for your mom, your dad, or yourself.',
+    title:'Call details',sub:'Tell us who Alicia will call, and when.',step:'Step 2 of 2',change:'Change',
     whoLegend:'Who is it for?',forMe:'For me',forLoved:'For my mom or dad',
     rname:'Your name',rphone:'Your mobile number',rphoneHint:'We’ll save it as the emergency contact.',
     nameSelf:'Full name',nameLoved:'Your loved one’s name',
@@ -676,6 +698,7 @@ var CONFIG={
     ['.links a',['Cómo funciona','Características','Precios','Acceso anticipado']],
     ['.hero h1',['Tú lejos.<br>Ellos acompañados.']],
     ['.hero .lede',['Alicia llama a tus papás todos los días, en el español de su tierra, y te cuenta cómo están, vivas donde vivas.']],
+    ['.hero .ctas .btn',['Elige tu plan']],
     ['.hero .link',['Mira cómo funciona ›']],
     ['.pill span',['Llamando a mamá en Bogotá · 9:00 a.m.']],
     ['.intro p',['Tú llamas cuando puedes. Alicia llama todos los días. <span>Una voz cálida que suena a casa, escucha sin afán y te cuenta cómo están de verdad.</span>']],
@@ -688,6 +711,7 @@ var CONFIG={
     ['.tile .ph',['[Foto: una mujer riendo al teléfono en la mesa de su cocina]','[Foto: manos cuidando un jardín]','[Foto: una mujer en el exterior sonriendo al leer un mensaje]']],
     ['.tile small',['9:00 a.m. · Bogotá','1:30 p.m. · Lima','Para ti · 7:05 p.m. · Miami']],
     ['.tile strong',['El café de la mañana, en compañía.','¿Cómo van los tomates?','“Tu mamá habló de su jardín. Está bien.”']],
+    ['.pricing .step-lbl',['Paso 1 de 2']],
     ['.pricing .h2',['Elige cada cuánto llama Alicia.']],
     ['.pricing .center p',['Todos los planes empiezan con 7 días gratis.']],
     ['.plan h3',['Esencial','Diario','Plus']],
@@ -772,8 +796,11 @@ var CONFIG={
   }
 
   var selectedPlan='';
-  function renderPlan(){var el=$('planPick');if(!selectedPlan){el.hidden=true;return}el.hidden=false;el.textContent=T.planPick.replace('{plan}',T.plans[selectedPlan])}
-  document.querySelectorAll('[data-plan]').forEach(function(b){b.addEventListener('click',function(){selectedPlan=b.getAttribute('data-plan');renderPlan()})});
+  function renderPlan(){$('planPick').textContent=selectedPlan?T.planPick.replace('{plan}',T.plans[selectedPlan]):''}
+  function openSignup(plan){selectedPlan=plan;renderPlan();$('signup').hidden=false}
+  document.querySelectorAll('[data-plan]').forEach(function(b){b.addEventListener('click',function(){openSignup(b.getAttribute('data-plan'))})});
+  var qp=(location.search.match(/[?&]plan=(esencial|diario|plus)/)||[])[1];
+  if(qp){openSignup(qp);setTimeout(function(){$('register').scrollIntoView()},50)}
   function applyLang(l,save){
     LANG=l;T=L[l];document.documentElement.lang=l;
     PAGE.forEach(function(r){r.els.forEach(function(el,i){el.innerHTML=r[l][i]})});
