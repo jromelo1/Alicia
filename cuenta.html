@@ -59,6 +59,10 @@ input::placeholder,textarea::placeholder{color:#a1a1a6}
 .kv{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;font-size:15px;line-height:1.4}
 .kv dt{color:var(--muted)} .kv dd{margin:0;color:var(--ink);font-weight:500}
 .actions{display:flex;flex-wrap:wrap;gap:10px}
+.linkbtn{font:inherit;font-size:14px;border:0;background:none;color:var(--muted);cursor:pointer;padding:4px 0;text-decoration:underline;text-underline-offset:3px;align-self:flex-start}
+.confirm{border:1px solid #f1c4bf;background:#fdf5f4;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
+.confirm p{font-size:15px;line-height:1.5;color:var(--ink-2)}
+.btn.danger{background:var(--bad)}
 .switch{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;border:1px solid var(--line-2);border-radius:14px}
 .switch input{width:48px;min-width:48px;height:28px;padding:0;border:0;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:background .2s;box-shadow:none}
 .switch input::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
@@ -143,6 +147,11 @@ input::placeholder,textarea::placeholder{color:#a1a1a6}
       </div>
       <div class="actions" id="mpBox" hidden><a class="btn2" href="https://www.mercadopago.com.co/subscriptions" target="_blank" rel="noopener" data-t="manage"></a></div>
       <p class="hint" id="mpHint" hidden data-t="manageHint"></p>
+      <button type="button" class="linkbtn" id="cancelLink" hidden data-t="cancel"></button>
+      <div class="confirm" id="cancelBox" hidden>
+        <p><strong data-t="cancelQ"></strong> <span id="cancelText"></span></p>
+        <div class="actions"><button type="button" class="btn danger" id="cancelYes"><span class="spin"></span><span class="lbl" data-t="cancelYes"></span></button><button type="button" class="btn2" id="cancelNo" data-t="cancelNo"></button></div>
+      </div>
       <div class="msg" id="payMsg" role="status"></div>
     </section>
 
@@ -189,7 +198,8 @@ input::placeholder,textarea::placeholder{color:#a1a1a6}
 var CONFIG={
   firebase:{apiKey:'AIzaSyBhv_oCg5DHLhDABmAo-T95wWpudblk9NQ',authDomain:'alicia-53950.firebaseapp.com',projectId:'alicia-53950',messagingSenderId:'810691887855',appId:'1:810691887855:web:24bd5cbe9098b459ff111a'},
   sdk:'https://www.gstatic.com/firebasejs/10.12.2/',
-  subscribeUrl:'https://us-central1-alicia-53950.cloudfunctions.net/createSubscription'
+  subscribeUrl:'https://us-central1-alicia-53950.cloudfunctions.net/createSubscription',
+  cancelUrl:'https://us-central1-alicia-53950.cloudfunctions.net/cancelSubscription'
 };
 (function(){
   var L={es:{
@@ -207,8 +217,11 @@ var CONFIG={
     sTrial:'Prueba gratis',sTrialOver:'Prueba terminada',sActive:'Activo',sPending:'Pago pendiente',sPaused:'Pausado',sCancelled:'Cancelado',sPilot:'Piloto',
     perMonth:'/mes',email:'Correo de tu cuenta de Mercado Pago',pay:'Activar mi plan',payGo:'Abriendo Mercado Pago…',eEmail:'Escribe un correo válido.',
     payHint:'Pago seguro con Mercado Pago. No se cobra nada hasta que terminen los 7 días gratis.',payActive:'Este plan ya está activo.',
-    manage:'Ver o cancelar en Mercado Pago',manageHint:'Para cancelar o cambiar la tarjeta, entra a Mercado Pago con la cuenta que paga → Suscripciones.',
+    manage:'Cambiar tarjeta en Mercado Pago',manageHint:'Para cambiar la tarjeta, entra a Mercado Pago con la cuenta que paga → Suscripciones.',
     paidOk:'¡Gracias! Tu suscripción quedó registrada. Puede tardar un minuto en aparecer como activa.',
+    cancel:'Cancelar plan',cancelQ:'¿Seguro que quieres cancelar?',cancelPaid:'No se harán más cobros y Alicia seguirá llamando hasta el {date}, cuando termina el mes que ya pagaste.',cancelNow:'Las llamadas se detienen hoy y no se cobrará nada.',
+    cancelYes:'Sí, cancelar',cancelNo:'No, mantener mi plan',cancelling:'Cancelando…',cancelled:'Tu plan quedó cancelado. Puedes reactivarlo cuando quieras.',
+    kCallsUntil:'Llamadas hasta',kStopped:'Llamadas',stopped:'Detenidas',reactivate:'Reactivar mi plan',
     callTitle:'La llamada',time:'Hora',tz:'Zona horaria',daysEss:'Alicia llama los lunes, miércoles y viernes, hasta 8 minutos.',daysDiario:'Alicia llama todos los días, hasta 5 minutos.',daysPlus:'Alicia llama todos los días, hasta 10 minutos.',daysNone:'Alicia llama todos los días.',
     enabled:'Llamadas activas',enabledHint:'Apágalo para pausar las llamadas (por ejemplo, en un viaje).',
     aboutTitle:'Lo que Alicia sabe',aboutSub:'Así cada conversación es más personal. Todo es opcional.',
@@ -234,8 +247,11 @@ var CONFIG={
     sTrial:'Free trial',sTrialOver:'Trial ended',sActive:'Active',sPending:'Payment pending',sPaused:'Paused',sCancelled:'Cancelled',sPilot:'Pilot',
     perMonth:'/month',email:'Email of your Mercado Pago account',pay:'Activate my plan',payGo:'Opening Mercado Pago…',eEmail:'Enter a valid email.',
     payHint:'Secure payment with Mercado Pago. Nothing is charged until your 7-day free trial ends.',payActive:'This plan is already active.',
-    manage:'View or cancel in Mercado Pago',manageHint:'To cancel or change your card, sign in to Mercado Pago with the paying account → Subscriptions.',
+    manage:'Change card in Mercado Pago',manageHint:'To change your card, sign in to Mercado Pago with the paying account → Subscriptions.',
     paidOk:'Thank you! Your subscription is set up. It may take a minute to show as active.',
+    cancel:'Cancel plan',cancelQ:'Are you sure you want to cancel?',cancelPaid:'There will be no more charges, and Alicia will keep calling until {date}, when the month you already paid ends.',cancelNow:'Calls stop today and nothing will be charged.',
+    cancelYes:'Yes, cancel',cancelNo:'No, keep my plan',cancelling:'Cancelling…',cancelled:'Your plan is cancelled. You can reactivate it anytime.',
+    kCallsUntil:'Calls until',kStopped:'Calls',stopped:'Stopped',reactivate:'Reactivate my plan',
     callTitle:'The call',time:'Time',tz:'Time zone',daysEss:'Alicia calls on Mondays, Wednesdays and Fridays, up to 8 minutes.',daysDiario:'Alicia calls every day, up to 5 minutes.',daysPlus:'Alicia calls every day, up to 10 minutes.',daysNone:'Alicia calls every day.',
     enabled:'Calls on',enabledHint:'Turn off to pause calls (for example, during a trip).',
     aboutTitle:'What Alicia knows',aboutSub:'It makes every conversation more personal. Everything is optional.',
@@ -339,6 +355,9 @@ var CONFIG={
     if(st.k==='trial')add(T.kTrial,fmtDate(st.until));
     if(st.k==='active'&&b.nextPaymentDate)add(T.kNext,fmtDate(Date.parse(b.nextPaymentDate)));
     if(b.payerEmail&&(st.k==='active'||st.k==='paused'))add(T.kPayer,b.payerEmail);
+    if(st.k==='cancelled'){if((b.paidUntil||0)>Date.now())add(T.kCallsUntil,fmtDate(b.paidUntil));else add(T.kStopped,T.stopped)}
+    $('payBtn').querySelector('.lbl').textContent=st.k==='cancelled'?T.reactivate:T.pay;
+    $('cancelLink').hidden=!(c.plan&&st.k!=='cancelled'&&CONFIG.cancelUrl);$('cancelBox').hidden=true;
     var needsPay=!!c.plan&&st.k!=='active'&&st.k!=='paused'&&!!CONFIG.subscribeUrl;
     $('payBox').hidden=!needsPay;$('mpBox').hidden=!(st.k==='active'||st.k==='paused');$('mpHint').hidden=$('mpBox').hidden;
     if(needsPay&&!$('email').value&&b.payerEmail)$('email').value=b.payerEmail;
@@ -453,6 +472,27 @@ var CONFIG={
       .then(function(x){if(x.ok&&x.j.url){try{sessionStorage.setItem('payBack','cuenta')}catch(e){}location.href=x.j.url;return}
         if(x.status===409){stop(T.payActive);return}stop(T.fail+' ('+x.status+(x.j&&x.j.error?' · '+x.j.error:'')+')')})
       .catch(function(e){console.error(e);stop(T.fail)});
+  });
+
+  // ---- cancel ----
+  $('cancelLink').addEventListener('click',function(){
+    var b=circle.billing||{},np=Date.parse(b.nextPaymentDate||'');
+    $('cancelText').textContent=b.status==='authorized'&&np>Date.now()?T.cancelPaid.replace('{date}',fmtDate(np)):T.cancelNow;
+    $('cancelBox').hidden=false;$('cancelLink').hidden=true;$('cancelYes').focus();
+  });
+  $('cancelNo').addEventListener('click',function(){$('cancelBox').hidden=true;$('cancelLink').hidden=false});
+  $('cancelYes').addEventListener('click',function(){
+    var btn=$('cancelYes'),lbl=btn.querySelector('.lbl'),pm=$('payMsg');pm.textContent='';pm.className='msg';
+    btn.classList.add('loading');btn.disabled=true;lbl.textContent=T.cancelling;
+    function stop(t){btn.classList.remove('loading');btn.disabled=false;lbl.textContent=T.cancelYes;pm.textContent=t}
+    user.getIdToken().then(function(tok){
+      return fetch(CONFIG.cancelUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({circleId:circleId})});
+    }).then(function(r){return r.json().catch(function(){return {}}).then(function(j){return {ok:r.ok,status:r.status,j:j}})})
+      .then(function(x){
+        if(!x.ok){stop(T.fail+' ('+x.status+(x.j&&x.j.error?' · '+x.j.error:'')+')');return}
+        circle.billing=circle.billing||{};circle.billing.status='cancelled';circle.billing.paidUntil=x.j.paidUntil||Date.now();
+        btn.classList.remove('loading');btn.disabled=false;lbl.textContent=T.cancelYes;render();pm.className='msg ok';pm.textContent=T.cancelled;
+      }).catch(function(e){console.error(e);stop(T.fail)});
   });
 
   $('outBtn').addEventListener('click',function(){fb.A.signOut(fb.auth).then(function(){location.reload()})});
