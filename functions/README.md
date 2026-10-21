@@ -174,7 +174,7 @@ Si se cancela desde Mercado Pago, el webhook hace lo mismo.
 
 ## Baja y eliminación de datos
 
-- **"No me llames más" en la llamada:** agrega en Retell → Post-Call Analysis un campo Boolean
+- **"No me llames más" en la llamada:** activa en el agente "Do-not-contact Handling (DNC)" (Retell cuelga con `user_requested_dnc`) y/o agrega en Retell → Post-Call Analysis un campo Boolean
   `no_llamar` ("true si la persona pidió que Alicia no la vuelva a llamar"). Si llega en true,
   el webhook pone `callProfile.callEnabled = false` y avisa a la familia (aviso OPTOUT).
 - **SMS:** todos llevan "Baja: callmealicia.com/baja". En Mi cuenta cada familiar puede apagar

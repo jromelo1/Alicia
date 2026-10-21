@@ -322,7 +322,9 @@ export const retellWebhook = onRequest(
       logger.info(`retellWebhook: disconnection_reason="${call.disconnection_reason ?? ""}"`);
       const status = resolveCallStatus(call.disconnection_reason, call.call_analysis);
       const { alert, reason: alertReason } = readAlert(call.call_analysis);
-      const optOut = readOptOut(call.call_analysis);
+      // "No me llames más": la opción DNC de Retell (cuelga con disconnection_reason
+      // "user_requested_dnc") o el campo de análisis post-llamada `no_llamar`.
+      const optOut = call.disconnection_reason === "user_requested_dnc" || readOptOut(call.call_analysis);
 
       const circleRef = db.collection("circles").doc(circleId);
       const historyRef = circleRef.collection("callHistory").doc(call.call_id);
