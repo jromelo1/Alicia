@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 262" role="img" aria-label="Call Me Alicia — Una voz que acompaña">
+  <rect width="420" height="262" fill="#F4ECE1"/>
+  <g transform="translate(120 18) scale(1.5)">
+    <g fill="none" stroke-linecap="round">
+      <path d="M20 24c-14 16-14 40 0 56" stroke="#F0D49A" stroke-width="6"/>
+      <path d="M100 24c14 16 14 40 0 56" stroke="#F0D49A" stroke-width="6"/>
+      <path d="M32 33c-9 11-9 27 0 38" stroke="#A8C0A2" stroke-width="6"/>
+      <path d="M88 33c9 11 9 27 0 38" stroke="#A8C0A2" stroke-width="6"/>
+    </g>
+    <g fill="#E8BC5C">
+      <path d="M60 3l5 10H55z"/><path d="M42 11l9 3-7 6z"/><path d="M78 11l-2 9-7-6z"/>
+      <path d="M60 25a27 27 0 1 0 15.4 49.2L86 82l-3.6-13.4A27 27 0 0 0 60 25z"/>
+    </g>
+    <g fill="none" stroke="#FBF3E6" stroke-width="3.6" stroke-linecap="round">
+      <path d="M47.5 47.5q4.5-5 9 0"/><path d="M63.5 47.5q4.5-5 9 0"/><path d="M50 57.5q10 9 20 0"/>
+    </g>
+  </g>
+  <text x="210" y="204" text-anchor="middle" font-family="Geist,Helvetica,Arial,sans-serif" font-size="44" font-weight="600" letter-spacing="-1"><tspan fill="#D9A63E">Call Me </tspan><tspan fill="#97B28F">Alicia</tspan></text>
+  <text x="210" y="240" text-anchor="middle" font-family="Geist,Helvetica,Arial,sans-serif" font-size="20" fill="#5E6656">Una voz que acompaña</text>
+</svg>
