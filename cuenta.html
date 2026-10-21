@@ -133,28 +133,6 @@ input::placeholder,textarea::placeholder{color:#a1a1a6}
       <p class="sub" id="helloSub" style="margin-top:6px"></p>
     </div>
 
-    <section class="card" aria-labelledby="h-plan">
-      <div class="card-h"><h2 id="h-plan" data-t="planTitle"></h2><span class="pill" id="planPill"></span></div>
-      <dl class="kv" id="planKv"></dl>
-      <div id="payBox" hidden style="display:flex;flex-direction:column;gap:12px">
-        <div class="field" id="f-email">
-          <label for="email" data-t="email"></label>
-          <input id="email" type="email" inputmode="email" autocomplete="email" maxlength="254">
-          <div class="err" id="e-email"></div>
-        </div>
-        <button type="button" class="btn full" id="payBtn"><span class="spin"></span><span class="lbl" data-t="pay"></span></button>
-        <p class="hint" data-t="payHint"></p>
-      </div>
-      <div class="actions" id="mpBox" hidden><a class="btn2" href="https://www.mercadopago.com.co/subscriptions" target="_blank" rel="noopener" data-t="manage"></a></div>
-      <p class="hint" id="mpHint" hidden data-t="manageHint"></p>
-      <button type="button" class="linkbtn" id="cancelLink" hidden data-t="cancel"></button>
-      <div class="confirm" id="cancelBox" hidden>
-        <p><strong data-t="cancelQ"></strong> <span id="cancelText"></span></p>
-        <div class="actions"><button type="button" class="btn danger" id="cancelYes"><span class="spin"></span><span class="lbl" data-t="cancelYes"></span></button><button type="button" class="btn2" id="cancelNo" data-t="cancelNo"></button></div>
-      </div>
-      <div class="msg" id="payMsg" role="status"></div>
-    </section>
-
     <section class="card" aria-labelledby="h-call">
       <h2 id="h-call" data-t="callTitle"></h2>
       <p class="hint" id="daysLine"></p>
@@ -186,6 +164,28 @@ input::placeholder,textarea::placeholder{color:#a1a1a6}
     <section class="card" aria-labelledby="h-calls">
       <h2 id="h-calls" data-t="callsTitle"></h2>
       <ul class="calls" id="calls"></ul>
+    </section>
+
+    <section class="card" aria-labelledby="h-plan">
+      <div class="card-h"><h2 id="h-plan" data-t="planTitle"></h2><span class="pill" id="planPill"></span></div>
+      <dl class="kv" id="planKv"></dl>
+      <div id="payBox" hidden style="display:flex;flex-direction:column;gap:12px">
+        <div class="field" id="f-email">
+          <label for="email" data-t="email"></label>
+          <input id="email" type="email" inputmode="email" autocomplete="email" maxlength="254">
+          <div class="err" id="e-email"></div>
+        </div>
+        <button type="button" class="btn full" id="payBtn"><span class="spin"></span><span class="lbl" data-t="pay"></span></button>
+        <p class="hint" data-t="payHint"></p>
+      </div>
+      <div class="actions" id="mpBox" hidden><a class="btn2" href="https://www.mercadopago.com.co/subscriptions" target="_blank" rel="noopener" data-t="manage"></a></div>
+      <p class="hint" id="mpHint" hidden data-t="manageHint"></p>
+      <button type="button" class="linkbtn" id="cancelLink" hidden data-t="cancel"></button>
+      <div class="confirm" id="cancelBox" hidden>
+        <p><strong data-t="cancelQ"></strong> <span id="cancelText"></span></p>
+        <div class="actions"><button type="button" class="btn danger" id="cancelYes"><span class="spin"></span><span class="lbl" data-t="cancelYes"></span></button><button type="button" class="btn2" id="cancelNo" data-t="cancelNo"></button></div>
+      </div>
+      <div class="msg" id="payMsg" role="status"></div>
     </section>
 
     <p class="foot"><span data-t="codeLbl"></span> <strong id="circleCode"></strong> · <a href="terminos.html" data-t="terms"></a> · <a href="privacidad.html" data-t="privacy"></a> · <a href="mailto:hello@callmealicia.com">hello@callmealicia.com</a></p>

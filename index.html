@@ -249,7 +249,8 @@ footer a:hover{color:var(--ink)}
 .done .save-num{font-size:15px;line-height:1.5;color:var(--ink-2);background:#fbf1ec;border-radius:12px;padding:12px 14px}
 .done .save-num strong{white-space:nowrap}
 
-.done .pay{width:100%;text-align:left;display:flex;flex-direction:column;gap:12px}
+.done .pay{width:100%;text-align:left;display:flex;flex-direction:column;gap:12px;margin-top:6px;padding-top:22px;border-top:1px solid var(--line-2)}
+.done .pay h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0}
 .done .pay-btn{width:100%;min-height:54px;font-size:17px}
 .paid-banner{position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:60;width:min(560px,calc(100% - 32px));background:#1f7a4d;color:#fff;border-radius:14px;padding:14px 44px 14px 16px;font-size:15px;line-height:1.45;box-shadow:0 10px 30px rgba(0,0,0,.18)}
 .paid-banner button{position:absolute;right:8px;top:8px;background:none;border:0;color:#fff;font-size:20px;line-height:1;padding:6px;cursor:pointer}
@@ -547,17 +548,6 @@ footer a:hover{color:var(--ink)}
           <div class="code-box"><span id="doneCodeLabel"></span><strong id="doneCode"></strong></div>
           <p class="hint" id="doneCodeHint"></p>
           <p class="save-num" id="doneNumber"></p>
-          <div class="pay" id="pay" hidden>
-            <div class="field" id="f-email">
-              <label for="email" data-t="email">Email for your subscription</label>
-              <input id="email" type="email" inputmode="email" autocomplete="email" maxlength="254" aria-describedby="e-email">
-              <div class="err" id="e-email" role="alert"></div>
-            </div>
-            <button type="button" class="btn pay-btn" id="payBtn"><span class="spin"></span><span class="lbl"></span></button>
-            <p class="hint" id="payHint"></p>
-            <div class="msg" id="paymsg" role="status" aria-live="polite"></div>
-          </div>
-
           <div class="prefs" id="prefs">
             <h3 data-t="pTitle">Tell Alicia a little more</h3>
             <p class="hint" data-t="pSub">Optional — it makes every conversation more personal.</p>
@@ -594,6 +584,18 @@ footer a:hover{color:var(--ink)}
             </div>
             <button type="button" class="btn" id="prefsBtn"><span class="spin"></span><span class="lbl" data-t="pSave">Save</span></button>
             <div class="msg" id="pmsg" role="status" aria-live="polite"></div>
+          </div>
+
+          <div class="pay" id="pay" hidden>
+            <h3 data-t="payTitle">Activate your plan</h3>
+            <div class="field" id="f-email">
+              <label for="email" data-t="email">Email for your subscription</label>
+              <input id="email" type="email" inputmode="email" autocomplete="email" maxlength="254" aria-describedby="e-email">
+              <div class="err" id="e-email" role="alert"></div>
+            </div>
+            <button type="button" class="btn pay-btn" id="payBtn"><span class="spin"></span><span class="lbl"></span></button>
+            <p class="hint" id="payHint"></p>
+            <div class="msg" id="paymsg" role="status" aria-live="polite"></div>
           </div>
 
           <button type="button" class="btn2" id="againBtn"></button>
@@ -695,7 +697,7 @@ var CONFIG={
     doneCodeLabel:'Código del círculo',
     doneCodeHint:'Guárdalo: sirve para conectar la app y ver el resumen de cada llamada.',
     again:'Registrar a otra persona',
-    pay:'Activar mi plan · 7 días gratis',payHint:'Pago seguro con Mercado Pago. No se cobra nada durante los 7 días de prueba y puedes cancelar cuando quieras.',
+    payTitle:'Activa tu plan',pay:'Activar mi plan · 7 días gratis',payHint:'Pago seguro con Mercado Pago. No se cobra nada durante los 7 días de prueba y puedes cancelar cuando quieras.',
     email:'Correo para la suscripción',eEmail:'Escribe un correo válido.',payGo:'Abriendo Mercado Pago…',payActive:'Este plan ya está activo. ¡Gracias!',
     paidBanner:'¡Gracias! Tu suscripción con Mercado Pago quedó registrada. No se cobra nada hasta que terminen los 7 días gratis.',close:'Cerrar',
     saveSelf:'Alicia te llamará desde el {num}. Guárdalo en tus contactos como “Alicia” para reconocerla.',saveLoved:'Alicia llamará desde el {num}. Pídele a {name} que lo guarde en sus contactos como “Alicia” para reconocerla.',
@@ -740,7 +742,7 @@ var CONFIG={
     doneCodeLabel:'Circle code',
     doneCodeHint:'Keep it: it connects the app so you can see a summary of every call.',
     again:'Register someone else',
-    pay:'Activate my plan · 7-day free trial',payHint:'Secure payment with Mercado Pago. Nothing is charged during the 7-day trial and you can cancel anytime.',
+    payTitle:'Activate your plan',pay:'Activate my plan · 7-day free trial',payHint:'Secure payment with Mercado Pago. Nothing is charged during the 7-day trial and you can cancel anytime.',
     email:'Email for your subscription',eEmail:'Enter a valid email.',payGo:'Opening Mercado Pago…',payActive:'This plan is already active. Thank you!',
     paidBanner:'Thank you! Your Mercado Pago subscription is set up. Nothing is charged until your 7-day free trial ends.',close:'Close',
     saveSelf:'Alicia will call you from {num}. Save it in your contacts as “Alicia” so you recognize her.',saveLoved:'Alicia will call from {num}. Ask {name} to save it in their contacts as “Alicia” so they recognize her.',
