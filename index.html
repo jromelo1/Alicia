@@ -324,6 +324,16 @@ footer a:hover{color:var(--ink)}
 .brand{display:inline-flex;align-items:center;gap:8px;text-decoration:none}.brand img{height:32px;width:auto;display:block}.brand .b1{color:#B9862A}.brand .b2{color:#6F9567}
 .brand img{height:80px}.brand{font-size:22px;gap:10px}
 @media (max-width:960px){.nav .wrap{height:80px}.brand img{height:60px}.brand{font-size:19px}.links{inset:80px 0 auto 0!important}}
+/* Banner */
+.banner+.hero{padding-top:clamp(40px,5vw,72px)}
+.banner{position:relative;min-height:clamp(380px,46vw,620px);display:flex;align-items:center;overflow:hidden;background:#e6c19c}
+.bn-img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:62% 50%}
+.bn-in{position:relative;width:100%;padding-top:48px;padding-bottom:48px}
+.bn-title{margin:0;color:#fff;font-size:clamp(44px,6.4vw,92px);line-height:1;font-weight:600;letter-spacing:-.035em;text-shadow:0 2px 24px rgba(40,20,10,.25)}
+.bn-sub{margin:18px 0 30px;max-width:520px;color:#fbefe3;font-size:clamp(17px,1.6vw,22px);line-height:1.45}
+.banner .bn-btn{background:#c96f4a;color:#fff;min-height:52px;padding:0 30px;font-size:17px}
+.banner .bn-btn:hover{background:#b45d3a}
+@media (max-width:700px){.bn-img{object-position:70% 50%}.banner::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(58,36,22,.15),rgba(58,36,22,.55))}.bn-in{z-index:1}.bn-sub{max-width:300px}}
 </style>
 </head>
 <body>
@@ -349,6 +359,14 @@ footer a:hover{color:var(--ink)}
 </header>
 
 <main id="top">
+  <section class="banner" aria-label="Call Me Alicia">
+    <img class="bn-img" src="img/banner-kitchen.svg" alt="" width="1600" height="700">
+    <div class="wrap bn-in">
+      <p class="bn-title">Call Me Alicia</p>
+      <p class="bn-sub">A voice that keeps your parents company — every day, wherever you are.</p>
+      <a href="#pricing" class="btn bn-btn">Start free</a>
+    </div>
+  </section>
   <section class="hero">
     <div class="wrap">
 
@@ -856,6 +874,8 @@ var CONFIG={
   // Spanish version of the rest of the page. English is the text already in the HTML.
   var PAGE_ES=[
     ['.links a',['Cómo funciona','Características','Precios','Mi cuenta','Empieza gratis']],
+    ['.bn-sub',['Una voz que acompaña a tus papás, todos los días, estés donde estés.']],
+    ['.bn-btn',['Empieza gratis']],
     ['.hero .eyebrow',['Compañía telefónica con IA para tus papás']],
     ['.hero h1',['Tú lejos.<br>Ellos acompañados.']],
     ['.hero .lede',['Alicia es una compañera con inteligencia artificial que llama por teléfono a tus papás todos los días: conversa con ellos, les pregunta cómo están y te cuenta cómo les fue.']],

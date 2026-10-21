@@ -1,0 +1,112 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 700" preserveAspectRatio="xMidYMid slice" role="img" aria-label="Cocina cálida por la mañana con un celular recibiendo la llamada de Alicia">
+  <defs>
+    <linearGradient id="wall" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#f1d9bf"/><stop offset="1" stop-color="#e6c19c"/>
+    </linearGradient>
+    <radialGradient id="sun" cx="0.36" cy="0.32" r="0.55">
+      <stop offset="0" stop-color="#fff4d6" stop-opacity=".95"/><stop offset=".45" stop-color="#fbe2b4" stop-opacity=".45"/><stop offset="1" stop-color="#f1d9bf" stop-opacity="0"/>
+    </radialGradient>
+    <pattern id="tiles" width="64" height="32" patternUnits="userSpaceOnUse">
+      <rect width="64" height="32" fill="#f7efe4"/>
+      <path d="M0 31.5h64M63.5 0v16M31.5 16v16" stroke="#e2d2bf" stroke-width="2"/>
+      <path d="M0 15.5h64" stroke="#e2d2bf" stroke-width="2"/>
+    </pattern>
+    <linearGradient id="wood" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c99a6b"/><stop offset="1" stop-color="#a87a4f"/></linearGradient>
+    <linearGradient id="kettle" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ee9b5c"/><stop offset="1" stop-color="#c8693a"/></linearGradient>
+    <radialGradient id="lamp" cx=".5" cy="0" r=".9"><stop offset="0" stop-color="#ffe7b3" stop-opacity=".9"/><stop offset="1" stop-color="#ffe7b3" stop-opacity="0"/></radialGradient>
+    <linearGradient id="shade" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0" stop-color="#3a2416" stop-opacity=".78"/><stop offset=".42" stop-color="#3a2416" stop-opacity=".45"/><stop offset=".68" stop-color="#3a2416" stop-opacity="0"/>
+    </linearGradient>
+  </defs>
+
+  <!-- wall + morning light -->
+  <rect width="1600" height="700" fill="url(#wall)"/>
+  <rect width="1600" height="700" fill="url(#sun)"/>
+
+  <!-- window -->
+  <g transform="translate(470 70)">
+    <rect width="300" height="230" rx="10" fill="#fff6df"/>
+    <rect x="12" y="12" width="276" height="206" rx="6" fill="#ffe9b8"/>
+    <circle cx="210" cy="80" r="38" fill="#ffd77a" opacity=".8"/>
+    <path d="M12 170c50-30 90-24 130-6s90 22 146-10v64H12z" fill="#cfe0b8" opacity=".9"/>
+    <path d="M150 12v206M12 115h276" stroke="#efe2cf" stroke-width="10"/>
+    <rect x="-14" y="226" width="328" height="16" rx="6" fill="#ead9c3"/>
+    <!-- plants on sill -->
+    <rect x="20" y="196" width="40" height="32" rx="6" fill="#d98a5a"/>
+    <path d="M40 196c-18-22-10-44 0-52 10 8 18 30 0 52zM40 196c-24-6-34-20-34-30 14-2 30 10 34 30zM40 196c22-8 32-22 32-32-14 0-30 12-32 32z" fill="#7ea36d"/>
+    <rect x="240" y="204" width="34" height="24" rx="6" fill="#efe2cf"/>
+    <path d="M257 204c-10-14-6-30 0-36 6 6 10 22 0 36z" fill="#93b07f"/>
+  </g>
+
+  <!-- upper cabinets -->
+  <g fill="#f3e8da" stroke="#e1d1bd" stroke-width="3">
+    <rect x="860" y="40" width="210" height="190" rx="8"/>
+    <rect x="1080" y="40" width="210" height="190" rx="8"/>
+    <rect x="1300" y="40" width="260" height="190" rx="8"/>
+  </g>
+  <g fill="#c9a983"><rect x="1050" y="170" width="8" height="40" rx="4"/><rect x="1092" y="170" width="8" height="40" rx="4"/><rect x="1312" y="170" width="8" height="40" rx="4"/></g>
+
+  <!-- pendant lamp -->
+  <path d="M760 0v70" stroke="#6b4f3a" stroke-width="3"/>
+  <path d="M722 110c0-26 17-40 38-40s38 14 38 40z" fill="#e7b46a"/>
+  <ellipse cx="760" cy="230" rx="160" ry="140" fill="url(#lamp)"/>
+
+  <!-- backsplash tiles -->
+  <rect x="830" y="250" width="770" height="232" fill="url(#tiles)"/>
+  <!-- range hood -->
+  <path d="M1110 250h190l40 52h-270z" fill="#efe4d6" stroke="#ddcbb6" stroke-width="3"/>
+  <!-- utensils -->
+  <path d="M900 280h120" stroke="#9a7a5e" stroke-width="4" stroke-linecap="round"/>
+  <g stroke="#8a6a50" stroke-width="5" stroke-linecap="round"><path d="M925 284v70"/><path d="M960 284v84"/><path d="M995 284v62"/></g>
+  <circle cx="925" cy="362" r="10" fill="#b98a5c"/><rect x="952" y="366" width="16" height="22" rx="7" fill="#b98a5c"/><path d="M987 346h16v18h-16z" fill="#b98a5c"/>
+
+  <!-- counter -->
+  <rect x="0" y="482" width="1600" height="26" fill="url(#wood)"/>
+  <rect x="0" y="508" width="1600" height="192" fill="#eadfcf"/>
+  <g fill="none" stroke="#d8c8b2" stroke-width="3">
+    <rect x="40" y="530" width="230" height="150" rx="8"/><rect x="290" y="530" width="230" height="150" rx="8"/>
+    <rect x="540" y="530" width="230" height="150" rx="8"/><rect x="1060" y="530" width="300" height="150" rx="8"/>
+    <rect x="1380" y="530" width="200" height="150" rx="8"/>
+  </g>
+  <rect x="1090" y="580" width="240" height="80" rx="8" fill="#3b2c22" opacity=".55"/>
+  <g fill="#c9a983"><rect x="140" y="548" width="40" height="7" rx="3.5"/><rect x="390" y="548" width="40" height="7" rx="3.5"/><rect x="640" y="548" width="40" height="7" rx="3.5"/><rect x="1150" y="548" width="120" height="7" rx="3.5"/><rect x="1460" y="548" width="40" height="7" rx="3.5"/></g>
+
+  <!-- stove + kettle -->
+  <rect x="1100" y="470" width="220" height="14" rx="5" fill="#5a4636"/>
+  <g transform="translate(1160 360)">
+    <path d="M70 6c14 0 22 8 22 18" stroke="#5a3d2c" stroke-width="7" fill="none" stroke-linecap="round"/>
+    <path d="M10 108c-6-50 14-82 50-82s58 32 52 82z" fill="url(#kettle)"/>
+    <path d="M110 64l40-18-6 14-30 20z" fill="#c8693a"/>
+    <rect x="48" y="14" width="26" height="14" rx="6" fill="#5a3d2c"/>
+    <path d="M150 30c6-14-4-20 2-34M164 34c6-14-4-20 2-34" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round" opacity=".7"/>
+  </g>
+
+  <!-- bread board + jar -->
+  <rect x="1430" y="330" width="90" height="152" rx="40" fill="#d9ad7c"/>
+  <circle cx="1475" cy="355" r="8" fill="#eadfcf"/>
+  <rect x="1360" y="400" width="54" height="82" rx="10" fill="#f6efe5" stroke="#e0cfba" stroke-width="3"/>
+  <path d="M1374 400l-6-28M1388 400l2-34M1400 400l8-26" stroke="#c8935f" stroke-width="6" stroke-linecap="round"/>
+
+  <!-- mug with steam -->
+  <g transform="translate(905 410)">
+    <path d="M0 6h56v48a16 16 0 0 1-16 16H16A16 16 0 0 1 0 54z" fill="#f6efe5" stroke="#e0cfba" stroke-width="3"/>
+    <path d="M56 18h8a12 12 0 0 1 0 24h-8" fill="none" stroke="#e0cfba" stroke-width="6"/>
+    <path d="M18-6c8-12-6-18 2-30M36-6c8-12-6-18 2-30" stroke="#fff" stroke-width="4" fill="none" stroke-linecap="round" opacity=".75"/>
+  </g>
+
+  <!-- phone on counter, ringing: Alicia -->
+  <g transform="translate(985 372) rotate(-6)">
+    <rect width="78" height="134" rx="14" fill="#2b2b2e"/>
+    <rect x="6" y="10" width="66" height="114" rx="9" fill="#fbf3e6"/>
+    <circle cx="39" cy="50" r="16" fill="#E8BC5C"/>
+    <path d="M32 47q3.5-4 7 0M39 47q3.5-4 7 0M33 55q6 5 12 0" stroke="#fbf3e6" stroke-width="2.4" fill="none" stroke-linecap="round"/>
+    <rect x="18" y="76" width="42" height="7" rx="3.5" fill="#d9c7ae"/>
+    <circle cx="39" cy="104" r="9" fill="#6f9567"/>
+  </g>
+  <g fill="none" stroke="#6f9567" stroke-width="5" stroke-linecap="round" opacity=".85">
+    <path d="M1082 380c14 16 14 40 0 56"/><path d="M1096 366c22 24 22 60 0 84"/>
+  </g>
+
+  <!-- text legibility shade -->
+  <rect width="1600" height="700" fill="url(#shade)"/>
+</svg>
