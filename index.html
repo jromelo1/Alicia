@@ -141,8 +141,42 @@ html[lang="es"] .hero h1{font-size:clamp(40px,4.6vw,66px)}
 .tile.dark{background:var(--ink);color:#fff}
 .tile img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:-1;transform:scale(1.06);transition:transform 1.6s var(--ease)}
 .tile.in img{transform:scale(1)}
-.tile .ph{position:absolute;top:24px;left:28px;right:28px;font-size:13px;color:var(--muted)}
-.tile.dark .ph{color:#a1a1a6}
+.tile.t1{background:linear-gradient(160deg,#f9dccb 0%,#f7ece4 60%,#f5f5f7 100%)}
+.tile.t2{background:linear-gradient(160deg,#dcebdc 0%,#eef4ea 70%)}
+.vis{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:10px;padding:clamp(28px,4vw,56px) 24px 0}
+.callcard{display:flex;align-items:center;gap:14px;background:rgba(255,255,255,.85);backdrop-filter:blur(8px);border-radius:22px;padding:16px 20px;box-shadow:0 14px 40px rgba(176,80,45,.16);min-width:min(320px,100%)}
+.callcard .av{flex:0 0 auto;width:48px;height:48px;border-radius:50%;background:var(--accent);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:20px}
+.callcard b{display:block;font-size:17px}
+.callcard .sub1{font-size:13px;color:var(--muted);white-space:nowrap}
+.wave{display:flex;align-items:center;gap:4px;height:34px;margin-left:auto}
+.wave i{display:block;width:4px;border-radius:2px;background:var(--accent);animation:wv 1.2s ease-in-out infinite}
+.wave i:nth-child(1){height:10px}.wave i:nth-child(2){height:22px;animation-delay:.15s}.wave i:nth-child(3){height:30px;animation-delay:.3s}.wave i:nth-child(4){height:16px;animation-delay:.45s}.wave i:nth-child(5){height:24px;animation-delay:.6s}.wave i:nth-child(6){height:12px;animation-delay:.75s}
+@keyframes wv{50%{transform:scaleY(.45)}}
+.bub{max-width:82%;margin:0;padding:11px 15px;border-radius:18px;font-size:15px;line-height:1.35;box-shadow:0 6px 18px rgba(0,0,0,.06)}
+.bub.a{align-self:flex-start;background:#fff;border-bottom-left-radius:6px}
+.t1 .vis{max-width:460px;margin:0 auto}
+.t1 .bub.u{background:var(--accent)}
+.bub.u{align-self:flex-end;background:#2f6b3a;color:#fff;border-bottom-right-radius:6px}
+.sms{width:min(340px,100%);background:#2c2c2e;border-radius:18px;padding:14px 16px;color:#f5f5f7;box-shadow:0 14px 40px rgba(0,0,0,.35)}
+.sms .from{display:block;font-size:12px;color:#a1a1a6;margin-bottom:6px;font-weight:500}
+.sms p{margin:0;font-size:14.5px;line-height:1.4}
+/* How it works */
+.how{padding:clamp(80px,9vw,140px) 0 0}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+.step{background:var(--bg-3);border-radius:28px;padding:32px 28px;display:flex;flex-direction:column;gap:10px}
+.step .n{width:40px;height:40px;border-radius:50%;background:var(--ink);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;margin-bottom:8px}
+.step h3{font-size:21px;font-weight:600;letter-spacing:-.01em}
+.step p{font-size:16.5px;line-height:1.5;color:var(--muted)}
+/* FAQ */
+.faq{padding:clamp(96px,11vw,160px) 0}
+.faq .list{max-width:860px;margin:0 auto;border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:22px 40px 22px 0;font-size:clamp(17px,1.5vw,20px);font-weight:600;position:relative}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";position:absolute;right:4px;top:18px;font-size:26px;font-weight:400;color:var(--accent);transition:transform .3s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq details p{margin:0 0 22px;font-size:16.5px;line-height:1.6;color:var(--ink-2);max-width:760px}
+.faq details a{color:var(--accent);text-decoration:underline;text-underline-offset:2px}
 .cap{position:absolute;left:clamp(24px,3vw,40px);bottom:clamp(24px,3vw,40px);display:flex;flex-direction:column;gap:6px}
 .cap small{font-size:15px;font-weight:500;color:var(--accent)}
 .tile.dark .cap small{color:var(--accent-soft)}
@@ -274,7 +308,8 @@ footer a:hover{color:var(--ink)}
   .head{flex-direction:column;align-items:flex-start;gap:16px}
   .grid{grid-template-columns:repeat(1,minmax(0,1fr));row-gap:40px}
   .plans{grid-template-columns:minmax(0,1fr);gap:28px;max-width:460px;margin:0 auto}
-  .gallery{grid-template-columns:1fr;grid-template-rows:380px 260px 260px;gap:16px}
+  .gallery{grid-template-columns:1fr;grid-template-rows:440px 300px 300px;gap:16px}
+  .steps{grid-template-columns:minmax(0,1fr)}
   .tile{border-radius:28px}.tile.big{grid-row:auto}
   footer .wrap{flex-direction:column-reverse;align-items:flex-start}
 }
@@ -292,11 +327,11 @@ footer a:hover{color:var(--ink)}
   <div class="wrap">
     <a href="#top" class="brand">Call Me Alicia</a>
     <nav class="links" id="links" aria-label="Main">
-      <a href="#intro">How it works</a>
+      <a href="#how">How it works</a>
       <a href="#features">Features</a>
       <a href="#pricing">Pricing</a>
       <a href="cuenta.html">My account</a>
-      <a href="#pricing" class="btn sm">Get early access</a>
+      <a href="#pricing" class="btn sm">Start free</a>
     </nav>
     <div class="lang" role="group" aria-label="Language / Idioma">
       <button type="button" data-lang="en" aria-pressed="true" aria-label="English">EN</button>
@@ -325,7 +360,7 @@ footer a:hover{color:var(--ink)}
       </ul>
       <div class="ctas reveal d2">
         <a href="#pricing" class="btn">Choose your plan</a>
-        <a href="#intro" class="link">See how it works ›</a>
+        <a href="#how" class="link">See how it works ›</a>
       </div>
       <div class="caller reveal d3">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h3l2 5-2.5 1.5a11 11 0 0 0 6 6L15 14l5 2v3a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
@@ -362,6 +397,20 @@ footer a:hover{color:var(--ink)}
     </div>
   </section>
 
+  <section class="how" id="how">
+    <div class="wrap">
+      <div class="center">
+        <h2 class="h2 reveal">How it works</h2>
+        <p class="reveal d1">Ready in 2 minutes. Nothing to install.</p>
+      </div>
+      <div class="steps">
+        <div class="step reveal"><span class="n">1</span><h3>Choose a plan and a time</h3><p>Tell us who Alicia will call and when. We text them a code to confirm they agree.</p></div>
+        <div class="step reveal d1"><span class="n">2</span><h3>Alicia calls them</h3><p>They just answer the phone. Alicia chats warmly, in their Spanish, and remembers what they talked about last time.</p></div>
+        <div class="step reveal d2"><span class="n">3</span><h3>You get a note</h3><p>After each call you get a short text — and an alert if something’s off. See every summary in My account.</p></div>
+      </div>
+    </div>
+  </section>
+
   <section class="features" id="features">
     <div class="wrap">
       <div class="head">
@@ -370,7 +419,7 @@ footer a:hover{color:var(--ink)}
       </div>
       <div class="grid">
         <div class="feat reveal"><svg viewBox="0 0 24 24"><path d="M4 5h9a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H9l-3 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2z"/><path d="M17 9h3a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-1v3l-3-3h-2"/></svg><h3>Their Spanish, from home</h3><p>Alicia speaks with the everyday expressions of their country — Colombian, Mexican, Peruvian — and switches to English if they do.</p></div>
-        <div class="feat reveal d1"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M9 7h6M9 11h6M9 15h3"/></svg><h3>A note for you after every call</h3><p>A short text tells you how the conversation went — and lets you know if they didn’t pick up.</p></div>
+        <div class="feat reveal d1"><svg viewBox="0 0 24 24"><rect x="6" y="2" width="12" height="20" rx="3"/><path d="M9 7h6M9 11h6M9 15h3"/></svg><h3>A note for you after every call</h3><p>A short text tells you how the conversation went — and lets you know if they didn’t pick up. All summaries live in My account.</p></div>
         <div class="feat reveal d2"><svg viewBox="0 0 24 24"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg><h3>Alerts when something’s off</h3><p>If they mention a fall, strong pain or something worrying, you’ll hear about it right away.</p></div>
         <div class="feat reveal"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg><h3>Across borders and time zones</h3><p>You live in Miami, Madrid or Toronto; they live in Bogotá, Lima or Guatemala City. Alicia calls at the hour that suits them.</p></div>
         <div class="feat reveal d1"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6z"/><path d="M9 12l2 2 4-4"/></svg><h3>On guard against scams</h3><p>Alicia never asks for money or personal data, and helps them spot “fake relative” calls and suspicious requests.</p></div>
@@ -386,17 +435,17 @@ footer a:hover{color:var(--ink)}
         <p class="reveal d1">Company for them. Peace of mind for you.</p>
       </div>
       <div class="gallery">
-        <!-- To add a photo: put the image in the /img folder and add <img src="img/morning.jpg" alt="..."> inside the tile, then remove the .ph line -->
-        <figure class="tile big reveal" style="margin:0">
-          <span class="ph">[Photo: a woman laughing on the phone at her kitchen table]</span>
+        <!-- To use a photo instead: add <img src="img/morning.jpg" alt="..."> inside the tile and remove the .vis block -->
+        <figure class="tile big t1 reveal" style="margin:0">
+          <div class="vis" aria-hidden="true"><div class="callcard"><span class="av">A</span><span><b>Alicia</b><span class="sub1">On a call · 04:12</span></span><span class="wave"><i></i><i></i><i></i><i></i><i></i><i></i></span></div><p class="bub a b1">Good morning, Doña Rosa! How did you sleep?</p><p class="bub u b1">Very well, dear! I already had my coffee.</p></div>
           <figcaption class="cap"><small>9:00 a.m. · Bogotá</small><strong>Morning coffee, together.</strong></figcaption>
         </figure>
-        <figure class="tile reveal d1" style="margin:0">
-          <span class="ph">[Photo: hands tending a garden]</span>
+        <figure class="tile t2 reveal d1" style="margin:0">
+          <div class="vis" aria-hidden="true"><p class="bub a">How are the tomatoes, Doña Rosa?</p><p class="bub u">They’re finally turning red!</p></div>
           <figcaption class="cap"><small>1:30 p.m. · Lima</small><strong>How are the tomatoes?</strong></figcaption>
         </figure>
         <figure class="tile dark reveal d2" style="margin:0">
-          <span class="ph">[Photo: a woman abroad smiling at a text on her phone]</span>
+          <div class="vis" aria-hidden="true"><div class="sms"><span class="from">Call Me Alicia · now</span><p>Alicia talked with your mom for 6 min today. She told her about the garden and her favorite show. She’s doing well.</p></div></div>
           <figcaption class="cap"><small>For you · 7:05 p.m. · Miami</small><strong>“Mom talked about her garden. She’s doing well.”</strong></figcaption>
         </figure>
       </div>
@@ -417,6 +466,7 @@ footer a:hover{color:var(--ink)}
           <ul>
             <li class="em">3 calls a week</li>
             <li class="em">Up to 8 min per call</li>
+            <li class="em">≈ 100 min a month</li>
             <li>Their Spanish, from home</li>
             <li>Remembers your last conversation</li>
             <li>A note for you after every call</li>
@@ -431,6 +481,7 @@ footer a:hover{color:var(--ink)}
           <ul>
             <li class="em">A call every day</li>
             <li class="em">Up to 5 min per call</li>
+            <li class="em">≈ 150 min a month</li>
             <li>Their Spanish, from home</li>
             <li>Remembers your last conversation</li>
             <li>A note for you after every call</li>
@@ -444,6 +495,7 @@ footer a:hover{color:var(--ink)}
           <ul>
             <li class="em">A call every day</li>
             <li class="em">Up to 10 min per call</li>
+            <li class="em">≈ 300 min a month</li>
             <li>Their Spanish, from home</li>
             <li>Remembers your last conversation</li>
             <li>A note for you after every call</li>
@@ -613,11 +665,30 @@ footer a:hover{color:var(--ink)}
     </div>
   </section>
 
+  <section class="faq" id="faq">
+    <div class="wrap">
+      <div class="center">
+        <h2 class="h2 reveal">Questions families ask</h2>
+      </div>
+      <div class="list">
+        <details class="reveal"><summary>Is Alicia a real person?</summary><p>No. Alicia is an artificial-intelligence voice assistant, and she always says so — no tricks. She’s designed to be warm, patient and respectful, and to sound like someone from home.</p></details>
+        <details class="reveal"><summary>Do my parents need to install anything?</summary><p>No. No apps, no internet, no smartphone setup. Alicia calls their mobile phone at the time you choose — they just answer.</p></details>
+        <details class="reveal"><summary>What number does Alicia call from?</summary><p>From +1 (863) 344-5774 in Colombia and Latin America, and +1 (561) 464-4320 in the United States. Ask them to save it as “Alicia” so they recognize her.</p></details>
+        <details class="reveal"><summary>What does Alicia talk about?</summary><p>How they slept and how they feel, their memories, music, cooking, family, their neighborhood — whatever they enjoy. She remembers the last conversation and never pushes topics like politics or religion.</p></details>
+        <details class="reveal"><summary>What do I receive?</summary><p>A short text after each call, a notice if they didn’t answer, and an immediate alert if they mention a fall, strong pain or something worrying. In <a href='cuenta.html'>My account</a> you can see every summary, change the call time and pause calls.</p></details>
+        <details class="reveal"><summary>Is Alicia an emergency service?</summary><p>No. Alicia keeps them company and lets you know if something seems off, but she doesn’t replace doctors or emergency services. In an emergency, call 123 in Colombia or 911 in the US.</p></details>
+        <details class="reveal"><summary>How much does it cost and how do I pay?</summary><p>Plans start at US$19.99 a month with a 7-day free trial. You pay securely through Mercado Pago (cards and Nequi), in Colombian pesos. Cancel anytime from My account. See our <a href='reembolsos.html'>Refund policy</a>.</p></details>
+        <details class="reveal"><summary>Can my mom or dad call Alicia?</summary><p>Not yet — for now Alicia calls at the scheduled time. Calling Alicia anytime is coming soon.</p></details>
+        <details class="reveal"><summary>What happens with their information?</summary><p>We use it only to make the calls and update the family. We never sell it or use it for ads, and you can delete everything anytime. Read our <a href='privacidad.html'>Privacy policy</a>.</p></details>
+      </div>
+    </div>
+  </section>
+
   <section class="cta" id="start">
     <div class="wrap">
       <h2 class="h2 reveal">Give your parents someone to talk to — every single day.</h2>
-      <a href="#pricing" class="btn reveal d1">Get early access</a>
-      <p class="reveal d2">Now testing with families in the United States and Colombia.</p>
+      <a href="#pricing" class="btn reveal d1">Start your 7-day free trial</a>
+      <p class="reveal d2">Try it free for 7 days. You only pay if you keep it — cancel anytime.</p>
     </div>
   </section>
 </main>
@@ -779,7 +850,7 @@ var CONFIG={
 
   // Spanish version of the rest of the page. English is the text already in the HTML.
   var PAGE_ES=[
-    ['.links a',['Cómo funciona','Características','Precios','Mi cuenta','Acceso anticipado']],
+    ['.links a',['Cómo funciona','Características','Precios','Mi cuenta','Empieza gratis']],
     ['.hero .eyebrow',['Compañía telefónica con IA para tus papás']],
     ['.hero h1',['Tú lejos.<br>Ellos acompañados.']],
     ['.hero .lede',['Alicia es una compañera con inteligencia artificial que llama por teléfono a tus papás todos los días: conversa con ellos, les pregunta cómo están y te cuenta cómo les fue.']],
@@ -790,13 +861,23 @@ var CONFIG={
     ['.hero .link',['Mira cómo funciona ›']],
     ['.pill span',['Llamando a mamá en Bogotá · 9:00 a.m.']],
     ['.intro p',['Tú llamas cuando puedes. Alicia llama todos los días. <span>Una voz cálida que suena a casa, escucha sin afán y te cuenta cómo están de verdad.</span>']],
+    ['.how .h2',['Así funciona']],
+    ['.how .center p',['Listo en 2 minutos. Sin instalar nada.']],
+    ['.step h3',['Elige un plan y una hora','Alicia los llama','Tú recibes una nota']],
+    ['.step p',['Cuéntanos a quién llamará Alicia y cuándo. Le enviamos un código por SMS para confirmar que está de acuerdo.','Solo tienen que contestar. Alicia conversa con calidez, en su español, y recuerda lo que hablaron la vez anterior.','Después de cada llamada te llega un mensaje corto, y una alerta si algo no está bien. Todos los resúmenes están en Mi cuenta.']],
+    ['.callcard .sub1',['Llamada en curso · 04:12']],
+    ['.bub',['¡Buenos días, doña Rosa! ¿Cómo amaneció?','¡Muy bien, mija! Ya me tomé el tintico.','¿Cómo van los tomates, doña Rosa?','¡Ya se están poniendo rojitos!']],
+    ['.sms .from',['Call Me Alicia · ahora']],
+    ['.sms p',['Hoy Alicia habló 6 min con tu mamá. Le contó del jardín y de su novela favorita. Está bien.']],
+    ['.faq .h2',['Lo que preguntan las familias']],
+    ['.faq summary',["¿Alicia es una persona real?", "¿Mis papás tienen que instalar algo?", "¿Desde qué número llama Alicia?", "¿De qué conversa Alicia?", "¿Qué recibo yo?", "¿Alicia es un servicio de emergencias?", "¿Cuánto cuesta y cómo pago?", "¿Mi mamá o mi papá pueden llamar a Alicia?", "¿Qué pasa con sus datos?"]],
+    ['.faq details p',["No. Alicia es una asistente de voz con inteligencia artificial, y siempre lo dice: sin engaños. Está pensada para ser cálida, paciente y respetuosa, y sonar como alguien de su tierra.", "No. Ni apps, ni internet, ni configurar nada. Alicia llama a su celular a la hora que elijas: solo tienen que contestar.", "Desde el +1 (863) 344-5774 en Colombia y Latinoamérica, y el +1 (561) 464-4320 en Estados Unidos. Pídeles que lo guarden como “Alicia” para que la reconozcan.", "De cómo durmieron y cómo se sienten, de sus recuerdos, la música, la cocina, la familia, su barrio: de lo que les guste. Recuerda la conversación anterior y nunca les impone temas como política o religión.", "Un mensaje corto después de cada llamada, un aviso si no contestaron, y una alerta inmediata si mencionan una caída, un dolor fuerte o algo preocupante. En <a href='cuenta.html'>Mi cuenta</a> ves todos los resúmenes, cambias la hora y pausas las llamadas.", "No. Alicia les hace compañía y te avisa si algo no parece estar bien, pero no reemplaza a los médicos ni a los servicios de emergencia. En una emergencia, llama al 123 en Colombia o al 911 en EE. UU.", "Los planes empiezan en US$19.99 al mes, con 7 días gratis. Pagas de forma segura con Mercado Pago (tarjetas y Nequi), en pesos colombianos. Cancelas cuando quieras desde Mi cuenta. Ver la <a href='reembolsos.html'>Política de reembolsos</a>.", "Todavía no: por ahora Alicia llama a la hora programada. Muy pronto podrán llamarla cuando quieran.", "Los usamos solo para hacer las llamadas y avisarle a la familia. Nunca los vendemos ni los usamos para publicidad, y puedes borrarlos cuando quieras. Lee la <a href='privacidad.html'>Política de privacidad</a>."]],
     ['.features .h2',['Pensada para familias que cuidan a distancia.']],
     ['.features .head p',['Todo lo que hace Alicia está pensado para que ellos se sientan acompañados y tú, cerca.']],
     ['.feat h3',['Su español, el de su tierra','Una nota para ti después de cada llamada','Alertas cuando algo no está bien','Entre países y zonas horarias','Atenta a las estafas','Honesta, sencilla y con su permiso']],
-    ['.feat p',['Alicia habla con las expresiones de todos los días de su país —colombianas, mexicanas, peruanas— y cambia al inglés si ellos lo hacen.','Un mensaje corto te cuenta cómo estuvo la conversación, y te avisa si no contestaron.','Si mencionan una caída, un dolor fuerte o algo preocupante, te enteras de inmediato.','Tú vives en Miami, Madrid o Toronto; ellos en Bogotá, Lima o Ciudad de Guatemala. Alicia llama a la hora que les queda bien.','Alicia nunca pide dinero ni datos personales, y les ayuda a reconocer llamadas del “falso familiar” y pedidos sospechosos.','No hay app que aprender: solo contestan el teléfono. Alicia siempre dice que es una IA, y las llamadas empiezan solo cuando ellos dicen que sí.']],
+    ['.feat p',['Alicia habla con las expresiones de todos los días de su país —colombianas, mexicanas, peruanas— y cambia al inglés si ellos lo hacen.','Un mensaje corto te cuenta cómo estuvo la conversación, y te avisa si no contestaron. Todos los resúmenes quedan en Mi cuenta.','Si mencionan una caída, un dolor fuerte o algo preocupante, te enteras de inmediato.','Tú vives en Miami, Madrid o Toronto; ellos en Bogotá, Lima o Ciudad de Guatemala. Alicia llama a la hora que les queda bien.','Alicia nunca pide dinero ni datos personales, y les ayuda a reconocer llamadas del “falso familiar” y pedidos sospechosos.','No hay app que aprender: solo contestan el teléfono. Alicia siempre dice que es una IA, y las llamadas empiezan solo cuando ellos dicen que sí.']],
     ['.moments .h2',['Una llamada, dos tranquilidades.']],
     ['.moments .center p',['Compañía para ellos. Tranquilidad para ti.']],
-    ['.tile .ph',['[Foto: una mujer riendo al teléfono en la mesa de su cocina]','[Foto: manos cuidando un jardín]','[Foto: una mujer en el exterior sonriendo al leer un mensaje]']],
     ['.tile small',['9:00 a.m. · Bogotá','1:30 p.m. · Lima','Para ti · 7:05 p.m. · Miami']],
     ['.tile strong',['El café de la mañana, en compañía.','¿Cómo van los tomates?','“Tu mamá habló de su jardín. Está bien.”']],
     ['.pricing .step-lbl',['Paso 1 de 2']],
@@ -804,13 +885,13 @@ var CONFIG={
     ['.pricing .center p',['Todos los planes empiezan con 7 días gratis.']],
     ['.plan h3',['Esencial','Diario','Plus']],
     ['.plan .per',['/mes','/mes','/mes']],
-    ['.plan li',["3 llamadas por semana", "Hasta 8 min por llamada", "Su español, el de su tierra", "Recuerda la conversación anterior", "Una nota para ti después de cada llamada", "Alertas si algo no está bien", "Llamada todos los días", "Hasta 5 min por llamada", "Su español, el de su tierra", "Recuerda la conversación anterior", "Una nota para ti después de cada llamada", "Alertas si algo no está bien", "Llamada todos los días", "Hasta 10 min por llamada", "Su español, el de su tierra", "Recuerda la conversación anterior", "Una nota para ti después de cada llamada", "Alertas si algo no está bien"]],
+    ['.plan li',["3 llamadas por semana", "Hasta 8 min por llamada", "≈ 100 min al mes", "Su español, el de su tierra", "Recuerda la conversación anterior", "Una nota para ti después de cada llamada", "Alertas si algo no está bien", "Llamada todos los días", "Hasta 5 min por llamada", "≈ 150 min al mes", "Su español, el de su tierra", "Recuerda la conversación anterior", "Una nota para ti después de cada llamada", "Alertas si algo no está bien", "Llamada todos los días", "Hasta 10 min por llamada", "≈ 300 min al mes", "Su español, el de su tierra", "Recuerda la conversación anterior", "Una nota para ti después de cada llamada", "Alertas si algo no está bien"]],
     ['.plan .btn',['Empieza 7 días gratis','Empieza 7 días gratis','Empieza 7 días gratis']],
     ['.badge',['Más popular']],
     ['.pricing .note',['Precios de referencia en dólares (US$); el cobro se hace en pesos colombianos con Mercado Pago. Cancela cuando quieras.']],
     ['.cta .h2',['Dales a tus papás alguien con quien hablar, todos los días.']],
-    ['.cta .btn',['Acceso anticipado']],
-    ['.cta p',['En pruebas con familias en Estados Unidos y Colombia.']],
+    ['.cta .btn',['Empieza tus 7 días gratis']],
+    ['.cta p',['Pruébalo 7 días gratis. Solo pagas si te quedas, y cancelas cuando quieras.']],
     ['footer nav a',['Privacidad','Términos','Reembolsos','Cookies','Darse de baja','Eliminar mis datos','Contacto']]
   ];
   var PAGE=PAGE_ES.map(function(r){var els=[].slice.call(document.querySelectorAll(r[0]));return {els:els,es:r[1],en:els.map(function(e){return e.innerHTML})}});
