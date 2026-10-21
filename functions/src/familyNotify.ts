@@ -14,7 +14,7 @@
  */
 
 export type CallStatus = "COMPLETED" | "NO_ANSWER" | "FAILED" | "IN_VOICEMAIL" | "UNKNOWN";
-export type NoticeKind = "ALERT" | "MISSED" | "SUMMARY";
+export type NoticeKind = "ALERT" | "MISSED" | "SUMMARY" | "OPTOUT";
 export type Lang = "es" | "en";
 
 export interface CallAnalysisLike {
@@ -53,6 +53,21 @@ export function readAlert(analysis?: CallAnalysisLike): { alert: boolean; reason
   return { alert, reason };
 }
 
+/**
+ * ¿La persona pidió en la llamada que Alicia no la vuelva a llamar? Campo de análisis
+ * post-llamada `no_llamar` (o `opt_out`) = true. Si es así, las llamadas se pausan.
+ */
+export function readOptOut(analysis?: CallAnalysisLike): boolean {
+  const d = analysis?.custom_analysis_data ?? {};
+  const raw = d["no_llamar"] ?? d["opt_out"];
+  return raw === true || (typeof raw === "string" && ["true", "sí", "si", "yes"].includes(raw.trim().toLowerCase()));
+}
+
+/** Pie de cada SMS con el enlace para darse de baja. */
+export function withUnsubscribe(body: string, lang: Lang): string {
+  return body + (lang === "en" ? " Stop: callmealicia.com/baja" : " Baja: callmealicia.com/baja");
+}
+
 function clip(text: string, max: number): string {
   const t = text.replace(/\s+/g, " ").trim();
   return t.length <= max ? t : t.slice(0, max - 1).trimEnd() + "…";
@@ -74,6 +89,15 @@ export function buildNotice(args: {
   name: string;
   lang: Lang;
   summariesEnabled: boolean;
+  optOut?: boolean;
+}): { kind: NoticeKind; body: string } | null {
+  const n = buildNoticeRaw(args);
+  return n ? { kind: n.kind, body: withUnsubscribe(n.body, args.lang) } : null;
+}
+
+function buildNoticeRaw(args: {
+  status: CallStatus; alert: boolean; alertReason: string; summary: string; durationSeconds: number;
+  name: string; lang: Lang; summariesEnabled: boolean; optOut?: boolean;
 }): { kind: NoticeKind; body: string } | null {
   const { status, alert, alertReason, summary, durationSeconds, name, lang } = args;
   const es = lang !== "en";
@@ -85,6 +109,15 @@ export function buildNotice(args: {
       body: es
         ? `Call Me Alicia — IMPORTANTE: en la llamada de hoy, ${name} mencionó: ${why}. Te sugerimos comunicarte pronto. Si crees que es una emergencia, llama a los servicios de emergencia.`
         : `Call Me Alicia — IMPORTANT: on today's call, ${name} mentioned: ${why}. We suggest reaching out soon. If you think it's an emergency, call emergency services.`,
+    };
+  }
+
+  if (args.optOut) {
+    return {
+      kind: "OPTOUT",
+      body: es
+        ? `Call Me Alicia: ${name} pidió que Alicia no la vuelva a llamar, así que pausamos las llamadas. Si cambia de opinión, puedes reactivarlas en callmealicia.com/cuenta.`
+        : `Call Me Alicia: ${name} asked Alicia not to call again, so we paused the calls. If they change their mind, you can turn them back on at callmealicia.com/cuenta.`,
     };
   }
 
@@ -141,13 +174,15 @@ export function toE164(raw: string, defaultDialCode: string): string {
 export function collectRecipients(
   elderPhone: string,
   emergencyPhone: string | undefined,
-  members: Array<{ phone?: string; notifyOnPanic?: boolean }>
+  members: Array<{ phone?: string; notifyOnPanic?: boolean }>,
+  optedOut: string[] = []
 ): string[] {
   const cc = dialCodeOf(elderPhone);
   const out = new Set<string>();
+  const blocked = new Set(optedOut);
   const add = (p?: string) => {
     const n = toE164(p ?? "", cc);
-    if (n && n !== elderPhone) out.add(n);
+    if (n && n !== elderPhone && !blocked.has(n)) out.add(n);
   };
   add(emergencyPhone);
   members.filter((m) => m.notifyOnPanic !== false).forEach((m) => add(m.phone));

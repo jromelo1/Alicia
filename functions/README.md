@@ -172,6 +172,17 @@ prueba las llamadas se detienen el mismo día; si el mes ya estaba pagado, Alici
 hasta `paidUntil`. Cancelar siempre detiene las llamadas, aunque `BILLING_ENFORCE=false`.
 Si se cancela desde Mercado Pago, el webhook hace lo mismo.
 
+## Baja y eliminación de datos
+
+- **"No me llames más" en la llamada:** agrega en Retell → Post-Call Analysis un campo Boolean
+  `no_llamar` ("true si la persona pidió que Alicia no la vuelva a llamar"). Si llega en true,
+  el webhook pone `callProfile.callEnabled = false` y avisa a la familia (aviso OPTOUT).
+- **SMS:** todos llevan "Baja: callmealicia.com/baja". En Mi cuenta cada familiar puede apagar
+  los avisos de su número (`circles/{id}.smsOptOut`), y `notifyFamily` los excluye.
+- **`deleteMyData`** (botón "Eliminar mis datos" de Mi cuenta): cancela Mercado Pago, borra
+  las llamadas en Retell (`DELETE /v2/delete-call/{id}`), borra el círculo completo, los
+  `users/{uid}` conectados y sus cuentas de Firebase Auth. Deja `deletions/{circleId}` con la fecha.
+
 ## Acento por país
 
 `RETELL_VOICES` en `functions/.env` (p. ej. `RETELL_VOICES=CO=voice_id,MX=voice_id`) elige la

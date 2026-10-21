@@ -32,7 +32,7 @@ import { getFirestore, DocumentReference } from "firebase-admin/firestore";
 import { createHmac, timingSafeEqual } from "crypto";
 import { Retell } from "retell-sdk";
 import {
-  buildNotice, collectRecipients, displayName, readAlert, resolveCallStatus, sendTwilioSms, Lang,
+  buildNotice, collectRecipients, displayName, readAlert, readOptOut, resolveCallStatus, sendTwilioSms, Lang,
 } from "./familyNotify";
 import {
   MP_API, PlanId, billingFromPreapproval, buildPreapprovalBody, canCall, cancelledAndExpired, isEmail, isPlanId,
@@ -322,11 +322,12 @@ export const retellWebhook = onRequest(
       logger.info(`retellWebhook: disconnection_reason="${call.disconnection_reason ?? ""}"`);
       const status = resolveCallStatus(call.disconnection_reason, call.call_analysis);
       const { alert, reason: alertReason } = readAlert(call.call_analysis);
+      const optOut = readOptOut(call.call_analysis);
 
       const circleRef = db.collection("circles").doc(circleId);
       const historyRef = circleRef.collection("callHistory").doc(call.call_id);
       await historyRef.set(
-        { startedAt, endedAt, durationSeconds, summary, status, alert, alertReason },
+        { startedAt, endedAt, durationSeconds, summary, status, alert, alertReason, optOut },
         { merge: true }
       );
 
@@ -334,11 +335,16 @@ export const retellWebhook = onRequest(
       // se conservan las de la última conversación real para que la próxima tenga contexto.
       const profileUpdate: Record<string, unknown> = { lastCallAt: endedAt };
       if (status === "COMPLETED" && summary.trim()) profileUpdate.lastCallNotes = summary;
+      if (optOut) {
+        // La persona pidió no volver a recibir llamadas: se pausan hasta que alguien las reactive en Mi cuenta.
+        profileUpdate.callEnabled = false;
+        profileUpdate.optedOutAt = endedAt;
+      }
       await circleRef.set({ callProfile: profileUpdate }, { merge: true });
 
       logger.info(`retellWebhook: llamada ${call.call_id} guardada para ${circleId} (${status}${alert ? ", ALERTA" : ""})`);
 
-      await notifyFamily(circleRef, historyRef, { status, alert, alertReason, summary, durationSeconds });
+      await notifyFamily(circleRef, historyRef, { status, alert, alertReason, summary, durationSeconds, optOut });
 
       res.status(200).send("ok");
     } catch (err) {
@@ -357,7 +363,7 @@ export const retellWebhook = onRequest(
 async function notifyFamily(
   circleRef: DocumentReference,
   historyRef: DocumentReference,
-  info: { status: ReturnType<typeof resolveCallStatus>; alert: boolean; alertReason: string; summary: string; durationSeconds: number }
+  info: { status: ReturnType<typeof resolveCallStatus>; alert: boolean; alertReason: string; summary: string; durationSeconds: number; optOut: boolean }
 ): Promise<void> {
   try {
     const circleSnap = await circleRef.get();
@@ -375,7 +381,8 @@ async function notifyFamily(
     const recipients = collectRecipients(
       profile.phoneE164 ?? "",
       profile.emergencyContactPhone,
-      membersSnap.docs.map((d) => d.data() as { phone?: string; notifyOnPanic?: boolean })
+      membersSnap.docs.map((d) => d.data() as { phone?: string; notifyOnPanic?: boolean }),
+      (circleSnap.get("smsOptOut") as string[] | undefined) ?? []
     );
     if (recipients.length === 0) {
       logger.info(`notifyFamily: ${circleRef.id} sin contactos de familia — no se envía ${notice.kind}`);
@@ -594,6 +601,74 @@ export const cancelSubscription = onRequest(
       res.status(200).json({ status: "cancelled", paidUntil });
     } catch (err) {
       logger.error("cancelSubscription: error", err);
+      res.status(500).json({ error: "server" });
+    }
+  }
+);
+
+/**
+ * Botón "Eliminar mis datos" de callmealicia.com/cuenta.html. Body: { circleId }.
+ * 1) cancela la suscripción en Mercado Pago, 2) pide a Retell borrar las llamadas,
+ * 3) borra el círculo con todo lo que tiene adentro (historial, miembros…), 4) borra
+ * los documentos users/{uid} conectados y sus cuentas de inicio de sesión.
+ * Queda solo un registro mínimo en deletions/{circleId} (fecha, sin datos personales).
+ */
+export const deleteMyData = onRequest(
+  { secrets: [MP_ACCESS_TOKEN, RETELL_API_KEY], cors: WEB_ORIGINS, timeoutSeconds: 120 },
+  async (req, res) => {
+    if (req.method !== "POST") { res.status(405).json({ error: "method" }); return; }
+    try {
+      const token = (req.headers.authorization ?? "").replace(/^Bearer\s+/i, "");
+      if (!token) { res.status(401).json({ error: "auth" }); return; }
+      const { uid } = await getAuth().verifyIdToken(token);
+      const { circleId } = (req.body ?? {}) as { circleId?: string };
+      if (typeof circleId !== "string" || !circleId) { res.status(400).json({ error: "input" }); return; }
+      const user = await db.collection("users").doc(uid).get();
+      if (user.get("circleId") !== circleId) { logger.warn(`deleteMyData: ${uid} no pertenece a ${circleId}`); res.status(403).json({ error: "circle" }); return; }
+
+      const circleRef = db.collection("circles").doc(circleId);
+      const circle = (await circleRef.get()).data() ?? {};
+
+      // 1. Mercado Pago: sin esto podría seguir cobrando después de borrar todo.
+      const b = circle.billing as { status?: string; preapprovalId?: string } | undefined;
+      if (b?.preapprovalId && b.status !== "cancelled") {
+        try {
+          await mpFetch(`/preapproval/${encodeURIComponent(b.preapprovalId)}`, { method: "PUT", body: { status: "cancelled" } });
+        } catch (err) {
+          if (b.status === "authorized" || b.status === "paused") {
+            logger.error(`deleteMyData: no se pudo cancelar ${b.preapprovalId}; no se borra nada`, err);
+            res.status(502).json({ error: "billing" });
+            return;
+          }
+          logger.warn(`deleteMyData: suscripción pendiente ${b.preapprovalId} no se canceló`, err);
+        }
+      }
+
+      // 2. Retell: grabaciones y transcripciones (los ids del historial son los call_id).
+      const calls = await circleRef.collection("callHistory").listDocuments();
+      let retellOk = 0;
+      for (const c of calls) {
+        try {
+          const r = await fetch(`https://api.retellai.com/v2/delete-call/${encodeURIComponent(c.id)}`, {
+            method: "DELETE", headers: { Authorization: `Bearer ${RETELL_API_KEY.value()}` },
+          });
+          if (r.ok || r.status === 404) retellOk++;
+          else logger.warn(`deleteMyData: Retell respondió ${r.status} al borrar ${c.id}`);
+        } catch (err) { logger.warn(`deleteMyData: error borrando ${c.id} en Retell`, err); }
+      }
+
+      // 3 y 4. Firestore y cuentas de inicio de sesión.
+      const linked = await db.collection("users").where("circleId", "==", circleId).get();
+      await db.recursiveDelete(circleRef);
+      for (const u of linked.docs) {
+        await u.ref.delete();
+        try { await getAuth().deleteUser(u.id); } catch (err) { logger.warn(`deleteMyData: no se borró la cuenta ${u.id}`, err); }
+      }
+      await db.collection("deletions").doc(circleId).set({ deletedAt: Date.now(), calls: calls.length, retellDeleted: retellOk });
+      logger.info(`deleteMyData: ${circleId} eliminado (${calls.length} llamadas, ${retellOk} borradas en Retell, ${linked.size} cuentas)`);
+      res.status(200).json({ ok: true });
+    } catch (err) {
+      logger.error("deleteMyData: error", err);
       res.status(500).json({ error: "server" });
     }
   }
