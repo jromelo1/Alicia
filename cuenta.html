@@ -63,6 +63,9 @@ input::placeholder,textarea::placeholder{color:#a1a1a6}
 .confirm{border:1px solid #f1c4bf;background:#fdf5f4;border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:12px}
 .confirm p{font-size:15px;line-height:1.5;color:var(--ink-2)}
 .btn.danger{background:var(--bad)}
+.msg.warnmsg{background:var(--warn-bg);color:var(--warn)}
+.danger-card{border-color:#f1c4bf}
+#vDeleted p{font-size:16px;line-height:1.5;color:var(--ink-2)}
 .switch{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:14px 16px;border:1px solid var(--line-2);border-radius:14px}
 .switch input{width:48px;min-width:48px;height:28px;padding:0;border:0;border-radius:999px;background:var(--line);position:relative;cursor:pointer;transition:background .2s;box-shadow:none}
 .switch input::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:transform .2s}
@@ -140,7 +143,10 @@ input::placeholder,textarea::placeholder{color:#a1a1a6}
         <div class="field"><label for="hour" data-t="time"></label><select id="hour"></select></div>
         <div class="field"><label for="tz" data-t="tz"></label><select id="tz"></select></div>
       </div>
+      <div class="msg warnmsg" id="optOutMsg" hidden></div>
       <label class="switch"><span><span class="lt" data-t="enabled"></span><br><span class="hint" data-t="enabledHint"></span></span><input type="checkbox" id="enabled" role="switch"></label>
+      <label class="switch"><span><span class="lt" id="smsLbl"></span><br><span class="hint" data-t="smsHint"></span></span><input type="checkbox" id="smsOn" role="switch"></label>
+      <div class="msg" id="smsMsg" role="status"></div>
     </section>
 
     <section class="card" aria-labelledby="h-about">
@@ -188,8 +194,21 @@ input::placeholder,textarea::placeholder{color:#a1a1a6}
       <div class="msg" id="payMsg" role="status"></div>
     </section>
 
-    <p class="foot"><span data-t="codeLbl"></span> <strong id="circleCode"></strong> · <a href="terminos.html" data-t="terms"></a> · <a href="privacidad.html" data-t="privacy"></a> · <a href="mailto:hello@callmealicia.com">hello@callmealicia.com</a></p>
+    <section class="card danger-card" aria-labelledby="h-del">
+      <h2 id="h-del" data-t="delTitle"></h2>
+      <p class="hint" data-t="delSub"></p>
+      <button type="button" class="linkbtn" id="delLink" data-t="delLink"></button>
+      <div class="confirm" id="delBox" hidden>
+        <p><strong data-t="delQ"></strong> <span data-t="delText"></span></p>
+        <div class="actions"><button type="button" class="btn danger" id="delYes"><span class="spin"></span><span class="lbl" data-t="delYes"></span></button><button type="button" class="btn2" id="delNo" data-t="cancelNo2"></button></div>
+      </div>
+      <div class="msg" id="delMsg" role="status"></div>
+    </section>
+
+    <p class="foot"><span data-t="codeLbl"></span> <strong id="circleCode"></strong> · <a href="terminos.html" data-t="terms"></a> · <a href="privacidad.html" data-t="privacy"></a> · <a href="reembolsos.html" data-t="refunds"></a> · <a href="cookies.html">Cookies</a> · <a href="baja.html" data-t="unsub"></a> · <a href="eliminar-datos.html" data-t="delPage"></a> · <a href="mailto:hello@callmealicia.com">hello@callmealicia.com</a></p>
   </div>
+
+  <section id="vDeleted" class="card" hidden><h1 data-t="deletedTitle"></h1><p data-t="deletedText"></p><a class="btn" href="index.html" data-t="home"></a></section>
 
   <section id="vLoading" class="card center"><p class="hint" data-t="loading"></p></section>
 </main>
@@ -199,7 +218,8 @@ var CONFIG={
   firebase:{apiKey:'AIzaSyBhv_oCg5DHLhDABmAo-T95wWpudblk9NQ',authDomain:'alicia-53950.firebaseapp.com',projectId:'alicia-53950',messagingSenderId:'810691887855',appId:'1:810691887855:web:24bd5cbe9098b459ff111a'},
   sdk:'https://www.gstatic.com/firebasejs/10.12.2/',
   subscribeUrl:'https://us-central1-alicia-53950.cloudfunctions.net/createSubscription',
-  cancelUrl:'https://us-central1-alicia-53950.cloudfunctions.net/cancelSubscription'
+  cancelUrl:'https://us-central1-alicia-53950.cloudfunctions.net/cancelSubscription',
+  deleteUrl:'https://us-central1-alicia-53950.cloudfunctions.net/deleteMyData'
 };
 (function(){
   var L={es:{
@@ -224,6 +244,12 @@ var CONFIG={
     kCallsUntil:'Llamadas hasta',kStopped:'Llamadas',stopped:'Detenidas',reactivate:'Reactivar mi plan',
     callTitle:'La llamada',time:'Hora',tz:'Zona horaria',daysEss:'Alicia llama los lunes, miércoles y viernes, hasta 8 minutos.',daysDiario:'Alicia llama todos los días, hasta 5 minutos.',daysPlus:'Alicia llama todos los días, hasta 10 minutos.',daysNone:'Alicia llama todos los días.',
     enabled:'Llamadas activas',enabledHint:'Apágalo para pausar las llamadas (por ejemplo, en un viaje).',
+    smsLbl:'Recibir avisos por SMS en este número ({phone})',smsHint:'Resúmenes, alertas y avisos de llamadas no contestadas.',smsOff:'Listo: no enviaremos más SMS a este número.',smsOnOk:'Listo: volverás a recibir los avisos por SMS.',
+    optedOut:'{name} le pidió a Alicia no volver a llamar ({date}), así que pausamos las llamadas. Reactívalas solo si está de acuerdo.',
+    delTitle:'Eliminar mis datos',delSub:'Borra para siempre el perfil, el historial y los resúmenes de las llamadas, y cancela el plan. No se puede deshacer.',delLink:'Eliminar mis datos',
+    delQ:'¿Seguro que quieres eliminar todo?',delText:'Se cancela el plan, se detienen las llamadas y se borran todos los datos de este círculo para todas las personas conectadas.',delYes:'Sí, eliminar todo',cancelNo2:'No, volver',deleting:'Eliminando…',
+    deletedTitle:'Tus datos fueron eliminados',deletedText:'Cancelamos el plan, detuvimos las llamadas y borramos los datos de este círculo. Gracias por haber confiado en Alicia. 💛',home:'Volver al inicio',
+    refunds:'Reembolsos',unsub:'Darse de baja',delPage:'Eliminar datos',
     aboutTitle:'Lo que Alicia sabe',aboutSub:'Así cada conversación es más personal. Todo es opcional.',
     treat:'Cómo le gusta que le digan',origin:'País de origen',likes:'Gustos',family:'Familia',eName:'Contacto de emergencia (nombre)',ePhoneL:'Contacto de emergencia (celular)',
     treatPh:'Ej. Doña Rosa',originPh:'Ej. Colombia',likesPh:'Otros gustos o temas',familyPh:'Ej. Hija Laura (vive en Miami), nieto Tomás (8 años)',
@@ -254,6 +280,12 @@ var CONFIG={
     kCallsUntil:'Calls until',kStopped:'Calls',stopped:'Stopped',reactivate:'Reactivate my plan',
     callTitle:'The call',time:'Time',tz:'Time zone',daysEss:'Alicia calls on Mondays, Wednesdays and Fridays, up to 8 minutes.',daysDiario:'Alicia calls every day, up to 5 minutes.',daysPlus:'Alicia calls every day, up to 10 minutes.',daysNone:'Alicia calls every day.',
     enabled:'Calls on',enabledHint:'Turn off to pause calls (for example, during a trip).',
+    smsLbl:'Get text alerts on this number ({phone})',smsHint:'Summaries, alerts and missed-call notices.',smsOff:'Done: we won’t text this number anymore.',smsOnOk:'Done: you’ll get text alerts again.',
+    optedOut:'{name} asked Alicia not to call again ({date}), so calls are paused. Only turn them back on if they agree.',
+    delTitle:'Delete my data',delSub:'Permanently deletes the profile, call history and summaries, and cancels the plan. This can’t be undone.',delLink:'Delete my data',
+    delQ:'Are you sure you want to delete everything?',delText:'The plan is cancelled, calls stop and all of this circle’s data is deleted for everyone connected to it.',delYes:'Yes, delete everything',cancelNo2:'No, go back',deleting:'Deleting…',
+    deletedTitle:'Your data was deleted',deletedText:'We cancelled the plan, stopped the calls and deleted this circle’s data. Thank you for trusting Alicia. 💛',home:'Back to home',
+    refunds:'Refunds',unsub:'Unsubscribe',delPage:'Delete data',
     aboutTitle:'What Alicia knows',aboutSub:'It makes every conversation more personal. Everything is optional.',
     treat:'What they like to be called',origin:'Country of origin',likes:'Interests',family:'Family',eName:'Emergency contact (name)',ePhoneL:'Emergency contact (mobile)',
     treatPh:'e.g. Miss Rose',originPh:'e.g. Colombia',likesPh:'Other interests or topics',familyPh:'e.g. Daughter Laura (lives in Miami), grandson Tom (8)',
@@ -270,7 +302,7 @@ var CONFIG={
   var $=function(id){return document.getElementById(id)};
   var fb=null,user=null,circleId=null,circle=null,picked={},confirmation=null,verifier=null,timer=null;
 
-  function show(v){['vLoading','vLogin','vLink','vAccount'].forEach(function(id){$(id).hidden=id!==v});$('outBtn').hidden=!(v==='vAccount'||v==='vLink')}
+  function show(v){['vLoading','vLogin','vLink','vAccount','vDeleted'].forEach(function(id){$(id).hidden=id!==v});$('outBtn').hidden=!(v==='vAccount'||v==='vLink')}
   function setErr(f,t){var e=$('e-'+f);if(e)e.textContent=t||''}
   function fillCC(sel){C.forEach(function(c){var o=document.createElement('option');o.value=c[0];o.textContent=c[0]+' '+c[1];sel.appendChild(o)})}
   function cur(sel){return C.filter(function(c){return c[0]===sel.value})[0]}
@@ -342,6 +374,11 @@ var CONFIG={
     return {k:'trialOver',cls:'warn'};
   }
   function render(){
+    var cpx=circle.callProfile||{},ph=user&&user.phoneNumber;
+    $('smsLbl').textContent=T.smsLbl.replace('{phone}',ph||'');$('smsOn').closest('.switch').hidden=!ph;
+    $('smsOn').checked=!(circle.smsOptOut||[]).includes(ph);
+    var oo=cpx.optedOutAt&&cpx.callEnabled===false;$('optOutMsg').hidden=!oo;
+    if(oo)$('optOutMsg').textContent=T.optedOut.replace('{name}',cpx.treatment||cpx.fullName||'').replace('{date}',fmtDate(cpx.optedOutAt));
     var c=circle,cp=c.callProfile||{},b=c.billing||{},st=status();
     var fn=firstName();$('hello').textContent=T.hello+(fn?', '+fn:'');
     $('helloSub').textContent=T.helloSub.replace('{name}',cp.treatment||cp.fullName||'');
@@ -474,6 +511,30 @@ var CONFIG={
       .catch(function(e){console.error(e);stop(T.fail)});
   });
 
+  // ---- SMS opt-out for the signed-in number ----
+  $('smsOn').addEventListener('change',function(){
+    var ph=user.phoneNumber,list=(circle.smsOptOut||[]).filter(function(x){return x!==ph}),on=$('smsOn').checked,m=$('smsMsg');
+    if(!on)list.push(ph);m.className='msg';m.textContent='';
+    fb.F.setDoc(fb.F.doc(fb.db,'circles',circleId),{smsOptOut:list},{merge:true}).then(function(){circle.smsOptOut=list;m.className='msg ok';m.textContent=on?T.smsOnOk:T.smsOff})
+      .catch(function(e){$('smsOn').checked=!on;m.textContent=errMsg(e)});
+  });
+
+  // ---- delete everything ----
+  $('delLink').addEventListener('click',function(){$('delBox').hidden=false;$('delLink').hidden=true;$('delYes').focus()});
+  $('delNo').addEventListener('click',function(){$('delBox').hidden=true;$('delLink').hidden=false});
+  $('delYes').addEventListener('click',function(){
+    var btn=$('delYes'),lbl=btn.querySelector('.lbl'),m=$('delMsg');m.textContent='';m.className='msg';
+    btn.classList.add('loading');btn.disabled=true;lbl.textContent=T.deleting;
+    function stop(t){btn.classList.remove('loading');btn.disabled=false;lbl.textContent=T.delYes;m.textContent=t}
+    user.getIdToken().then(function(tok){
+      return fetch(CONFIG.deleteUrl,{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+tok},body:JSON.stringify({circleId:circleId})});
+    }).then(function(r){return r.json().catch(function(){return {}}).then(function(j){return {ok:r.ok,status:r.status,j:j}})})
+      .then(function(x){
+        if(!x.ok){stop(T.fail+' ('+x.status+(x.j&&x.j.error?' · '+x.j.error:'')+')');return}
+        fb.A.signOut(fb.auth).catch(function(){});circle=null;show('vDeleted');window.scrollTo(0,0);
+      }).catch(function(e){console.error(e);stop(T.fail)});
+  });
+
   // ---- cancel ----
   $('cancelLink').addEventListener('click',function(){
     var b=circle.billing||{},np=Date.parse(b.nextPaymentDate||'');
@@ -507,5 +568,6 @@ var CONFIG={
   }).catch(function(e){console.error(e);show('vLogin');$('loginMsg').textContent=T.fail});
 })();
 </script>
+<script src="consent.js" defer></script>
 </body>
 </html>

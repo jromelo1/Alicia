@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Privacidad — Call Me Alicia</title>
-<meta name="description" content="Cómo Call Me Alicia usa y protege tus datos y los de tu ser querido.">
+<meta name="description" content="Cómo Call Me Alicia recoge, usa y protege tus datos.">
 <meta name="theme-color" content="#ffffff">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23B0502D'/%3E%3Cg stroke='white' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M10 14v4M14 11v10M18 9v14M22 13v6'/%3E%3C/g%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -35,10 +35,13 @@ table{width:100%;border-collapse:collapse;margin:6px 0 16px;font-size:15px}
 th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line-2);vertical-align:top;color:var(--ink-2)}
 th{color:var(--ink);font-weight:600}
 .tw{overflow-x:auto}
+.box{background:var(--bg-3);border-radius:16px;padding:18px 20px;margin:8px 0 18px}
+.box p:last-child{margin:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:999px;background:var(--ink);color:#fff;font-weight:500;text-decoration:none;margin:4px 8px 4px 0}
 .note{border-left:3px solid var(--accent);padding:4px 0 4px 16px;margin:18px 0}
 a.l{color:var(--accent)}
 footer{border-top:1px solid var(--line-2);font-size:13px;color:var(--muted)}
-footer .in{max-width:860px;margin:0 auto;padding:28px var(--pad) 36px;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+footer .in{max-width:860px;flex-direction:column;margin:0 auto;padding:28px var(--pad) 36px;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
 footer nav{display:flex;flex-wrap:wrap;gap:8px 22px}
 footer a{text-decoration:none} footer a:hover{color:var(--ink)}
 [data-l]{display:none} html[lang="es"] [data-l="es"],html[lang="en"] [data-l="en"]{display:block}
@@ -53,140 +56,144 @@ html[lang="es"] span[data-l="es"],html[lang="en"] span[data-l="en"]{display:inli
 <main>
 <article data-l="es">
 
-<h1>Política de privacidad</h1>
-<p class="upd">Vigente desde el 16 de octubre de 2026</p>
-<p class="lead">En pocas palabras: usamos tus datos y los de tu ser querido solo para que Alicia lo llame, lo conozca y le cuente a la familia cómo está. No vendemos datos, no hacemos publicidad con ellos y puedes pedirnos que los borremos cuando quieras.</p>
+<h1>Política de privacidad y tratamiento de datos</h1>
+<p class="upd">Vigente desde el 21 de octubre de 2026</p>
+<p class="lead">En pocas palabras: usamos tus datos y los de tu ser querido solo para que Alicia lo llame, lo conozca y le cuente a la familia cómo está. No vendemos datos, no hacemos publicidad con ellos, y puedes darte de baja o pedir que los borremos cuando quieras.</p>
 
-<h2>1. Quiénes somos</h2>
-<p><strong>Call Me Alicia</strong> (“nosotros”) es un servicio de llamadas telefónicas de compañía hechas por Alicia, una asistente de voz con inteligencia artificial. Somos los responsables del tratamiento de los datos personales descritos aquí, en los términos de la Ley 1581 de 2012 de Colombia y el Decreto 1377 de 2013 (compilado en el Decreto 1074 de 2015).</p>
-<p>Contacto para todo lo relacionado con tus datos: <a class="l" href="mailto:hello@callmealicia.com">hello@callmealicia.com</a> · Bogotá, Colombia.</p>
+<h2>1. Responsable</h2>
+<p><strong>Call Me Alicia</strong> (“nosotros”), Bogotá, Colombia, es el responsable del tratamiento de los datos personales descritos aquí, conforme a la Ley 1581 de 2012, el Decreto 1377 de 2013 (compilado en el Decreto 1074 de 2015) y demás normas de protección de datos. Contacto: <a class="l" href="mailto:hello@callmealicia.com">hello@callmealicia.com</a>.</p>
 
-<h2>2. Qué datos recogemos</h2>
-<ul>
-<li><strong>De quien se registra:</strong> nombre, número de celular y el correo que usas para la suscripción.</li>
-<li><strong>De la persona que recibe las llamadas:</strong> nombre, número de celular, hora y zona horaria de la llamada, idioma y, si nos los das, cómo le gusta que le digan, país de origen, gustos, información sobre su familia y un contacto de emergencia.</li>
-<li><strong>De las llamadas:</strong> el audio de la conversación, su transcripción, un resumen, la duración, si contestó o no, y si Alicia detectó algo que convenga avisar a la familia.</li>
-<li><strong>Del pago:</strong> plan, valor, fechas de cobro y estado de la suscripción. <strong>No vemos ni guardamos los datos de tu tarjeta:</strong> los recibe y protege directamente Mercado Pago.</li>
-<li><strong>Técnicos:</strong> datos mínimos de tu navegador y de inicio de sesión necesarios para que el registro funcione y para evitar abusos (por ejemplo, la verificación reCAPTCHA de Google).</li>
-</ul>
+<h2>2. Qué datos recogemos y cómo</h2>
+<div class="tw"><table>
+<tr><th>Dato</th><th>De quién</th><th>Cómo lo obtenemos</th></tr>
+<tr><td>Nombre y celular</td><td>Quien se registra y quien recibe las llamadas</td><td>Formulario de registro (el celular se verifica con un código SMS)</td></tr>
+<tr><td>Hora y zona horaria de la llamada, idioma, plan</td><td>Quien recibe las llamadas</td><td>Formulario de registro y Mi cuenta</td></tr>
+<tr><td>Cómo le gusta que le digan, país de origen, gustos, familia, contacto de emergencia</td><td>Quien recibe las llamadas (opcional)</td><td>Formulario “Cuéntale a Alicia un poco más” y Mi cuenta</td></tr>
+<tr><td>Audio, transcripción y resumen de cada llamada; si contestó; si hubo una señal de alerta</td><td>Quien recibe las llamadas</td><td>Las llamadas con Alicia</td></tr>
+<tr><td>Correo, plan, valor, fechas y estado del pago</td><td>Quien paga</td><td>Página de pago y avisos de Mercado Pago. <strong>No vemos ni guardamos los datos de la tarjeta.</strong></td></tr>
+<tr><td>Datos técnicos mínimos (sesión, idioma, verificación anti-abuso)</td><td>Quien visita la página</td><td>Tu navegador. Ver la <a class="l" href="cookies.html">Política de cookies</a></td></tr>
+</table></div>
+<p>Los campos marcados como opcionales no son obligatorios para usar el servicio.</p>
 
 <h2>3. Datos sensibles</h2>
-<p>En una conversación es natural hablar de salud, estado de ánimo o situaciones personales. La ley colombiana considera estos datos <strong>sensibles</strong>. Los tratamos solo con la autorización expresa que se da al registrarse, únicamente para acompañar a la persona y avisar a su familia si algo no está bien, y con especial cuidado. Nadie está obligado a responder preguntas sobre datos sensibles: la persona puede no hablar de un tema o colgar en cualquier momento.</p>
+<p>En una conversación es natural hablar de salud, estado de ánimo o situaciones personales. La ley colombiana los considera <strong>datos sensibles</strong>. Los tratamos solo con tu autorización expresa, solo para acompañar a la persona y avisar a su familia si algo no está bien, y con especial cuidado. <strong>Nadie está obligado a autorizar el tratamiento de datos sensibles ni a responder preguntas sobre ellos:</strong> la persona puede no hablar de un tema o colgar en cualquier momento.</p>
 
-<h2>4. Para qué usamos los datos</h2>
+<h2>4. Autorización</h2>
+<p>Antes de registrarte te pedimos una autorización previa, expresa e informada, marcando las casillas del formulario. Guardamos la fecha y la versión de lo que aceptaste como prueba. Quien registra a un ser querido declara que cuenta con su autorización, y además enviamos un código por SMS al celular de esa persona para confirmarlo.</p>
+
+<h2>5. Para qué usamos los datos (finalidades)</h2>
 <ul>
-<li>Hacer la llamada diaria a la hora elegida y personalizar la conversación.</li>
+<li>Hacer las llamadas en los días y a la hora elegidos, y personalizar la conversación.</li>
 <li>Recordar lo conversado antes, para que cada llamada tenga continuidad.</li>
-<li>Enviar a la familia, por SMS, un resumen de la llamada, un aviso si no contestó o una alerta si se mencionó algo preocupante.</li>
-<li>Cobrar la suscripción y atender pagos, cancelaciones y reclamos.</li>
+<li>Enviar a la familia, por SMS, un resumen, un aviso si no contestó o una alerta si se mencionó algo preocupante.</li>
+<li>Cobrar la suscripción y atender pagos, cancelaciones, reembolsos y reclamos.</li>
 <li>Dar soporte, mantener el servicio seguro y prevenir fraudes.</li>
-<li>Mejorar el servicio (por ejemplo, revisar llamadas que fallaron), sin vender ni ceder los datos a terceros para su propio uso.</li>
+<li>Mejorar el servicio (por ejemplo, revisar llamadas que fallaron).</li>
 </ul>
-<p>No usamos los datos para publicidad de terceros y no los vendemos.</p>
+<p>No usamos los datos para publicidad, no los vendemos y no los compartimos para que otros hagan publicidad.</p>
 
-<h2>5. Quién más los trata por nosotros</h2>
-<p>Para prestar el servicio trabajamos con proveedores que tratan los datos por cuenta nuestra (encargados), solo para lo que les pedimos:</p>
+<h2>6. Proveedores que tratan los datos por nosotros (encargados)</h2>
 <div class="tw"><table>
 <tr><th>Proveedor</th><th>Para qué</th><th>Dónde</th></tr>
-<tr><td>Google Firebase / Google Cloud</td><td>Guardar la información, iniciar sesión con código SMS, verificación reCAPTCHA</td><td>Estados Unidos</td></tr>
-<tr><td>Retell AI</td><td>La voz y la inteligencia artificial de Alicia: hacer la llamada, transcribirla y resumirla</td><td>Estados Unidos</td></tr>
+<tr><td>Google Firebase / Google Cloud</td><td>Guardar la información, inicio de sesión con código SMS, verificación reCAPTCHA</td><td>Estados Unidos</td></tr>
+<tr><td>Retell AI</td><td>La voz y la inteligencia artificial de Alicia: hacer, transcribir y resumir las llamadas</td><td>Estados Unidos</td></tr>
+<tr><td>ElevenLabs</td><td>Generar la voz de Alicia (procesa el texto que Alicia dice)</td><td>Estados Unidos</td></tr>
 <tr><td>Twilio</td><td>Conectar las llamadas telefónicas y enviar los SMS a la familia</td><td>Estados Unidos</td></tr>
 <tr><td>Mercado Pago</td><td>Cobrar la suscripción</td><td>Colombia</td></tr>
 </table></div>
-<p>También comparten información, por diseño, las personas del círculo familiar que reciben los resúmenes y alertas. Entregaremos datos a autoridades solo cuando la ley lo exija.</p>
+<p>Las personas del círculo familiar reciben resúmenes y alertas por diseño. Entregaremos datos a autoridades solo cuando la ley lo exija.</p>
 
-<h2>6. Transferencia internacional</h2>
-<p>Varios de nuestros proveedores guardan o procesan los datos en Estados Unidos. Al registrarte autorizas esa transferencia. Elegimos proveedores que aplican medidas de seguridad reconocidas y les exigimos usar los datos solo para prestarnos el servicio.</p>
+<h2>7. Transferencia internacional</h2>
+<p>Varios proveedores guardan o procesan los datos en Estados Unidos. Al autorizar el tratamiento, autorizas esa transferencia. Elegimos proveedores con medidas de seguridad reconocidas y les exigimos usar los datos solo para prestarnos el servicio.</p>
 
-<h2>7. Cuánto tiempo los guardamos</h2>
-<p>Mientras la cuenta esté activa. Si cancelas, guardamos solo lo necesario para cumplir obligaciones legales, contables o atender reclamos. Si nos pides borrar tus datos, lo haremos dentro de los plazos de la ley (ver punto 8), salvo lo que estemos obligados a conservar.</p>
+<h2>8. Cuánto tiempo los guardamos</h2>
+<p>Mientras la cuenta esté activa. Si cancelas, conservamos solo lo necesario para obligaciones legales, contables o reclamos. Si pides eliminar tus datos, los borramos como se explica en <a class="l" href="eliminar-datos.html">Eliminar mis datos</a>.</p>
 
-<h2>8. Tus derechos y cómo ejercerlos</h2>
-<p>Como titular puedes, en cualquier momento y sin costo:</p>
-<ul>
-<li>Conocer, actualizar y rectificar tus datos.</li>
-<li>Pedir prueba de la autorización que diste.</li>
-<li>Saber qué uso le hemos dado a tus datos.</li>
-<li>Revocar la autorización y pedir que borremos tus datos.</li>
-<li>Presentar quejas ante la Superintendencia de Industria y Comercio (SIC).</li>
-</ul>
-<p>Escríbenos a <a class="l" href="mailto:hello@callmealicia.com">hello@callmealicia.com</a> desde el correo o indicando el número con el que te registraste. Respondemos <strong>consultas en máximo 10 días hábiles</strong> y <strong>reclamos (corrección, borrado, revocatoria) en máximo 15 días hábiles</strong>, como dice la ley. La persona que recibe las llamadas puede ejercer estos derechos directamente, aunque no haya sido quien se registró, y puede pedir que Alicia deje de llamarla.</p>
+<h2>9. Tus derechos</h2>
+<p>Puedes, en cualquier momento y sin costo: conocer, actualizar y rectificar tus datos; pedir prueba de la autorización; saber qué uso les hemos dado; revocar la autorización y pedir que los eliminemos; y presentar quejas ante la Superintendencia de Industria y Comercio (SIC). Escríbenos a <a class="l" href="mailto:hello@callmealicia.com">hello@callmealicia.com</a> desde el correo o indicando el número con el que te registraste. Respondemos <strong>consultas en máximo 10 días hábiles</strong> y <strong>reclamos en máximo 15 días hábiles</strong>. La persona que recibe las llamadas puede ejercer estos derechos directamente.</p>
+<p>Atajos: <a class="l" href="cuenta.html">Mi cuenta</a> (ver y corregir datos) · <a class="l" href="baja.html">Darse de baja</a> · <a class="l" href="eliminar-datos.html">Eliminar mis datos</a>.</p>
 
-<h2>9. Consentimiento de quien recibe las llamadas</h2>
-<p>Alicia solo llama a quien está de acuerdo. Por eso enviamos un código por SMS al celular de esa persona durante el registro, y quien registra a un ser querido confirma que cuenta con su autorización. Alicia siempre dice que es una inteligencia artificial.</p>
+<h2>10. Si vives fuera de Colombia</h2>
+<p>Aplicamos estas mismas reglas en todos los países y, además, respetamos los derechos que te dé tu ley local. <strong>Estados Unidos:</strong> no vendemos ni “compartimos” datos personales para publicidad; puedes pedir saber qué datos tenemos, corregirlos o eliminarlos, y no recibirás un trato distinto por hacerlo. <strong>México:</strong> puedes ejercer tus derechos de acceso, rectificación, cancelación y oposición (ARCO) escribiéndonos.</p>
 
-<h2>10. Menores de edad</h2>
-<p>El servicio es para personas mayores de 18 años. No recogemos a sabiendas datos de menores.</p>
+<h2>11. Menores de edad</h2>
+<p>El servicio es solo para personas mayores de 18 años, tanto quien se registra como quien recibe las llamadas. No recogemos a sabiendas datos de menores; si nos enteramos de que ocurrió, los eliminamos.</p>
 
-<h2>11. Seguridad</h2>
-<p>Usamos conexiones cifradas, acceso restringido a la información y reglas que impiden que una persona vea los datos de un círculo al que no pertenece. Ningún sistema es 100% infalible; si ocurriera un incidente que afecte tus datos, te avisaremos y lo informaremos a la autoridad cuando corresponda.</p>
+<h2>12. Seguridad</h2>
+<p>Usamos conexiones cifradas, acceso restringido y reglas que impiden ver un círculo al que no perteneces. Si ocurriera un incidente que afecte tus datos, te avisaremos y lo informaremos a la autoridad cuando corresponda.</p>
 
-<h2>12. Cambios a esta política</h2>
-<p>Si hacemos cambios importantes te avisaremos antes de que entren en vigor. La fecha de arriba indica la última actualización.</p>
+<h2>13. Cambios</h2>
+<p>Si hacemos cambios importantes te avisaremos antes de que entren en vigor y, si cambia la finalidad del tratamiento, te pediremos una nueva autorización.</p>
 
 </article>
 <article data-l="en">
 
-<h1>Privacy policy</h1>
-<p class="upd">Effective October 16, 2026</p>
-<p class="lead">In short: we use your information and your loved one’s only so Alicia can call them, get to know them and let the family know how they’re doing. We don’t sell data, we don’t use it for advertising, and you can ask us to delete it anytime.</p>
+<h1>Privacy and data policy</h1>
+<p class="upd">Effective October 21, 2026</p>
+<p class="lead">In short: we use your information and your loved one’s only so Alicia can call them, get to know them and let the family know how they’re doing. We don’t sell data or use it for advertising, and you can unsubscribe or ask us to delete it anytime.</p>
 
-<h2>1. Who we are</h2>
-<p><strong>Call Me Alicia</strong> (“we”) is a companionship phone-call service provided by Alicia, an AI voice assistant. We are the controller of the personal data described here, under Colombian Law 1581 of 2012 and Decree 1377 of 2013, and we apply the same practices to users in other countries.</p>
-<p>Contact for anything about your data: <a class="l" href="mailto:hello@callmealicia.com">hello@callmealicia.com</a> · Bogotá, Colombia.</p>
+<h2>1. Controller</h2>
+<p><strong>Call Me Alicia</strong> (“we”), Bogotá, Colombia, is the controller of the personal data described here, under Colombian Law 1581 of 2012 and Decree 1377 of 2013. Contact: <a class="l" href="mailto:hello@callmealicia.com">hello@callmealicia.com</a>.</p>
 
-<h2>2. What we collect</h2>
-<ul>
-<li><strong>From the person who signs up:</strong> name, mobile number and the email used for the subscription.</li>
-<li><strong>From the person who receives the calls:</strong> name, mobile number, call time and time zone, language and, if you share them, what they like to be called, country of origin, interests, family details and an emergency contact.</li>
-<li><strong>From calls:</strong> call audio, transcript, a summary, duration, whether they picked up, and whether Alicia noticed something worth telling the family.</li>
-<li><strong>Payments:</strong> plan, amount, billing dates and subscription status. <strong>We never see or store your card details</strong> — Mercado Pago receives and protects them directly.</li>
-<li><strong>Technical:</strong> minimal browser and sign-in data needed for registration to work and to prevent abuse (for example, Google reCAPTCHA).</li>
-</ul>
+<h2>2. What we collect and how</h2>
+<div class="tw"><table>
+<tr><th>Data</th><th>About whom</th><th>How we get it</th></tr>
+<tr><td>Name and mobile number</td><td>The person signing up and the person receiving calls</td><td>Sign-up form (the number is verified with an SMS code)</td></tr>
+<tr><td>Call time and time zone, language, plan</td><td>The person receiving calls</td><td>Sign-up form and My account</td></tr>
+<tr><td>Preferred name, country of origin, interests, family, emergency contact</td><td>The person receiving calls (optional)</td><td>“Tell Alicia a little more” and My account</td></tr>
+<tr><td>Audio, transcript and summary of each call; whether they answered; any alert signal</td><td>The person receiving calls</td><td>Calls with Alicia</td></tr>
+<tr><td>Email, plan, amount, billing dates and status</td><td>The payer</td><td>Mercado Pago checkout and notifications. <strong>We never see or store card details.</strong></td></tr>
+<tr><td>Minimal technical data (session, language, anti-abuse check)</td><td>Website visitors</td><td>Your browser. See the <a class="l" href="cookies.html">Cookie policy</a></td></tr>
+</table></div>
+<p>Fields marked optional aren’t required to use the service.</p>
 
 <h2>3. Sensitive information</h2>
-<p>Conversations may naturally touch on health, mood or personal matters. This is <strong>sensitive data</strong>. We process it only with the explicit consent given at sign-up, only to keep the person company and alert their family if something seems wrong, and with extra care. No one has to answer questions about sensitive topics — they can skip a subject or hang up anytime.</p>
+<p>Conversations may touch on health, mood or personal matters — <strong>sensitive data</strong>. We process it only with your explicit consent, only to keep the person company and alert their family if something seems wrong, and with extra care. <strong>No one is required to consent to sensitive data processing or to answer questions about it</strong>; they can skip a topic or hang up anytime.</p>
 
-<h2>4. How we use it</h2>
+<h2>4. Consent</h2>
+<p>Before signing up we ask for prior, explicit and informed consent through the form checkboxes, and we keep the date and version of what you accepted. Anyone registering a loved one confirms they have that person’s permission, and we also text a code to that person’s phone.</p>
+
+<h2>5. How we use it</h2>
 <ul>
-<li>Placing the daily call at the chosen time and personalizing the conversation.</li>
-<li>Remembering earlier conversations so each call has continuity.</li>
-<li>Texting the family a call summary, a notice if there was no answer, or an alert if something worrying came up.</li>
-<li>Billing the subscription and handling payments, cancellations and claims.</li>
+<li>Placing calls on the chosen days and time, and personalizing them.</li>
+<li>Remembering earlier conversations.</li>
+<li>Texting the family a summary, a no-answer notice or an alert.</li>
+<li>Billing and handling payments, cancellations, refunds and claims.</li>
 <li>Support, security and fraud prevention.</li>
-<li>Improving the service (for example, reviewing calls that failed) — never selling or handing data to others for their own use.</li>
+<li>Improving the service (for example, reviewing failed calls).</li>
 </ul>
+<p>We don’t use data for advertising, and we don’t sell or share it for others’ advertising.</p>
 
-<h2>5. Service providers</h2>
+<h2>6. Service providers</h2>
 <div class="tw"><table>
 <tr><th>Provider</th><th>Purpose</th><th>Location</th></tr>
-<tr><td>Google Firebase / Google Cloud</td><td>Data storage, SMS sign-in, reCAPTCHA</td><td>United States</td></tr>
+<tr><td>Google Firebase / Google Cloud</td><td>Storage, SMS sign-in, reCAPTCHA</td><td>United States</td></tr>
 <tr><td>Retell AI</td><td>Alicia’s voice and AI: placing, transcribing and summarizing calls</td><td>United States</td></tr>
+<tr><td>ElevenLabs</td><td>Generating Alicia’s voice (processes what Alicia says)</td><td>United States</td></tr>
 <tr><td>Twilio</td><td>Phone connectivity and family text messages</td><td>United States</td></tr>
 <tr><td>Mercado Pago</td><td>Subscription billing</td><td>Colombia</td></tr>
 </table></div>
-<p>Family members in the circle receive summaries and alerts by design. We disclose data to authorities only when the law requires it.</p>
 
-<h2>6. International transfers</h2>
-<p>Several providers store or process data in the United States. By signing up you authorize that transfer. We choose providers with recognized security measures and require them to use the data only to serve us.</p>
+<h2>7. International transfers</h2>
+<p>Several providers store or process data in the United States. By consenting, you authorize that transfer. Providers must use the data only to serve us.</p>
 
-<h2>7. Retention</h2>
-<p>While the account is active. After cancellation we keep only what we need for legal, accounting or claims purposes. If you ask us to delete your data we will, within the time frames below, except what we are legally required to keep.</p>
+<h2>8. Retention</h2>
+<p>While the account is active. After cancellation we keep only what’s needed for legal, accounting or claims purposes. To delete your data, see <a class="l" href="eliminar-datos.html">Delete my data</a>.</p>
 
-<h2>8. Your rights</h2>
-<p>You can access, update, correct or delete your data, ask for proof of your consent, learn how it has been used, withdraw consent, and (in Colombia) file a complaint with the Superintendencia de Industria y Comercio. Email <a class="l" href="mailto:hello@callmealicia.com">hello@callmealicia.com</a>. We answer requests within <strong>10 business days</strong> and claims (correction, deletion, withdrawal) within <strong>15 business days</strong>. The person who receives the calls can exercise these rights directly and can ask Alicia to stop calling at any time.</p>
+<h2>9. Your rights</h2>
+<p>You can access, update, correct or delete your data, ask for proof of consent, learn how it’s used, withdraw consent and (in Colombia) complain to the Superintendencia de Industria y Comercio. Email <a class="l" href="mailto:hello@callmealicia.com">hello@callmealicia.com</a>. We answer requests within <strong>10 business days</strong> and claims within <strong>15 business days</strong>. Shortcuts: <a class="l" href="cuenta.html">My account</a> · <a class="l" href="baja.html">Unsubscribe</a> · <a class="l" href="eliminar-datos.html">Delete my data</a>.</p>
 
-<h2>9. Consent of the person being called</h2>
-<p>Alicia only calls people who agree. During sign-up we text a code to that person’s phone, and anyone registering a loved one confirms they have their permission. Alicia always says she is an AI.</p>
+<h2>10. If you live outside Colombia</h2>
+<p>These rules apply everywhere, plus any rights under your local law. <strong>United States:</strong> we don’t sell or “share” personal information for advertising; you may request to know, correct or delete your data without being treated differently. <strong>Mexico:</strong> you may exercise your ARCO rights (access, rectification, cancellation, opposition) by emailing us.</p>
 
-<h2>10. Children</h2>
-<p>The service is for adults 18 and over. We don’t knowingly collect data from minors.</p>
+<h2>11. Children</h2>
+<p>The service is only for adults 18 and over — both the person signing up and the person receiving calls. If we learn we collected data from a minor, we delete it.</p>
 
-<h2>11. Security</h2>
-<p>We use encrypted connections, restricted access and rules that stop anyone from seeing a circle they don’t belong to. No system is perfect; if an incident affects your data, we’ll tell you and notify authorities where required.</p>
+<h2>12. Security</h2>
+<p>Encrypted connections, restricted access and rules that stop anyone from seeing a circle they don’t belong to. If an incident affects your data, we’ll tell you and notify authorities where required.</p>
 
-<h2>12. Changes</h2>
-<p>We’ll let you know before any important change takes effect. The date above shows the latest update.</p>
+<h2>13. Changes</h2>
+<p>We’ll notify you before important changes take effect and ask for new consent if the purpose of processing changes.</p>
 
 </article>
 </main>
@@ -194,8 +201,13 @@ html[lang="es"] span[data-l="es"],html[lang="en"] span[data-l="en"]{display:inli
   <div>© 2026 Call Me Alicia</div>
   <nav>
     <a href="index.html"><span data-l="es">Inicio</span><span data-l="en">Home</span></a>
+    <a href="cuenta.html"><span data-l="es">Mi cuenta</span><span data-l="en">My account</span></a>
     <a href="privacidad.html"><span data-l="es">Privacidad</span><span data-l="en">Privacy</span></a>
     <a href="terminos.html"><span data-l="es">Términos</span><span data-l="en">Terms</span></a>
+    <a href="reembolsos.html"><span data-l="es">Reembolsos</span><span data-l="en">Refunds</span></a>
+    <a href="cookies.html">Cookies</a>
+    <a href="baja.html"><span data-l="es">Darse de baja</span><span data-l="en">Unsubscribe</span></a>
+    <a href="eliminar-datos.html"><span data-l="es">Eliminar mis datos</span><span data-l="en">Delete my data</span></a>
     <a href="mailto:hello@callmealicia.com"><span data-l="es">Contacto</span><span data-l="en">Contact</span></a>
   </nav>
 </div></footer>
@@ -210,5 +222,6 @@ html[lang="es"] span[data-l="es"],html[lang="en"] span[data-l="en"]{display:inli
   document.querySelectorAll('[data-lang]').forEach(function(b){b.addEventListener('click',function(){set(b.getAttribute('data-lang'),true)})});
 })();
 </script>
+<script src="consent.js" defer></script>
 </body>
 </html>

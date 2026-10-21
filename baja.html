@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Darse de baja — Call Me Alicia</title>
+<meta name="description" content="Cómo dejar de recibir llamadas o mensajes de Alicia.">
+<meta name="theme-color" content="#ffffff">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Ccircle cx='16' cy='16' r='16' fill='%23B0502D'/%3E%3Cg stroke='white' stroke-width='2.4' stroke-linecap='round'%3E%3Cpath d='M10 14v4M14 11v10M18 9v14M22 13v6'/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--ink:#1d1d1f;--ink-2:#424245;--muted:#6e6e73;--line-2:#e8e8ed;--bg:#fff;--bg-3:#f5f5f7;--accent:#B0502D;--pad:clamp(16px,5.5vw,80px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Geist","Helvetica Neue",Helvetica,system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+a{color:inherit}
+.nav{position:sticky;top:0;z-index:5;background:rgba(255,255,255,.85);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);border-bottom:1px solid var(--line-2)}
+.nav .in{max-width:860px;margin:0 auto;padding:0 var(--pad);height:60px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:600;font-size:17px;text-decoration:none}
+.lang{display:flex;border:1px solid var(--line-2);border-radius:999px;padding:3px}
+.lang button{font:inherit;font-size:13px;border:0;background:none;padding:6px 12px;border-radius:999px;cursor:pointer;color:var(--muted)}
+.lang button[aria-pressed="true"]{background:var(--ink);color:#fff}
+main{max-width:860px;margin:0 auto;padding:48px var(--pad) 72px}
+h1{font-size:clamp(30px,5vw,44px);letter-spacing:-.02em;line-height:1.1;margin:0 0 10px}
+.upd{color:var(--muted);font-size:14px;margin:0 0 28px}
+.lead{font-size:18px;line-height:1.6;color:var(--ink-2);background:var(--bg-3);border-radius:16px;padding:18px 20px;margin:0 0 36px}
+h2{font-size:21px;letter-spacing:-.01em;margin:40px 0 12px}
+p,li{font-size:16px;line-height:1.7;color:var(--ink-2)}
+p{margin:0 0 14px}
+ul{padding-left:22px;margin:0 0 14px}
+li{margin-bottom:6px}
+strong{color:var(--ink);font-weight:600}
+table{width:100%;border-collapse:collapse;margin:6px 0 16px;font-size:15px}
+th,td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line-2);vertical-align:top;color:var(--ink-2)}
+th{color:var(--ink);font-weight:600}
+.tw{overflow-x:auto}
+.box{background:var(--bg-3);border-radius:16px;padding:18px 20px;margin:8px 0 18px}
+.box p:last-child{margin:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 22px;border-radius:999px;background:var(--ink);color:#fff;font-weight:500;text-decoration:none;margin:4px 8px 4px 0}
+.note{border-left:3px solid var(--accent);padding:4px 0 4px 16px;margin:18px 0}
+a.l{color:var(--accent)}
+footer{border-top:1px solid var(--line-2);font-size:13px;color:var(--muted)}
+footer .in{max-width:860px;flex-direction:column;margin:0 auto;padding:28px var(--pad) 36px;display:flex;flex-wrap:wrap;gap:8px 24px;justify-content:space-between}
+footer nav{display:flex;flex-wrap:wrap;gap:8px 22px}
+footer a{text-decoration:none} footer a:hover{color:var(--ink)}
+[data-l]{display:none} html[lang="es"] [data-l="es"],html[lang="en"] [data-l="en"]{display:block}
+html[lang="es"] span[data-l="es"],html[lang="en"] span[data-l="en"]{display:inline}
+</style>
+</head>
+<body>
+<header class="nav"><div class="in">
+  <a class="brand" href="index.html">Call Me Alicia</a>
+  <div class="lang" role="group" aria-label="Idioma / Language"><button type="button" data-lang="es" aria-pressed="true">ES</button><button type="button" data-lang="en" aria-pressed="false">EN</button></div>
+</div></header>
+<main>
+<article data-l="es">
+
+<h1>Darse de baja</h1>
+<p class="upd">Vigente desde el 21 de octubre de 2026</p>
+<p class="lead">Elige lo que quieres dejar de recibir. Todo es gratis e inmediato, y no tienes que dar explicaciones.</p>
+
+<h2>Dejar de recibir las llamadas de Alicia</h2>
+<div class="box">
+<p><strong>Si eres quien recibe las llamadas:</strong> dile a Alicia en cualquier llamada <em>“no me vuelvas a llamar”</em>. Las llamadas se detienen y le avisamos a tu familia.</p>
+<p><strong>Para pausarlas un tiempo</strong> (un viaje, una hospitalización): entra a Mi cuenta y apaga <em>Llamadas activas</em>. Las vuelves a prender cuando quieras.</p>
+<p><strong>Para terminar el servicio:</strong> Mi cuenta → <em>Cancelar plan</em>.</p>
+<p><a class="btn" href="cuenta.html">Ir a Mi cuenta</a></p>
+</div>
+
+<h2>Dejar de recibir los SMS (familiares)</h2>
+<div class="box">
+<p>Entra a <strong>Mi cuenta</strong> con tu celular y apaga <em>Recibir avisos por SMS en este número</em>. También puedes responder <strong>STOP</strong> a cualquier mensaje (funciona en Estados Unidos) o escribirnos a <a class="l" href="mailto:hello@callmealicia.com">hello@callmealicia.com</a> con tu número, y dejamos de enviarte mensajes en máximo 2 días hábiles.</p>
+</div>
+
+<h2>No recibimos correos de publicidad</h2>
+<p>Call Me Alicia no envía correos de publicidad. Los únicos correos que puedes recibir son los de Mercado Pago sobre tu pago.</p>
+
+<h2>Borrar todo</h2>
+<p>Si además quieres que borremos tus datos, ve a <a class="l" href="eliminar-datos.html">Eliminar mis datos</a>.</p>
+
+</article>
+<article data-l="en">
+
+<h1>Unsubscribe</h1>
+<p class="upd">Effective October 21, 2026</p>
+<p class="lead">Choose what you want to stop. It’s free and immediate, and you don’t need to explain why.</p>
+
+<h2>Stop Alicia’s calls</h2>
+<div class="box">
+<p><strong>If you receive the calls:</strong> tell Alicia on any call <em>“please don’t call me again.”</em> Calls stop and we let your family know.</p>
+<p><strong>To pause them for a while</strong> (a trip, a hospital stay): go to My account and turn off <em>Calls on</em>. Turn them back on anytime.</p>
+<p><strong>To end the service:</strong> My account → <em>Cancel plan</em>.</p>
+<p><a class="btn" href="cuenta.html">Go to My account</a></p>
+</div>
+
+<h2>Stop text messages (family members)</h2>
+<div class="box">
+<p>Sign in to <strong>My account</strong> with your phone and turn off <em>Get text alerts on this number</em>. You can also reply <strong>STOP</strong> to any message (works in the US) or email <a class="l" href="mailto:hello@callmealicia.com">hello@callmealicia.com</a> with your number, and we’ll stop within 2 business days.</p>
+</div>
+
+<h2>No marketing emails</h2>
+<p>Call Me Alicia doesn’t send marketing emails. The only emails you may get are Mercado Pago’s, about your payment.</p>
+
+<h2>Delete everything</h2>
+<p>To also delete your data, go to <a class="l" href="eliminar-datos.html">Delete my data</a>.</p>
+
+</article>
+</main>
+<footer><div class="in">
+  <div>© 2026 Call Me Alicia</div>
+  <nav>
+    <a href="index.html"><span data-l="es">Inicio</span><span data-l="en">Home</span></a>
+    <a href="cuenta.html"><span data-l="es">Mi cuenta</span><span data-l="en">My account</span></a>
+    <a href="privacidad.html"><span data-l="es">Privacidad</span><span data-l="en">Privacy</span></a>
+    <a href="terminos.html"><span data-l="es">Términos</span><span data-l="en">Terms</span></a>
+    <a href="reembolsos.html"><span data-l="es">Reembolsos</span><span data-l="en">Refunds</span></a>
+    <a href="cookies.html">Cookies</a>
+    <a href="baja.html"><span data-l="es">Darse de baja</span><span data-l="en">Unsubscribe</span></a>
+    <a href="eliminar-datos.html"><span data-l="es">Eliminar mis datos</span><span data-l="en">Delete my data</span></a>
+    <a href="mailto:hello@callmealicia.com"><span data-l="es">Contacto</span><span data-l="en">Contact</span></a>
+  </nav>
+</div></footer>
+<script>
+(function(){
+  var T={es:"Darse de baja \u2014 Call Me Alicia",en:"Unsubscribe \u2014 Call Me Alicia"};
+  function set(l,save){document.documentElement.lang=l;document.title=T[l];
+    document.querySelectorAll('[data-lang]').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-lang')===l?'true':'false')});
+    if(save)try{localStorage.setItem('lang',l)}catch(e){}}
+  var q=(location.search.match(/[?&]lang=(es|en)/)||[])[1],s=null;try{s=localStorage.getItem('lang')}catch(e){}
+  set(q||(s==='es'||s==='en'?s:((navigator.language||'es').toLowerCase().indexOf('en')===0?'en':'es')));
+  document.querySelectorAll('[data-lang]').forEach(function(b){b.addEventListener('click',function(){set(b.getAttribute('data-lang'),true)})});
+})();
+</script>
+<script src="consent.js" defer></script>
+</body>
+</html>

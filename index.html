@@ -185,7 +185,8 @@ footer a:hover{color:var(--ink)}
 .reg .check input{flex:0 0 auto;width:22px;min-width:22px;height:22px;margin:1px 0 0;padding:0;border:0;border-radius:4px;box-shadow:none;-webkit-appearance:checkbox;appearance:auto;accent-color:var(--ink);cursor:pointer}
 .check label{font-size:13.5px;line-height:1.45;color:var(--ink-2);cursor:pointer}
 .field.bad .check label{color:#c4281c}
-.legal a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+.legal a,.check label a{color:inherit;text-decoration:underline;text-underline-offset:2px}
+#legal{text-align:left}
 .grecaptcha-badge{visibility:hidden}
 .done{display:flex;flex-direction:column;align-items:center;text-align:center;gap:14px;padding:12px 0 4px;outline:0}
 .done svg{width:56px;height:56px;fill:none;stroke:#1d5c37;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
@@ -533,6 +534,14 @@ footer a:hover{color:var(--ink)}
           <div class="err" id="e-consent" role="alert"></div>
         </div>
 
+        <div class="field" id="f-consent2">
+          <div class="check">
+            <input type="checkbox" id="consent2" aria-describedby="e-consent2">
+            <label for="consent2" id="l-consent2">I accept…</label>
+          </div>
+          <div class="err" id="e-consent2" role="alert"></div>
+        </div>
+
         <!-- Firebase puts its invisible security check (reCAPTCHA) here -->
         <div id="recaptcha"></div>
 
@@ -619,6 +628,10 @@ footer a:hover{color:var(--ink)}
     <nav aria-label="Footer">
       <a href="privacidad.html">Privacy</a>
       <a href="terminos.html">Terms</a>
+      <a href="reembolsos.html">Refunds</a>
+      <a href="cookies.html">Cookies</a>
+      <a href="baja.html">Unsubscribe</a>
+      <a href="eliminar-datos.html">Delete my data</a>
       <a href="mailto:hello@callmealicia.com">Contact</a>
       <span class="flang"><button type="button" data-lang="en" aria-pressed="true">English</button> · <button type="button" data-lang="es" aria-pressed="false">Español</button></span>
     </nav>
@@ -673,10 +686,13 @@ var CONFIG={
     phoneSelf:'Número de celular',phoneLoved:'Celular de tu ser querido',
     phoneLovedHint:'Le enviaremos un código por SMS a este número. Pídeselo: así confirmamos que está de acuerdo.',
     otp:'Código de verificación',send:'Enviar código',time:'Hora de la llamada diaria',
-    consentSelf:'Acepto recibir una llamada diaria de Alicia, una asistente de voz con inteligencia artificial, y que mis datos y el audio de las llamadas se compartan con Retell AI para poder hacerlas.',
-    consentLoved:'Confirmo que mi ser querido está de acuerdo en recibir una llamada diaria de Alicia, una asistente de voz con inteligencia artificial, y en que sus datos y el audio se compartan con Retell AI para poder hacerlas.',
+    consentSelf:'Acepto recibir llamadas de Alicia, una asistente de voz con inteligencia artificial, en los días y a la hora que elegí, y que las llamadas se graben, transcriban y resuman para prestar el servicio.',
+    consentLoved:'Confirmo que mi ser querido está de acuerdo en recibir llamadas de Alicia, una asistente de voz con inteligencia artificial, en los días y a la hora elegidos, y en que las llamadas se graben, transcriban y resuman para prestar el servicio.',
+    consent2Self:'Soy mayor de 18 años, acepto los <a href="terminos.html" target="_blank">Términos</a> y autorizo el tratamiento de mis datos según la <a href="privacidad.html" target="_blank">Política de privacidad</a>, incluida su transferencia a proveedores en EE. UU. y, si surgen en las conversaciones, de datos sensibles como la salud (su tratamiento es facultativo).',
+    consent2Loved:'Mi ser querido y yo somos mayores de 18 años. Acepto los <a href="terminos.html" target="_blank">Términos</a> y, con su autorización, autorizamos el tratamiento de nuestros datos según la <a href="privacidad.html" target="_blank">Política de privacidad</a>, incluida su transferencia a proveedores en EE. UU. y, si surgen en las conversaciones, de datos sensibles como la salud (su tratamiento es facultativo).',
+    eConsent2:'Para registrarte necesitamos que aceptes los Términos y la Política de privacidad.',
     submit:'Registrarse',submitting:'Registrando…',
-    legal:'Al registrarte aceptas los <a href="terminos.html" target="_blank">Términos</a> y la <a href="privacidad.html" target="_blank">Política de privacidad</a>. Protegido por reCAPTCHA: aplican la <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Política de privacidad</a> y los <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Términos</a> de Google.',
+    legal:'<strong>Aviso de privacidad:</strong> Call Me Alicia (Bogotá, Colombia) usa estos datos para hacer las llamadas, avisar a tu familia y cobrar el plan. Puedes conocer, corregir o eliminar tus datos en <a href="cuenta.html">Mi cuenta</a> o en hello@callmealicia.com. Más en la <a href="privacidad.html" target="_blank">Política de privacidad</a>. Protegido por reCAPTCHA: aplican la <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Política de privacidad</a> y los <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Términos</a> de Google.',
     namePh:'Ej. María Gómez',
     eNameEmpty:'Escribe el nombre completo.',eNameBad:'Usa solo letras y espacios.',
     ePhoneEmpty:'Escribe el número de celular.',ePhoneLen:'El número debe tener {n} dígitos.',ePhoneBad:'Ese número no parece válido. Revísalo.',
@@ -718,10 +734,13 @@ var CONFIG={
     phoneSelf:'Mobile number',phoneLoved:'Your loved one’s mobile',
     phoneLovedHint:'We’ll text a code to this number. Ask them for it — that’s how we confirm they agree.',
     otp:'Verification code',send:'Send code',time:'Daily call time',
-    consentSelf:'I agree to receive a daily call from Alicia, an AI voice assistant, and for my information and call audio to be shared with Retell AI to make those calls.',
-    consentLoved:'I confirm my loved one agrees to receive a daily call from Alicia, an AI voice assistant, and for their information and call audio to be shared with Retell AI to make those calls.',
+    consentSelf:'I agree to receive calls from Alicia, an AI voice assistant, on the days and at the time I chose, and for calls to be recorded, transcribed and summarized to provide the service.',
+    consentLoved:'I confirm my loved one agrees to receive calls from Alicia, an AI voice assistant, on the chosen days and time, and for calls to be recorded, transcribed and summarized to provide the service.',
+    consent2Self:'I’m 18 or older, I accept the <a href="terminos.html" target="_blank">Terms</a>, and I consent to the processing of my data under the <a href="privacidad.html" target="_blank">Privacy policy</a>, including transfer to providers in the US and, if it comes up in conversation, sensitive data such as health (optional).',
+    consent2Loved:'My loved one and I are 18 or older. I accept the <a href="terminos.html" target="_blank">Terms</a> and, with their permission, we consent to the processing of our data under the <a href="privacidad.html" target="_blank">Privacy policy</a>, including transfer to providers in the US and, if it comes up in conversation, sensitive data such as health (optional).',
+    eConsent2:'To sign up, please accept the Terms and Privacy policy.',
     submit:'Sign up',submitting:'Signing up…',
-    legal:'By signing up you accept the <a href="terminos.html" target="_blank">Terms</a> and <a href="privacidad.html" target="_blank">Privacy policy</a>. Protected by reCAPTCHA — the Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.',
+    legal:'<strong>Privacy notice:</strong> Call Me Alicia (Bogotá, Colombia) uses this information to place the calls, update your family and bill your plan. You can access, correct or delete your data in <a href="cuenta.html">My account</a> or at hello@callmealicia.com. See our <a href="privacidad.html" target="_blank">Privacy policy</a>. Protected by reCAPTCHA — the Google <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Privacy Policy</a> and <a href="https://policies.google.com/terms" target="_blank" rel="noopener">Terms of Service</a> apply.',
     namePh:'e.g. Maria Gomez',
     eNameEmpty:'Enter the full name.',eNameBad:'Use letters and spaces only.',
     ePhoneEmpty:'Enter the mobile number.',ePhoneLen:'The number must have {n} digits.',ePhoneBad:'That number doesn’t look valid. Please check it.',
@@ -792,7 +811,7 @@ var CONFIG={
     ['.cta .h2',['Dales a tus papás alguien con quien hablar, todos los días.']],
     ['.cta .btn',['Acceso anticipado']],
     ['.cta p',['En pruebas con familias en Estados Unidos y Colombia.']],
-    ['footer nav a',['Privacidad','Términos','Contacto']]
+    ['footer nav a',['Privacidad','Términos','Reembolsos','Cookies','Darse de baja','Eliminar mis datos','Contacto']]
   ];
   var PAGE=PAGE_ES.map(function(r){var els=[].slice.call(document.querySelectorAll(r[0]));return {els:els,es:r[1],en:els.map(function(e){return e.innerHTML})}});
   var desc=document.querySelector('meta[name="description"]');
@@ -806,7 +825,7 @@ var CONFIG={
 
   var $=function(id){return document.getElementById(id)};
   var form=$('register'),name=$('name'),country=$('country'),phone=$('phone'),otp=$('otp'),
-      rname=$('rname'),rcountry=$('rcountry'),rphone=$('rphone'),hour=$('hour'),tz=$('tz'),consent=$('consent'),
+      rname=$('rname'),rcountry=$('rcountry'),rphone=$('rphone'),hour=$('hour'),tz=$('tz'),consent=$('consent'),consent2=$('consent2'),
       sendBtn=$('sendBtn'),submitBtn=$('submitBtn'),msg=$('msg');
   var who='loved',confirmation=null,sentTo='',tzTouched=false,verifier=null,fbP=null,timer=null,doneInfo=null;
   var browserTz='';try{browserTz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
@@ -837,7 +856,7 @@ var CONFIG={
   function tzLabel(z){var t=TZ.filter(function(x){return x[0]===z})[0];return t?(LANG==='es'?t[1]:t[2]):z}
 
   function setErr(f,text){var box=$('f-'+f);if(!box)return;box.classList.toggle('bad',!!text);$('e-'+f).textContent=text||'';box.querySelectorAll('input').forEach(function(i){i.setAttribute('aria-invalid',text?'true':'false')})}
-  function clearErrs(){['rname','rphone','name','phone','otp','consent'].forEach(function(f){setErr(f,'')})}
+  function clearErrs(){['rname','rphone','name','phone','otp','consent','consent2'].forEach(function(f){setErr(f,'')})}
   function say(text,ok){msg.textContent=text||'';msg.classList.toggle('ok',!!ok)}
 
   function renderWho(){
@@ -847,6 +866,7 @@ var CONFIG={
     $('l-phone').textContent=loved?T.phoneLoved:T.phoneSelf;
     $('h-phone').hidden=!loved;$('h-phone').textContent=T.phoneLovedHint;
     $('l-consent').textContent=loved?T.consentLoved:T.consentSelf;
+    $('l-consent2').innerHTML=loved?T.consent2Loved:T.consent2Self;
   }
   function renderDone(){
     if(!doneInfo)return;
@@ -908,12 +928,14 @@ var CONFIG={
   rcountry.addEventListener('change',function(){syncLen(rphone,rcountry);setErr('rphone','')});
   tz.addEventListener('change',function(){tzTouched=true});
   consent.addEventListener('change',function(){setErr('consent','')});
+  consent2.addEventListener('change',function(){setErr('consent2','')});
   [].forEach.call(document.querySelectorAll('input[name="who"]'),function(r){r.addEventListener('change',function(){who=r.value;renderWho();clearErrs();say('')})});
 
   function vName(el){var v=el.value.trim();var e=!v?T.eNameEmpty:(!/^[\p{L}][\p{L}\s'’-]*$/u.test(v)||v.replace(/[^\p{L}]/gu,'').length<2)?T.eNameBad:'';setErr(el.id,e);return !e}
   function vPhone(el,sel){var n=cur(sel)[2],v=el.value;var e=!v?T.ePhoneEmpty:v.length!==n?T.ePhoneLen.replace('{n}',n):'';setErr(el.id,e);return !e}
   function vOtp(){var v=otp.value;var e=!v?T.eOtpEmpty:v.length!==6?T.eOtpLen:'';setErr('otp',e);return !e}
   function vConsent(){var e=consent.checked?'':T.eConsent;setErr('consent',e);return !e}
+  function vConsent2(){var e=consent2.checked?'':T.eConsent2;setErr('consent2',e);return !e}
   name.addEventListener('blur',function(){if(name.value)vName(name)});
   rname.addEventListener('blur',function(){if(rname.value)vName(rname)});
   phone.addEventListener('blur',function(){if(phone.value)vPhone(phone,country)});
@@ -984,6 +1006,7 @@ var CONFIG={
 
   function saveAll(fb,uid,d){
     var F=fb.F,db=fb.db,now=Date.now(),userRef=F.doc(db,'users',uid),circleId=null,existing=null;
+    var consentRec={version:'2026-10-21',calls:true,termsPrivacy:true,sensitive:true,intlTransfer:true,adult:true,lang:LANG,acceptedAt:now,byUid:uid,forLovedOne:!!d.loved};
     return F.getDoc(userRef).then(function(u){
       circleId=u.exists()?u.data().circleId:null;
       return circleId?F.getDoc(F.doc(db,'circles',circleId)):null;
@@ -994,7 +1017,7 @@ var CONFIG={
       if(!old.consentAcceptedAt)cp.consentAcceptedAt=now;
       if(d.loved&&!old.emergencyContactPhone){cp.emergencyContactName=d.rname;cp.emergencyContactPhone=d.rphone}
       if(circleId){
-        var upd={callProfile:cp};if(selectedPlan)upd.plan=selectedPlan;
+        var upd={callProfile:cp,consent:consentRec};if(selectedPlan)upd.plan=selectedPlan;
         return F.setDoc(F.doc(db,'circles',circleId),upd,{merge:true});
       }
       var full={fullName:'',treatment:'',originCountry:'',interests:'',familyInfo:'',emergencyContactName:'',emergencyContactPhone:'',phoneE164:'',preferredHour:10,preferredMinute:0,timeZoneId:'',callEnabled:false,consentAcceptedAt:0,lastCallNotes:'',lastCallAt:0};
@@ -1003,7 +1026,7 @@ var CONFIG={
       function pick(){var code=newCode();tries++;return F.getDoc(F.doc(db,'circles',code)).then(function(s){return s.exists()&&tries<5?pick():code})}
       return pick().then(function(code){
         circleId=code;
-        return F.setDoc(F.doc(db,'circles',code),{ownerUid:uid,userName:d.name,userPhone:d.phone,createdAt:now,source:'web',plan:selectedPlan||'',trialStartedAt:now,callProfile:full});
+        return F.setDoc(F.doc(db,'circles',code),{ownerUid:uid,userName:d.name,userPhone:d.phone,createdAt:now,source:'web',plan:selectedPlan||'',trialStartedAt:now,callProfile:full,consent:consentRec});
       }).then(function(){
         return F.setDoc(userRef,{circleId:circleId,profile:'ADULTO_MAYOR'});
       });
@@ -1018,7 +1041,7 @@ var CONFIG={
     var loved=who==='loved';
     var checks=[];
     if(loved){checks.push([vName(rname),rname]);checks.push([vPhone(rphone,rcountry),rphone])}
-    checks.push([vName(name),name]);checks.push([vPhone(phone,country),phone]);checks.push([vOtp(),otp]);checks.push([vConsent(),consent]);
+    checks.push([vName(name),name]);checks.push([vPhone(phone,country),phone]);checks.push([vOtp(),otp]);checks.push([vConsent(),consent]);checks.push([vConsent2(),consent2]);
     if(CONFIG.firebase.apiKey&&!confirmation&&otp.value.length===6){setErr('otp',T.eNoCode);checks.push([false,sendBtn])}
     var bad=checks.filter(function(c){return !c[0]})[0];
     if(bad){bad[1].focus();return}
@@ -1174,5 +1197,6 @@ var CONFIG={
   });
 })();
 </script>
+<script src="consent.js" defer></script>
 </body>
 </html>
