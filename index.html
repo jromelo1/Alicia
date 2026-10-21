@@ -24,7 +24,7 @@
   --ease:cubic-bezier(.2,.7,.2,1);
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:72px}
+html{scroll-behavior:smooth;scroll-padding-top:112px}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Geist","Helvetica Neue",Helvetica,system-ui,sans-serif;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
 a{color:inherit;text-decoration:none}
 img{max-width:100%;display:block}
@@ -34,7 +34,7 @@ h1,h2,h3,p{margin:0}
 /* Nav */
 .nav{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.72);backdrop-filter:saturate(180%) blur(20px);-webkit-backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid transparent;transition:border-color .4s var(--ease)}
 .nav.scrolled{border-bottom-color:var(--line-2)}
-.nav .wrap{height:64px;display:flex;align-items:center;justify-content:space-between}
+.nav .wrap{height:104px;display:flex;align-items:center;justify-content:space-between}
 .brand{font-size:18px;font-weight:600;letter-spacing:-.01em}
 .links{display:flex;align-items:center;gap:36px;font-size:14px}
 .links a:not(.btn){color:var(--ink-2);transition:color .2s}
@@ -289,7 +289,7 @@ footer a:hover{color:var(--ink)}
 .done .pay{width:100%;text-align:left;display:flex;flex-direction:column;gap:12px;margin-top:6px;padding-top:22px;border-top:1px solid var(--line-2)}
 .done .pay h3{font-size:19px;font-weight:600;letter-spacing:-.01em;margin:0}
 .done .pay-btn{width:100%;min-height:54px;font-size:17px}
-.paid-banner{position:fixed;left:50%;top:76px;transform:translateX(-50%);z-index:60;width:min(560px,calc(100% - 32px));background:#1f7a4d;color:#fff;border-radius:14px;padding:14px 44px 14px 16px;font-size:15px;line-height:1.45;box-shadow:0 10px 30px rgba(0,0,0,.18)}
+.paid-banner{position:fixed;left:50%;top:116px;transform:translateX(-50%);z-index:60;width:min(560px,calc(100% - 32px));background:#1f7a4d;color:#fff;border-radius:14px;padding:14px 44px 14px 16px;font-size:15px;line-height:1.45;box-shadow:0 10px 30px rgba(0,0,0,.18)}
 .paid-banner button{position:absolute;right:8px;top:8px;background:none;border:0;color:#fff;font-size:20px;line-height:1;padding:6px;cursor:pointer}
 
 /* Mobile */
@@ -322,6 +322,8 @@ footer a:hover{color:var(--ink)}
   .reveal{opacity:1;transform:none}
 }
 .brand{display:inline-flex;align-items:center;gap:8px;text-decoration:none}.brand img{height:32px;width:auto;display:block}.brand .b1{color:#B9862A}.brand .b2{color:#6F9567}
+.brand img{height:80px}.brand{font-size:22px;gap:10px}
+@media (max-width:960px){.nav .wrap{height:80px}.brand img{height:60px}.brand{font-size:19px}.links{inset:80px 0 auto 0!important}}
 </style>
 </head>
 <body>
