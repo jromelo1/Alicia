@@ -161,6 +161,7 @@ input::placeholder,textarea::placeholder{color:#a1a1a6}
       </div>
       <div class="field"><span class="lt" data-t="likes"></span><div class="chips" id="chips"></div><input id="likesMore" maxlength="200"></div>
       <div class="field"><label for="family" data-t="family"></label><textarea id="family" rows="3" maxlength="600"></textarea></div>
+      <div class="field"><label for="fnotes" data-t="fnotes"></label><textarea id="fnotes" rows="3" maxlength="800"></textarea></div>
       <div class="grid2">
         <div class="field"><label for="ename" data-t="eName"></label><input id="ename" maxlength="80"></div>
         <div class="field" id="f-ephone"><label for="ephone" data-t="ePhone"></label><div class="row"><select id="ecountry" class="cc" aria-label="País"></select><input id="ephone" type="tel" inputmode="numeric"></div><div class="err" id="e-ephone"></div></div>
@@ -254,8 +255,8 @@ var CONFIG={
     deletedTitle:'Tus datos fueron eliminados',deletedText:'Cancelamos el plan, detuvimos las llamadas y borramos los datos de este círculo. Gracias por haber confiado en Alicia. 💛',home:'Volver al inicio',
     refunds:'Reembolsos',unsub:'Darse de baja',delPage:'Eliminar datos',
     aboutTitle:'Lo que Alicia sabe',aboutSub:'Así cada conversación es más personal. Todo es opcional.',
-    treat:'Cómo le gusta que le digan',origin:'País de origen',likes:'Gustos',family:'Familia',eName:'Contacto de emergencia (nombre)',ePhoneL:'Contacto de emergencia (celular)',
-    treatPh:'Ej. Doña Rosa',originPh:'Ej. Colombia',likesPh:'Otros gustos o temas',familyPh:'Ej. Hija Laura (vive en Miami), nieto Tomás (8 años)',
+    treat:'Cómo le gusta que le digan',origin:'País de origen',likes:'Gustos',family:'Familia',fnotes:'Lo que Alicia debe saber o evitar',eName:'Contacto de emergencia (nombre)',ePhoneL:'Contacto de emergencia (celular)',
+    treatPh:'Ej. Doña Rosa',originPh:'Ej. Colombia',likesPh:'Otros gustos o temas',familyPh:'Ej. Hija Laura (vive en Miami), nieto Tomás (8 años)',fnotesPh:'Ej. Enviudó en marzo: no preguntes por su esposo. Su nieta Camila vive en España.',
     save:'Guardar cambios',saving:'Guardando…',saved:'¡Guardado! Alicia lo tendrá en cuenta desde la próxima llamada.',
     callsTitle:'Últimas llamadas',noCalls:'Todavía no hay llamadas. Aquí verás el resumen de cada una.',
     cCompleted:'Conversaron',cMissed:'No contestó',cFailed:'No se pudo llamar',cAlert:'Alerta',min:'min',
@@ -290,8 +291,8 @@ var CONFIG={
     deletedTitle:'Your data was deleted',deletedText:'We cancelled the plan, stopped the calls and deleted this circle’s data. Thank you for trusting Alicia. 💛',home:'Back to home',
     refunds:'Refunds',unsub:'Unsubscribe',delPage:'Delete data',
     aboutTitle:'What Alicia knows',aboutSub:'It makes every conversation more personal. Everything is optional.',
-    treat:'What they like to be called',origin:'Country of origin',likes:'Interests',family:'Family',eName:'Emergency contact (name)',ePhoneL:'Emergency contact (mobile)',
-    treatPh:'e.g. Miss Rose',originPh:'e.g. Colombia',likesPh:'Other interests or topics',familyPh:'e.g. Daughter Laura (lives in Miami), grandson Tom (8)',
+    treat:'What they like to be called',origin:'Country of origin',likes:'Interests',family:'Family',fnotes:'What Alicia should know or avoid',eName:'Emergency contact (name)',ePhoneL:'Emergency contact (mobile)',
+    treatPh:'e.g. Miss Rose',originPh:'e.g. Colombia',likesPh:'Other interests or topics',familyPh:'e.g. Daughter Laura (lives in Miami), grandson Tom (8)',fnotesPh:'e.g. Widowed in March: don’t ask about her husband. Her granddaughter Camila lives in Spain.',
     save:'Save changes',saving:'Saving…',saved:'Saved! Alicia will use this from the next call.',
     callsTitle:'Recent calls',noCalls:'No calls yet. You’ll see a summary of each one here.',
     cCompleted:'Talked',cMissed:'No answer',cFailed:'Couldn’t call',cAlert:'Alert',min:'min',
@@ -324,7 +325,7 @@ var CONFIG={
     LANG=l;T=L[l];document.documentElement.lang=l;document.title=T.title;
     document.querySelectorAll('[data-t]').forEach(function(el){var v=T[el.getAttribute('data-t')];if(typeof v==='string')el.textContent=v});
     $('outBtn').textContent=T.out;$('f-ephone').querySelector('label').textContent=T.ePhoneL;
-    $('treat').placeholder=T.treatPh;$('origin').placeholder=T.originPh;$('likesMore').placeholder=T.likesPh;$('family').placeholder=T.familyPh;
+    $('treat').placeholder=T.treatPh;$('origin').placeholder=T.originPh;$('likesMore').placeholder=T.likesPh;$('family').placeholder=T.familyPh;$('fnotes').placeholder=T.fnotesPh;
     document.querySelectorAll('[data-lang]').forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-lang')===l?'true':'false')});
     if(save)try{localStorage.setItem('lang',l)}catch(e){}
     if(fb)fb.auth.languageCode=l;
@@ -415,7 +416,7 @@ var CONFIG={
     if(!$('hour').value){var o=document.createElement('option');o.value=cp.preferredHour+':'+cp.preferredMinute;o.textContent=fmtTime(cp.preferredHour,cp.preferredMinute);$('hour').appendChild(o);$('hour').value=o.value}
     $('tz').value=cp.timeZoneId||'America/Bogota';
     $('enabled').checked=cp.callEnabled!==false;
-    $('treat').value=cp.treatment||'';$('origin').value=cp.originCountry||'';$('family').value=cp.familyInfo||'';
+    $('treat').value=cp.treatment||'';$('origin').value=cp.originCountry||'';$('family').value=cp.familyInfo||'';$('fnotes').value=cp.familyNotes||'';
     $('ename').value=cp.emergencyContactName||'';
     var sp=splitE164(cp.emergencyContactPhone||'');if(sp){$('ecountry').value=sp.cc;syncLen($('ephone'),$('ecountry'));$('ephone').value=sp.num}
     picked={};var rest=[];
@@ -489,7 +490,7 @@ var CONFIG={
     var hm=$('hour').value.split(':'),likes=T.likesList.filter(function(_,i){return picked[i]});
     if($('likesMore').value.trim())likes.push($('likesMore').value.trim());
     var cp={preferredHour:parseInt(hm[0],10),preferredMinute:parseInt(hm[1],10),timeZoneId:$('tz').value,callEnabled:$('enabled').checked,
-      treatment:$('treat').value.trim(),originCountry:$('origin').value.trim(),interests:likes.join(', '),familyInfo:$('family').value.trim(),
+      treatment:$('treat').value.trim(),originCountry:$('origin').value.trim(),interests:likes.join(', '),familyInfo:$('family').value.trim(),familyNotes:$('fnotes').value.trim(),
       emergencyContactName:$('ename').value.trim(),emergencyContactPhone:ep?cur($('ecountry'))[1]+ep:''};
     var btn=$('saveBtn'),lbl=btn.querySelector('.lbl');btn.classList.add('loading');btn.disabled=true;lbl.textContent=T.saving;
     var F=fb.F;
