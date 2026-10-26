@@ -677,7 +677,8 @@ export const cancelSubscription = onRequest(
 
 /**
  * Botón "Eliminar mis datos" de callmealicia.com/cuenta.html. Body: { circleId }.
- * 1) cancela la suscripción en Mercado Pago, 2) pide a Retell borrar las llamadas,
+ * 1) cancela la suscripción en Mercado Pago, 2) pide a Retell borrar las llamadas y el
+ * contacto (memoria) de ese número,
  * 3) borra el círculo con todo lo que tiene adentro (historial, miembros…), 4) borra
  * los documentos users/{uid} conectados y sus cuentas de inicio de sesión.
  * Queda solo un registro mínimo en deletions/{circleId} (fecha, sin datos personales).
@@ -726,6 +727,32 @@ export const deleteMyData = onRequest(
         } catch (err) { logger.warn(`deleteMyData: error borrando ${c.id} en Retell`, err); }
       }
 
+      // 2b. Retell: la memoria de contacto vive en el "contacto" de ese número de teléfono,
+      // aparte de las llamadas. Se busca por número exacto y se borra el contacto.
+      let contactsDeleted = 0;
+      const phone = (circle.callProfile as { phoneE164?: string } | undefined)?.phoneE164;
+      if (phone) {
+        try {
+          const headers = { Authorization: `Bearer ${RETELL_API_KEY.value()}`, "Content-Type": "application/json" };
+          const found = await fetch("https://api.retellai.com/list-contacts", {
+            method: "POST", headers,
+            body: JSON.stringify({ filter_criteria: { phone_number: { eq: phone } }, limit: 50 }),
+          });
+          if (!found.ok) {
+            logger.warn(`deleteMyData: Retell respondió ${found.status} al buscar el contacto`);
+          } else {
+            const { items = [] } = (await found.json()) as { items?: { contact_id: string }[] };
+            for (const item of items) {
+              const r = await fetch(`https://api.retellai.com/delete-contact/${encodeURIComponent(item.contact_id)}`, {
+                method: "DELETE", headers: { Authorization: `Bearer ${RETELL_API_KEY.value()}` },
+              });
+              if (r.ok || r.status === 404) contactsDeleted++;
+              else logger.warn(`deleteMyData: Retell respondió ${r.status} al borrar el contacto ${item.contact_id}`);
+            }
+          }
+        } catch (err) { logger.warn("deleteMyData: error borrando el contacto en Retell", err); }
+      }
+
       // 3 y 4. Firestore y cuentas de inicio de sesión.
       const linked = await db.collection("users").where("circleId", "==", circleId).get();
       await db.recursiveDelete(circleRef);
@@ -733,8 +760,8 @@ export const deleteMyData = onRequest(
         await u.ref.delete();
         try { await getAuth().deleteUser(u.id); } catch (err) { logger.warn(`deleteMyData: no se borró la cuenta ${u.id}`, err); }
       }
-      await db.collection("deletions").doc(circleId).set({ deletedAt: Date.now(), calls: calls.length, retellDeleted: retellOk });
-      logger.info(`deleteMyData: ${circleId} eliminado (${calls.length} llamadas, ${retellOk} borradas en Retell, ${linked.size} cuentas)`);
+      await db.collection("deletions").doc(circleId).set({ deletedAt: Date.now(), calls: calls.length, retellDeleted: retellOk, retellContactsDeleted: contactsDeleted });
+      logger.info(`deleteMyData: ${circleId} eliminado (${calls.length} llamadas, ${retellOk} borradas en Retell, ${contactsDeleted} contactos/memoria, ${linked.size} cuentas)`);
       res.status(200).json({ ok: true });
     } catch (err) {
       logger.error("deleteMyData: error", err);
