@@ -66,6 +66,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
@@ -76,10 +77,11 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.gutigu.alicia.R
 import com.gutigu.alicia.data.AppointmentEntity
 import com.gutigu.alicia.data.MedicationEntity
 import com.gutigu.alicia.ui.theme.AliciaAccent
-import com.gutigu.alicia.ui.theme.AliciaAccentBlue
+import com.gutigu.alicia.ui.theme.AliciaSecondary
 import com.gutigu.alicia.ui.theme.AliciaBackground
 import com.gutigu.alicia.ui.theme.AliciaFormAlert
 import com.gutigu.alicia.ui.theme.AliciaSurfaceAlt
@@ -91,6 +93,8 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
 import java.util.TimeZone
+import com.gutigu.alicia.ui.theme.AliciaOnAccent
+import com.gutigu.alicia.ui.theme.AliciaWarningStrong
 
 // Paleta centralizada en ui/theme/Color.kt
 private val NavyDark      = AliciaBackground   // fondo de pantalla
@@ -99,10 +103,10 @@ private val AccentGreen   = AliciaAccent
 private val AccentRed     = AliciaFormAlert
 private val TextPrimary   = AliciaText
 private val TextSecondary = AliciaTextSecondary
-private val OrangeFood    = Color(0xFFB9770E)
+private val OrangeFood    = AliciaWarningStrong
 // Las citas médicas usan azul en vez de verde para distinguirse de los
 // medicamentos de un vistazo, sin depender solo del ícono.
-private val AccentBlue    = AliciaAccentBlue
+private val AccentBlue    = AliciaSecondary
 private val AccentAmber   = AliciaWarning
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -133,14 +137,14 @@ fun MedicationScreen(
                     containerColor = AccentBlue,
                     contentColor = Color.White,
                     icon = { Icon(Icons.Default.DateRange, contentDescription = null, modifier = Modifier.size(24.dp)) },
-                    text = { Text("Agregar cita médica", fontSize = 15.sp, fontWeight = FontWeight.Bold) }
+                    text = { Text(stringResource(R.string.med_add_appointment_fab), fontSize = 15.sp, fontWeight = FontWeight.Bold) }
                 )
                 ExtendedFloatingActionButton(
                     onClick = { showMedDialog = true },
                     containerColor = AccentGreen,
-                    contentColor = TextPrimary,
+                    contentColor = AliciaOnAccent,
                     icon = { Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(26.dp)) },
-                    text = { Text("Agregar medicamento", fontSize = 16.sp, fontWeight = FontWeight.Bold) }
+                    text = { Text(stringResource(R.string.med_add_medication_fab), fontSize = 16.sp, fontWeight = FontWeight.Bold) }
                 )
             }
         }
@@ -151,16 +155,16 @@ fun MedicationScreen(
                 .padding(padding)
                 .padding(horizontal = 20.dp)
         ) {
-            item { Spacer(modifier = Modifier.height(24.dp)) }
+            item { Spacer(modifier = Modifier.height(28.dp)) }
 
             // ── Sección: Medicamentos ──────────────────────────────────────
             item {
-                Text("Medicamentos", color = TextPrimary, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.med_section_title), color = TextPrimary, fontSize = 28.sp, fontWeight = FontWeight.Bold)
                 Text(
-                    "Recordatorios para tomar tus medicamentos",
+                    stringResource(R.string.med_section_subtitle),
                     color = TextSecondary,
                     fontSize = 15.sp,
-                    modifier = Modifier.padding(top = 4.dp, bottom = 20.dp)
+                    modifier = Modifier.padding(top = 4.dp, bottom = 24.dp)
                 )
 
                 // Banner: sin guardianes en el círculo — un medicamento sin confirmar no le avisaría a nadie
@@ -174,7 +178,7 @@ fun MedicationScreen(
                             Icon(Icons.Default.Warning, contentDescription = null, tint = AccentAmber, modifier = Modifier.size(20.dp))
                             Spacer(modifier = Modifier.width(10.dp))
                             Text(
-                                "Todavía no hay ningún guardián en tu círculo. Si no confirmas que tomaste tu medicamento, no habrá nadie a quien avisar.",
+                                stringResource(R.string.med_no_guardians_warning),
                                 color = TextSecondary,
                                 fontSize = 13.sp,
                                 lineHeight = 18.sp
@@ -199,7 +203,7 @@ fun MedicationScreen(
                             strokeWidth = 2.dp
                         )
                         Spacer(modifier = Modifier.width(10.dp))
-                        Text("Subiendo foto de la pastilla…", color = TextSecondary, fontSize = 14.sp)
+                        Text(stringResource(R.string.med_uploading_photo), color = TextSecondary, fontSize = 14.sp)
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                 }
@@ -209,7 +213,7 @@ fun MedicationScreen(
 
             if (meds.isNotEmpty()) {
                 items(meds, key = { "med_${it.id}" }) { med ->
-                    Box(modifier = Modifier.padding(bottom = 12.dp)) {
+                    Box(modifier = Modifier.padding(bottom = 14.dp)) {
                         MedicationCard(
                             med      = med,
                             onToggle = { viewModel.toggleActive(med) },
@@ -222,19 +226,19 @@ fun MedicationScreen(
             // ── Sección: Citas médicas ─────────────────────────────────────
             item {
                 Spacer(modifier = Modifier.height(28.dp))
-                Text("Citas médicas", color = TextPrimary, fontSize = 24.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.appt_section_title), color = TextPrimary, fontSize = 24.sp, fontWeight = FontWeight.Bold)
                 Text(
-                    "Te avisamos el día y la hora de cada cita",
+                    stringResource(R.string.appt_section_subtitle),
                     color = TextSecondary,
                     fontSize = 15.sp,
-                    modifier = Modifier.padding(top = 4.dp, bottom = 20.dp)
+                    modifier = Modifier.padding(top = 4.dp, bottom = 24.dp)
                 )
                 if (appointments.isEmpty()) EmptyAppointmentsState()
             }
 
             if (appointments.isNotEmpty()) {
                 items(appointments, key = { "appt_${it.id}" }) { appt ->
-                    Box(modifier = Modifier.padding(bottom = 12.dp)) {
+                    Box(modifier = Modifier.padding(bottom = 14.dp)) {
                         AppointmentCard(
                             appointment = appt,
                             onDelete = { appointmentViewModel.deleteAppointment(appt) }
@@ -385,7 +389,7 @@ private fun MedicationCard(
             IconButton(onClick = onDelete, modifier = Modifier.size(40.dp)) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "Eliminar",
+                    contentDescription = stringResource(R.string.med_delete_desc),
                     tint = AccentRed.copy(alpha = 0.7f),
                     modifier = Modifier.size(20.dp)
                 )
@@ -443,7 +447,7 @@ private fun AddMedicationDialog(
                     .padding(24.dp)
             ) {
                 Text(
-                    "Nuevo medicamento",
+                    stringResource(R.string.med_dialog_title),
                     color = TextPrimary,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
@@ -452,7 +456,7 @@ private fun AddMedicationDialog(
 
                 // ── SECCIÓN FOTO ────────────────────────────────────────────
                 Text(
-                    "Foto de la pastilla",
+                    stringResource(R.string.med_photo_label),
                     color = TextPrimary,
                     fontSize = 15.sp,
                     fontWeight = FontWeight.SemiBold
@@ -484,7 +488,7 @@ private fun AddMedicationDialog(
                                     .data(localPhotoUri)
                                     .crossfade(true)
                                     .build(),
-                                contentDescription = "Preview",
+                                contentDescription = stringResource(R.string.med_photo_preview_desc),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier
                                     .size(72.dp)
@@ -508,7 +512,7 @@ private fun AddMedicationDialog(
                                 containerColor = NavyDark, contentColor = AccentGreen
                             )
                         ) {
-                            Text("📸 Cámara", fontSize = 14.sp)
+                            Text(stringResource(R.string.med_camera_button), fontSize = 14.sp)
                         }
                         // Botón galería
                         FilledTonalButton(
@@ -518,7 +522,7 @@ private fun AddMedicationDialog(
                                 containerColor = NavyDark, contentColor = TextSecondary
                             )
                         ) {
-                            Text("🖼️ Galería", fontSize = 14.sp)
+                            Text(stringResource(R.string.med_gallery_button), fontSize = 14.sp)
                         }
                     }
                 }
@@ -529,8 +533,8 @@ private fun AddMedicationDialog(
                 OutlinedTextField(
                     value = name,
                     onValueChange = { name = it },
-                    label = { Text("Nombre del medicamento", color = TextSecondary) },
-                    placeholder = { Text("Ej. Metformina", color = TextSecondary.copy(alpha = 0.5f)) },
+                    label = { Text(stringResource(R.string.med_name_label), color = TextSecondary) },
+                    placeholder = { Text(stringResource(R.string.med_name_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
                     colors = fieldColors(),
@@ -544,8 +548,8 @@ private fun AddMedicationDialog(
                 OutlinedTextField(
                     value = dose,
                     onValueChange = { dose = it },
-                    label = { Text("Dosis (opcional)", color = TextSecondary) },
-                    placeholder = { Text("Ej. 500mg, 1 pastilla", color = TextSecondary.copy(alpha = 0.5f)) },
+                    label = { Text(stringResource(R.string.med_dose_label), color = TextSecondary) },
+                    placeholder = { Text(stringResource(R.string.med_dose_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                     singleLine = true,
                     colors = fieldColors(),
                     modifier = Modifier.fillMaxWidth(),
@@ -558,8 +562,8 @@ private fun AddMedicationDialog(
                 OutlinedTextField(
                     value = noteText,
                     onValueChange = { noteText = it },
-                    label = { Text("Instrucción adicional (opcional)", color = TextSecondary) },
-                    placeholder = { Text("Ej. Con un vaso de agua", color = TextSecondary.copy(alpha = 0.5f)) },
+                    label = { Text(stringResource(R.string.med_note_label), color = TextSecondary) },
+                    placeholder = { Text(stringResource(R.string.med_note_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                     singleLine = true,
                     colors = fieldColors(),
                     modifier = Modifier.fillMaxWidth(),
@@ -584,13 +588,13 @@ private fun AddMedicationDialog(
                         Text(if (withFood) "🍽️" else "🌅", fontSize = 22.sp)
                         Column {
                             Text(
-                                if (withFood) "Con comida" else "En ayunas",
+                                if (withFood) stringResource(R.string.med_with_food) else stringResource(R.string.med_fasting),
                                 color = if (withFood) OrangeFood else TextPrimary,
                                 fontSize = 16.sp,
                                 fontWeight = FontWeight.SemiBold
                             )
                             Text(
-                                if (withFood) "Tomar después de comer" else "Tomar sin haber comido",
+                                if (withFood) stringResource(R.string.med_with_food_subtitle) else stringResource(R.string.med_fasting_subtitle),
                                 color = TextSecondary,
                                 fontSize = 12.sp
                             )
@@ -611,7 +615,7 @@ private fun AddMedicationDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // ── HORA ───────────────────────────────────────────────────
-                Text("Hora del recordatorio", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.med_reminder_time_label), color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(
@@ -630,7 +634,7 @@ private fun AddMedicationDialog(
                         colors = androidx.compose.material3.ButtonDefaults.filledTonalButtonColors(
                             containerColor = NavyDark, contentColor = AccentGreen
                         )
-                    ) { Text("−30m", fontSize = 12.sp) }
+                    ) { Text(stringResource(R.string.time_offset_minus_30), fontSize = 12.sp) }
 
                     Text(
                         "%02d:%02d".format(hour, minute),
@@ -652,7 +656,7 @@ private fun AddMedicationDialog(
                         colors = androidx.compose.material3.ButtonDefaults.filledTonalButtonColors(
                             containerColor = NavyDark, contentColor = AccentGreen
                         )
-                    ) { Text("+30m", fontSize = 12.sp) }
+                    ) { Text(stringResource(R.string.time_offset_plus_30), fontSize = 12.sp) }
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -666,7 +670,7 @@ private fun AddMedicationDialog(
                         onClick = onDismiss,
                         modifier = Modifier.weight(1f).height(52.dp)
                     ) {
-                        Text("Cancelar", color = TextSecondary, fontSize = 16.sp)
+                        Text(stringResource(R.string.action_cancel), color = TextSecondary, fontSize = 16.sp)
                     }
                     Button(
                         onClick = {
@@ -684,7 +688,7 @@ private fun AddMedicationDialog(
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = AccentGreen)
                     ) {
-                        Text("Guardar", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.action_save), color = AliciaOnAccent, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -717,7 +721,7 @@ private fun EmptyMedicationsState() {
         Text("💊", fontSize = 72.sp, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            "Sin medicamentos",
+            stringResource(R.string.med_empty_title),
             color = TextPrimary,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
@@ -725,7 +729,7 @@ private fun EmptyMedicationsState() {
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
-            "Agrega tus medicamentos y\nrecibirás un recordatorio a la hora indicada.",
+            stringResource(R.string.med_empty_subtitle),
             color = TextSecondary,
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
@@ -795,7 +799,7 @@ private fun AppointmentCard(
             IconButton(onClick = onDelete, modifier = Modifier.size(40.dp)) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "Eliminar cita",
+                    contentDescription = stringResource(R.string.appt_delete_desc),
                     tint = AccentRed.copy(alpha = 0.7f),
                     modifier = Modifier.size(20.dp)
                 )
@@ -815,7 +819,7 @@ private fun EmptyAppointmentsState() {
         Text("🩺", fontSize = 64.sp, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(16.dp))
         Text(
-            "Sin citas médicas",
+            stringResource(R.string.appt_empty_title),
             color = TextPrimary,
             fontSize = 20.sp,
             fontWeight = FontWeight.Bold,
@@ -823,7 +827,7 @@ private fun EmptyAppointmentsState() {
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
-            "Agrega tu próxima cita y te avisamos\nel día y la hora que elijas.",
+            stringResource(R.string.appt_empty_subtitle),
             color = TextSecondary,
             fontSize = 15.sp,
             textAlign = TextAlign.Center,
@@ -877,7 +881,7 @@ private fun AddAppointmentDialog(
                     .padding(24.dp)
             ) {
                 Text(
-                    "Nueva cita médica",
+                    stringResource(R.string.appt_dialog_title),
                     color = TextPrimary,
                     fontSize = 22.sp,
                     fontWeight = FontWeight.Bold
@@ -888,8 +892,8 @@ private fun AddAppointmentDialog(
                 OutlinedTextField(
                     value = doctorName,
                     onValueChange = { doctorName = it },
-                    label = { Text("Con quién es la cita", color = TextSecondary) },
-                    placeholder = { Text("Ej. Dra. Pérez", color = TextSecondary.copy(alpha = 0.5f)) },
+                    label = { Text(stringResource(R.string.appt_with_whom_label), color = TextSecondary) },
+                    placeholder = { Text(stringResource(R.string.appt_with_whom_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
                     colors = fieldColors(),
@@ -903,8 +907,8 @@ private fun AddAppointmentDialog(
                 OutlinedTextField(
                     value = specialty,
                     onValueChange = { specialty = it },
-                    label = { Text("Especialidad (opcional)", color = TextSecondary) },
-                    placeholder = { Text("Ej. Cardiología", color = TextSecondary.copy(alpha = 0.5f)) },
+                    label = { Text(stringResource(R.string.appt_specialty_label), color = TextSecondary) },
+                    placeholder = { Text(stringResource(R.string.appt_specialty_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                     singleLine = true,
                     colors = fieldColors(),
                     modifier = Modifier.fillMaxWidth(),
@@ -917,8 +921,8 @@ private fun AddAppointmentDialog(
                 OutlinedTextField(
                     value = location,
                     onValueChange = { location = it },
-                    label = { Text("Lugar (opcional)", color = TextSecondary) },
-                    placeholder = { Text("Ej. Clínica del Country, consultorio 302", color = TextSecondary.copy(alpha = 0.5f)) },
+                    label = { Text(stringResource(R.string.appt_location_label), color = TextSecondary) },
+                    placeholder = { Text(stringResource(R.string.appt_location_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                     singleLine = true,
                     colors = fieldColors(),
                     modifier = Modifier.fillMaxWidth(),
@@ -931,8 +935,8 @@ private fun AddAppointmentDialog(
                 OutlinedTextField(
                     value = noteText,
                     onValueChange = { noteText = it },
-                    label = { Text("Nota adicional (opcional)", color = TextSecondary) },
-                    placeholder = { Text("Ej. Llevar exámenes de sangre", color = TextSecondary.copy(alpha = 0.5f)) },
+                    label = { Text(stringResource(R.string.appt_note_label), color = TextSecondary) },
+                    placeholder = { Text(stringResource(R.string.appt_note_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                     singleLine = true,
                     colors = fieldColors(),
                     modifier = Modifier.fillMaxWidth(),
@@ -942,7 +946,7 @@ private fun AddAppointmentDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // ── FECHA ─────────────────────────────────────────────────
-                Text("Fecha de la cita", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.appt_date_label), color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(8.dp))
                 FilledTonalButton(
                     onClick = { showDatePicker = true },
@@ -962,7 +966,7 @@ private fun AddAppointmentDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // ── HORA ──────────────────────────────────────────────────
-                Text("Hora de la cita", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.appt_time_label), color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(8.dp))
 
                 Row(
@@ -981,7 +985,7 @@ private fun AddAppointmentDialog(
                         colors = ButtonDefaults.filledTonalButtonColors(
                             containerColor = NavyDark, contentColor = AccentBlue
                         )
-                    ) { Text("−30m", fontSize = 12.sp) }
+                    ) { Text(stringResource(R.string.time_offset_minus_30), fontSize = 12.sp) }
 
                     Text(
                         "%02d:%02d".format(hour, minute),
@@ -1003,7 +1007,7 @@ private fun AddAppointmentDialog(
                         colors = ButtonDefaults.filledTonalButtonColors(
                             containerColor = NavyDark, contentColor = AccentBlue
                         )
-                    ) { Text("+30m", fontSize = 12.sp) }
+                    ) { Text(stringResource(R.string.time_offset_plus_30), fontSize = 12.sp) }
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -1017,7 +1021,7 @@ private fun AddAppointmentDialog(
                         onClick = onDismiss,
                         modifier = Modifier.weight(1f).height(52.dp)
                     ) {
-                        Text("Cancelar", color = TextSecondary, fontSize = 16.sp)
+                        Text(stringResource(R.string.action_cancel), color = TextSecondary, fontSize = 16.sp)
                     }
                     Button(
                         onClick = {
@@ -1034,7 +1038,7 @@ private fun AddAppointmentDialog(
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = AccentBlue)
                     ) {
-                        Text("Guardar", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.action_save), color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -1075,10 +1079,10 @@ private fun AddAppointmentDialog(
                         selectedDay   = utcCal.get(Calendar.DAY_OF_MONTH)
                     }
                     showDatePicker = false
-                }) { Text("Aceptar", color = AccentBlue, fontWeight = FontWeight.Bold) }
+                }) { Text(stringResource(R.string.action_accept), color = AccentBlue, fontWeight = FontWeight.Bold) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("Cancelar", color = TextSecondary) }
+                TextButton(onClick = { showDatePicker = false }) { Text(stringResource(R.string.action_cancel), color = TextSecondary) }
             }
         ) {
             DatePicker(state = datePickerState)

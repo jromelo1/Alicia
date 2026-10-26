@@ -28,7 +28,7 @@ import { defineSecret, defineString } from "firebase-functions/params";
 import { logger } from "firebase-functions";
 import { initializeApp } from "firebase-admin/app";
 import { getAuth } from "firebase-admin/auth";
-import { getFirestore, DocumentReference } from "firebase-admin/firestore";
+import { getFirestore, DocumentReference, QueryDocumentSnapshot } from "firebase-admin/firestore";
 import { createHmac, timingSafeEqual } from "crypto";
 import { Retell } from "retell-sdk";
 import {
@@ -93,6 +93,8 @@ const MIN_CONVERSATION_SECONDS = 30;
 interface CallProfile {
   fullName?: string;
   treatment?: string;
+  /** true = Alicia le habla de "tú", false = de "usted". */
+  useTu?: boolean;
   originCountry?: string;
   interests?: string;
   familyInfo?: string;
@@ -102,6 +104,8 @@ interface CallProfile {
   preferredHour?: number;
   preferredMinute?: number;
   timeZoneId?: string;
+  /** Ver CallProfileStatus del lado Android — mismos valores de cadena. */
+  profileStatus?: string;
   callEnabled?: boolean;
   lastCallNotes?: string;
   lastCallAt?: number;
@@ -117,6 +121,12 @@ interface RetellCallAnalysis {
   custom_analysis_data?: Record<string, unknown>;
 }
 
+interface RetellTranscriptTurn {
+  /** "agent" = Alicia, "user" = la persona a la que se llamó. */
+  role?: string;
+  content?: string;
+}
+
 interface RetellCallObject {
   call_id: string;
   start_timestamp?: number;
@@ -124,7 +134,15 @@ interface RetellCallObject {
   duration_ms?: number;
   disconnection_reason?: string;
   call_analysis?: RetellCallAnalysis;
+  /** Texto plano con líneas "Agent: ..." y "User: ..." — respaldo si no viene transcript_object. */
+  transcript?: string;
+  transcript_object?: RetellTranscriptTurn[];
   metadata?: { circleId?: string };
+}
+
+interface TranscriptLine {
+  role: "alicia" | "adulto";
+  text: string;
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -151,7 +169,7 @@ export const dailyCallScheduler = onSchedule(
     const enforceBilling = BILLING_ENFORCE.value() === "true";
 
     await Promise.all(
-      snapshot.docs.map(async (doc) => {
+      snapshot.docs.map(async (doc: QueryDocumentSnapshot) => {
         const circleId = doc.id;
         const profile = doc.data().callProfile as CallProfile | undefined;
         if (cancelledAndExpired(doc.data(), nowMs)) return; // plan cancelado: no se llama más
@@ -230,6 +248,8 @@ async function createRetellCall(circleId: string, profile: CallProfile, plan: un
       retell_llm_dynamic_variables: {
         full_name: profile.fullName ?? "",
         treatment: profile.treatment ?? "",
+        formality: profile.useTu ? "tú" : "usted",
+        language: profile.language ?? "es",
         origin_country: profile.originCountry ?? "",
         interests: profile.interests ?? "",
         family_info: profile.familyInfo ?? "",
@@ -278,7 +298,10 @@ function localTimeParts(timeZoneId: string, atMs: number): { hour: number; minut
 // ─────────────────────────────────────────────────────────────────────────────
 
 export const retellWebhook = onRequest(
-  { secrets: [RETELL_API_KEY, TWILIO_AUTH_TOKEN] },
+  // "public": Retell necesita poder llamar a esta URL sin autenticarse — la
+  // seguridad real la da la verificación de x-retell-signature de más abajo,
+  // no el control de acceso de Cloud Run.
+  { secrets: [RETELL_API_KEY, TWILIO_AUTH_TOKEN], invoker: "public" },
   async (req, res) => {
     const signature = req.headers["x-retell-signature"];
     if (typeof signature !== "string" || !req.rawBody) {
@@ -328,11 +351,13 @@ export const retellWebhook = onRequest(
       // "No me llames más": la opción DNC de Retell (cuelga con disconnection_reason
       // "user_requested_dnc") o el campo de análisis post-llamada `no_llamar`.
       const optOut = call.disconnection_reason === "user_requested_dnc" || readOptOut(call.call_analysis);
+      // Conversación completa, ya separada por turnos, para mostrarla en la app.
+      const transcript = buildTranscript(call);
 
       const circleRef = db.collection("circles").doc(circleId);
       const historyRef = circleRef.collection("callHistory").doc(call.call_id);
       await historyRef.set(
-        { startedAt, endedAt, durationSeconds, summary, status, alert, alertReason, optOut },
+        { startedAt, endedAt, durationSeconds, summary, status, alert, alertReason, optOut, transcript },
         { merge: true }
       );
 
@@ -362,6 +387,42 @@ export const retellWebhook = onRequest(
     }
   }
 );
+
+// Límites defensivos: un documento de Firestore admite 1 MB, y una llamada diaria de
+// unos minutos queda muy por debajo — esto solo protege de una llamada anormalmente larga.
+const MAX_TRANSCRIPT_TURNS = 300;
+const MAX_CHARS_PER_TURN = 1500;
+
+/**
+ * Convierte la conversación de Retell al formato que lee la app: una lista ordenada de
+ * { role: "alicia" | "adulto", text }. Prefiere `transcript_object` (ya viene separado por
+ * turnos) y solo si no está parsea el texto plano `transcript`.
+ */
+function buildTranscript(call: RetellCallObject): TranscriptLine[] {
+  const fromObject: TranscriptLine[] = (call.transcript_object ?? [])
+    .filter((t) => typeof t.content === "string" && t.content.trim() !== "")
+    .map((t) => ({
+      role: t.role === "agent" ? ("alicia" as const) : ("adulto" as const),
+      text: (t.content as string).trim().slice(0, MAX_CHARS_PER_TURN),
+    }));
+  if (fromObject.length > 0) return fromObject.slice(0, MAX_TRANSCRIPT_TURNS);
+
+  const lines: TranscriptLine[] = [];
+  for (const raw of (call.transcript ?? "").split(/\r?\n/)) {
+    const match = /^(Agent|User):\s*(.*)$/i.exec(raw);
+    if (match) {
+      lines.push({
+        role: match[1].toLowerCase() === "agent" ? "alicia" : "adulto",
+        text: match[2].trim().slice(0, MAX_CHARS_PER_TURN),
+      });
+    } else if (lines.length > 0 && raw.trim() !== "") {
+      // Continuación de la intervención anterior (texto con saltos de línea).
+      const last = lines[lines.length - 1];
+      last.text = `${last.text} ${raw.trim()}`.slice(0, MAX_CHARS_PER_TURN);
+    }
+  }
+  return lines.filter((l) => l.text !== "").slice(0, MAX_TRANSCRIPT_TURNS);
+}
 
 /**
  * Envía el SMS a la familia, una sola vez por llamada aunque Retell reintente el

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Logo de Alicia (globo sonriente con rayos de sol y ondas) — a color, uso dentro de la app -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="111dp"
+    android:height="93dp"
+    android:viewportWidth="111"
+    android:viewportHeight="93">
+    <path android:pathData="M28.86,27.89 A39.6,39.6 0 0,0 28.86,73.31" android:fillColor="#00000000" android:strokeColor="#F0D49A" android:strokeWidth="5.2" android:strokeLineCap="round" />
+    <path android:pathData="M93.74,27.89 A39.6,39.6 0 0,1 93.74,73.31" android:fillColor="#00000000" android:strokeColor="#F0D49A" android:strokeWidth="5.2" android:strokeLineCap="round" />
+    <path android:pathData="M38.8,35.14 A27.3,27.3 0 0,0 38.8,66.06" android:fillColor="#00000000" android:strokeColor="#A8C0A2" android:strokeWidth="5" android:strokeLineCap="round" />
+    <path android:pathData="M83.8,35.14 A27.3,27.3 0 0,1 83.8,66.06" android:fillColor="#00000000" android:strokeColor="#A8C0A2" android:strokeWidth="5" android:strokeLineCap="round" />
+    <path android:pathData="M61.3,11.9 L57.5,19.4 L65.1,19.4 Z" android:fillColor="#E8BC5C" android:strokeColor="#E8BC5C" android:strokeWidth="1.2" android:strokeLineJoin="round" />
+    <path android:pathData="M46.4,17.9 L53.8,20.1 L48.1,25 Z" android:fillColor="#E8BC5C" android:strokeColor="#E8BC5C" android:strokeWidth="1.2" android:strokeLineJoin="round" />
+    <path android:pathData="M76.2,17.9 L68.8,20.1 L74.5,25 Z" android:fillColor="#E8BC5C" android:strokeColor="#E8BC5C" android:strokeWidth="1.2" android:strokeLineJoin="round" />
+    <path android:pathData="M73.1,68.5 L81.9,74 L79,64.1 L66,58 Z" android:fillColor="#E8BC5C" android:strokeColor="#E8BC5C" android:strokeWidth="1" android:strokeLineJoin="round" />
+    <path android:pathData="M39.5,50.6 a21.8,21.8 0 1,0 43.6,0 a21.8,21.8 0 1,0 -43.6,0 Z" android:fillColor="#E8BC5C" />
+    <path android:pathData="M50.3,47 Q54.5,43 58.7,47" android:fillColor="#00000000" android:strokeColor="#FBF3E6" android:strokeWidth="2.4" android:strokeLineCap="round" />
+    <path android:pathData="M63.9,47 Q68.1,43 72.3,47" android:fillColor="#00000000" android:strokeColor="#FBF3E6" android:strokeWidth="2.4" android:strokeLineCap="round" />
+    <path android:pathData="M52.6,54.6 Q61.3,59.8 70,54.6" android:fillColor="#00000000" android:strokeColor="#FBF3E6" android:strokeWidth="3.3" android:strokeLineCap="round" />
+</vector>

@@ -28,15 +28,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gutigu.alicia.R
 import com.gutigu.alicia.ui.theme.AliciaAccent
 import com.gutigu.alicia.ui.theme.AliciaBackground
 import com.gutigu.alicia.ui.theme.AliciaFormAlert
 import com.gutigu.alicia.ui.theme.AliciaSurfaceAlt
 import com.gutigu.alicia.ui.theme.AliciaText
 import com.gutigu.alicia.ui.theme.AliciaTextSecondary
+import com.gutigu.alicia.ui.theme.AliciaOnAccent
 
 // Paleta centralizada en ui/theme/Color.kt
 private val NavyDark      = AliciaBackground   // fondo de pantalla
@@ -48,8 +51,10 @@ private val TextSecondary = AliciaTextSecondary
 
 /**
  * ⚠️ TODO_LEGAL — bloqueante antes de producción:
- * 1. [RESPONSABLE_PENDIENTE] abajo tiene razón social/NIT/domicilio sin completar
- *    (no son datos que se puedan inventar — pídanselos a quien registre la empresa).
+ * 1. privacy_responsible_pending (strings.xml) hoy dice solo "Gutigu" — texto temporal
+ *    puesto para no mostrar un placeholder en corchetes en una grabación de demo.
+ *    Sigue faltando razón social/NIT/domicilio real (no son datos que se puedan
+ *    inventar — pídanselos a quien registre la empresa) antes de producción.
  * 2. Confirmar con un abogado si aplica registro en el RNBD de la SIC (Decreto 1074/2015).
  * 3. Confirmar el mecanismo de transferencia internacional (Firebase/Google Cloud corre
  *    fuera de Colombia) — el texto de abajo lo declara, pero su suficiencia legal la
@@ -61,8 +66,6 @@ private val TextSecondary = AliciaTextSecondary
  * sigue lenguaje sencillo alineado a la Ley 1581 de 2012 y el Decreto 1377 de 2013, pero
  * NO reemplaza la revisión de un abogado antes de tener usuarios reales.
  */
-private const val RESPONSABLE_PENDIENTE =
-    "[Completar: razón social, NIT y domicilio del responsable del tratamiento]"
 @Composable
 fun PrivacyConsentScreen(
     onAccept: () -> Unit
@@ -73,7 +76,7 @@ fun PrivacyConsentScreen(
     Box(modifier = Modifier.fillMaxSize().background(NavyDark)) {
         Column(modifier = Modifier.fillMaxSize().padding(24.dp)) {
             Text(
-                "Antes de empezar",
+                stringResource(R.string.privacy_title),
                 color = TextPrimary,
                 fontFamily = MaterialTheme.typography.displayMedium.fontFamily,
                 fontSize = 24.sp,
@@ -90,33 +93,32 @@ fun PrivacyConsentScreen(
                 verticalArrangement = Arrangement.spacedBy(14.dp)
             ) {
                 ConsentSection(
-                    "¿Quién es responsable de tus datos?",
-                    RESPONSABLE_PENDIENTE,
-                    highlight = true
+                    stringResource(R.string.privacy_section1_title),
+                    stringResource(R.string.privacy_responsible_pending)
                 )
                 ConsentSection(
-                    "¿Qué datos guardamos?",
-                    "Tu nombre y teléfono, los nombres y teléfonos de las personas que agregues a tu círculo, y si confirmaste que estás bien cada día. Tu ubicación y la información de tus medicamentos son datos sensibles: no estás obligado(a) a autorizarlos, pero sin ellos no podemos ofrecerte las alertas de zonas seguras ni los recordatorios de medicinas."
+                    stringResource(R.string.privacy_section2_title),
+                    stringResource(R.string.privacy_section2_body)
                 )
                 ConsentSection(
-                    "¿Para qué los usamos?",
-                    "Únicamente para que la app funcione: avisar a tu círculo si necesitas ayuda o si no confirmaste tu bienestar. Nunca los usamos para publicidad ni los vendemos a nadie."
+                    stringResource(R.string.privacy_section3_title),
+                    stringResource(R.string.privacy_section3_body)
                 )
                 ConsentSection(
-                    "¿Con quién los compartimos?",
-                    "Solo con las personas que tú agregas a tu círculo de confianza. Nadie más tiene acceso. Usamos Firebase (Google) para guardar tu información de forma segura, lo que significa que puede procesarse en servidores fuera de Colombia, bajo los estándares de protección de Google."
+                    stringResource(R.string.privacy_section4_title),
+                    stringResource(R.string.privacy_section4_body)
                 )
                 ConsentSection(
-                    "¿Cuánto tiempo guardamos tus datos?",
-                    "Mientras tu círculo esté activo. Si sales del círculo o nos pides eliminar tu cuenta, borramos tus datos en un máximo de 30 días, salvo que la ley nos obligue a conservarlos más tiempo."
+                    stringResource(R.string.privacy_section5_title),
+                    stringResource(R.string.privacy_section5_body)
                 )
                 ConsentSection(
-                    "Tus derechos",
-                    "Puedes conocer, actualizar, corregir o pedir la eliminación de tus datos, y puedes retirar este consentimiento cuando quieras — al hacerlo, dejaremos de poder darte el servicio de alertas. Respondemos tus consultas en máximo 10 días hábiles y tus reclamos en máximo 15 días hábiles. Si no quedas conforme, puedes presentar una queja ante la Superintendencia de Industria y Comercio (SIC)."
+                    stringResource(R.string.privacy_section6_title),
+                    stringResource(R.string.privacy_section6_body)
                 )
                 ConsentSection(
-                    "Contacto",
-                    "Para ejercer estos derechos escríbenos a contacto@gutigu.com."
+                    stringResource(R.string.privacy_section7_title),
+                    stringResource(R.string.privacy_section7_body)
                 )
             }
 
@@ -128,7 +130,7 @@ fun PrivacyConsentScreen(
                 shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = AccentGreen)
             ) {
-                Text("Acepto y continúo", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                Text(stringResource(R.string.privacy_accept_button), color = AliciaOnAccent, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
             }
 
             Spacer(modifier = Modifier.height(10.dp))
@@ -138,7 +140,7 @@ fun PrivacyConsentScreen(
                 modifier = Modifier.fillMaxWidth().height(52.dp),
                 shape = RoundedCornerShape(14.dp)
             ) {
-                Text("No acepto", color = AccentRed, fontSize = 16.sp)
+                Text(stringResource(R.string.privacy_decline_button), color = AccentRed, fontSize = 16.sp)
             }
         }
     }
@@ -146,21 +148,18 @@ fun PrivacyConsentScreen(
     if (showDeclineConfirm) {
         AlertDialog(
             onDismissRequest = { showDeclineConfirm = false },
-            title = { Text("¿Seguro que no aceptas?", fontWeight = FontWeight.Bold) },
+            title = { Text(stringResource(R.string.privacy_decline_dialog_title), fontWeight = FontWeight.Bold) },
             text = {
-                Text(
-                    "Sin aceptar no podemos avisar a tu círculo si necesitas ayuda. " +
-                        "La app se va a cerrar — puedes volver a abrirla cuando quieras para decidir de nuevo."
-                )
+                Text(stringResource(R.string.privacy_decline_dialog_text))
             },
             confirmButton = {
                 TextButton(onClick = { (context as? Activity)?.finish() }) {
-                    Text("Cerrar la app", color = AccentRed, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.privacy_close_app_button), color = AccentRed, fontWeight = FontWeight.Bold)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showDeclineConfirm = false }) {
-                    Text("Seguir viendo")
+                    Text(stringResource(R.string.privacy_keep_viewing_button))
                 }
             }
         )

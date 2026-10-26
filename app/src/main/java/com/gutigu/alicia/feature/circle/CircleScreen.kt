@@ -50,6 +50,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -57,21 +58,24 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gutigu.alicia.CircleMember
 import com.gutigu.alicia.MemberRole
+import com.gutigu.alicia.R
+import com.gutigu.alicia.ui.theme.LanguageChipsRow
 import com.gutigu.alicia.ui.theme.AliciaAccent
-import com.gutigu.alicia.ui.theme.AliciaAccentBlue
+import com.gutigu.alicia.ui.theme.AliciaSecondary
 import com.gutigu.alicia.ui.theme.AliciaBackground
 import com.gutigu.alicia.ui.theme.AliciaFormAlert
 import com.gutigu.alicia.ui.theme.AliciaSurface
 import com.gutigu.alicia.ui.theme.AliciaSurfaceAlt
 import com.gutigu.alicia.ui.theme.AliciaText
 import com.gutigu.alicia.ui.theme.AliciaTextSecondary
+import com.gutigu.alicia.ui.theme.AliciaOnAccent
 
 // ─── Paleta, centralizada en ui/theme/Color.kt ───────────────────────────────
 private val NavyDark      = AliciaBackground   // fondo de pantalla
 private val NavyMedium    = AliciaSurface      // superficie de tarjeta
 private val SurfaceAlt    = AliciaSurfaceAlt
 private val AccentGreen   = AliciaAccent
-private val AccentBlue    = AliciaAccentBlue
+private val AccentBlue    = AliciaSecondary
 private val AccentRed     = AliciaFormAlert   // destructivo — distinto del alert #E8342A, reservado a emergencias
 private val TextPrimary   = AliciaText
 private val TextSecondary = AliciaTextSecondary
@@ -93,7 +97,7 @@ fun CircleScreen(
             ExtendedFloatingActionButton(
                 onClick = { viewModel.openAddSheet() },
                 containerColor = AccentGreen,
-                contentColor = NavyDark,
+                contentColor = AliciaOnAccent,
                 icon = { Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(26.dp)) },
                 text = { Text("Agregar miembro", fontSize = 16.sp, fontWeight = FontWeight.Bold) }
             )
@@ -105,7 +109,7 @@ fun CircleScreen(
                 .padding(padding)
                 .padding(horizontal = 20.dp)
         ) {
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(28.dp))
 
             // ── Encabezado ────────────────────────────────────
             Text(
@@ -118,10 +122,10 @@ fun CircleScreen(
             state.circleCode?.let { code ->
                 Row(
                     modifier = Modifier
-                        .padding(top = 6.dp)
-                        .clip(RoundedCornerShape(10.dp))
+                        .padding(top = 8.dp)
+                        .clip(RoundedCornerShape(12.dp))
                         .background(NavyMedium)
-                        .padding(horizontal = 12.dp, vertical = 6.dp),
+                        .padding(horizontal = 12.dp, vertical = 7.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text("Código: ", color = TextSecondary, fontSize = 13.sp)
@@ -141,18 +145,23 @@ fun CircleScreen(
                 modifier = Modifier.padding(top = 4.dp, bottom = 16.dp)
             )
 
+            // ── Idioma de la app ───────────────────────────────
+            LanguageSelector()
+
+            Spacer(modifier = Modifier.height(24.dp))
+
             // ── Leyenda de roles ──────────────────────────────
             AnimatedVisibility(visible = state.members.isNotEmpty()) {
                 RoleLegend()
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
 
             // ── Lista / Estado vacío ──────────────────────────
             if (state.members.isEmpty()) {
                 EmptyCircleState(onAdd = { viewModel.openAddSheet() })
             } else {
-                LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp)) {
                     items(state.members, key = { it.userId }) { member ->
                         MemberCard(
                             member = member,
@@ -207,6 +216,30 @@ fun CircleScreen(
                     Text("Cancelar", color = AccentGreen)
                 }
             }
+        )
+    }
+}
+
+// ─────────────────────────────────────────────
+//  Selector de idioma de toda la app (no confundir con el idioma de la
+//  llamada de Alicia, que es un campo aparte en el perfil de Llamada diaria)
+// ─────────────────────────────────────────────
+
+@Composable
+private fun LanguageSelector() {
+    Column {
+        Text(
+            stringResource(R.string.language_section_title),
+            color = TextPrimary,
+            fontSize = 15.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        LanguageChipsRow(
+            selectedColor = AccentGreen,
+            unselectedColor = NavyMedium,
+            selectedTextColor = NavyDark,
+            unselectedTextColor = TextSecondary
         )
     }
 }
@@ -432,10 +465,10 @@ private fun EmptyCircleState(onAdd: () -> Unit) {
                 .height(56.dp),
             colors = ButtonDefaults.buttonColors(containerColor = AccentGreen)
         ) {
-            Icon(Icons.Default.Add, contentDescription = null, tint = NavyDark,
+            Icon(Icons.Default.Add, contentDescription = null, tint = AliciaOnAccent,
                 modifier = Modifier.size(24.dp))
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Agregar primer miembro", color = NavyDark,
+            Text("Agregar primer miembro", color = AliciaOnAccent,
                 fontSize = 17.sp, fontWeight = FontWeight.Bold)
         }
     }

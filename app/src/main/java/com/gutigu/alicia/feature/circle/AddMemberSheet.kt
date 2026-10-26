@@ -42,6 +42,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -51,14 +52,16 @@ import androidx.compose.ui.unit.sp
 import android.net.Uri
 import com.gutigu.alicia.CircleMember
 import com.gutigu.alicia.MemberRole
+import com.gutigu.alicia.R
 import com.gutigu.alicia.ui.theme.AliciaAccent
-import com.gutigu.alicia.ui.theme.AliciaAccentBlue
+import com.gutigu.alicia.ui.theme.AliciaSecondary
 import com.gutigu.alicia.ui.theme.AliciaBackground
 import com.gutigu.alicia.ui.theme.AliciaFormAlert
 import com.gutigu.alicia.ui.theme.AliciaSurface
 import com.gutigu.alicia.ui.theme.AliciaSurfaceAlt
 import com.gutigu.alicia.ui.theme.AliciaText
 import com.gutigu.alicia.ui.theme.AliciaTextSecondary
+import com.gutigu.alicia.ui.theme.AliciaOnAccent
 
 // Abre la agenda filtrada a contactos con número — no requiere READ_CONTACTS
 private object PickPhoneContact : ActivityResultContract<Unit, Uri?>() {
@@ -73,7 +76,7 @@ private val NavyDark     = AliciaBackground   // fondo de pantalla
 private val NavyMedium   = AliciaSurface      // superficie de tarjeta
 private val SurfaceAlt   = AliciaSurfaceAlt
 private val AccentGreen  = AliciaAccent
-private val AccentBlue   = AliciaAccentBlue
+private val AccentBlue   = AliciaSecondary
 private val AccentRed    = AliciaFormAlert
 private val TextPrimary  = AliciaText
 private val TextSecondary= AliciaTextSecondary
@@ -92,11 +95,15 @@ private data class MemberFormState(
     val phoneError: String? = null
 )
 
-private fun MemberFormState.validate(): MemberFormState {
-    val nameErr  = if (name.isBlank()) "Escribe el nombre de la persona" else null
+private fun MemberFormState.validate(
+    nameEmptyMsg: String,
+    phoneEmptyMsg: String,
+    phoneIncompleteMsg: (countryName: String) -> String
+): MemberFormState {
+    val nameErr  = if (name.isBlank()) nameEmptyMsg else null
     val phoneErr = when {
-        phone.isBlank()                    -> "Escribe el número de teléfono"
-        phone.filter(Char::isDigit).length < 6 -> "El número se ve incompleto para ${country.name}"
+        phone.isBlank()                    -> phoneEmptyMsg
+        phone.filter(Char::isDigit).length < 6 -> phoneIncompleteMsg(country.name)
         else                               -> null
     }
     return copy(nameError = nameErr, phoneError = phoneErr)
@@ -181,7 +188,7 @@ fun AddMemberSheet(
         ) {
             // ── Título ────────────────────────────────
             Text(
-                text = if (editingMember != null) "Editar miembro" else "Agregar al círculo",
+                text = if (editingMember != null) stringResource(R.string.member_sheet_edit_title) else stringResource(R.string.member_sheet_add_title),
                 color = TextPrimary,
                 fontSize = 22.sp,
                 fontWeight = FontWeight.Bold
@@ -208,7 +215,7 @@ fun AddMemberSheet(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    "Importar desde Contactos",
+                    stringResource(R.string.member_import_contacts_button),
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold
                 )
@@ -217,7 +224,7 @@ fun AddMemberSheet(
             Spacer(modifier = Modifier.height(6.dp))
 
             Text(
-                "— o escribe los datos manualmente —",
+                stringResource(R.string.member_or_manual_hint),
                 color = TextSecondary,
                 fontSize = 12.sp,
                 modifier = Modifier.align(Alignment.CenterHorizontally)
@@ -229,8 +236,8 @@ fun AddMemberSheet(
             OutlinedTextField(
                 value = form.name,
                 onValueChange = { form = form.copy(name = it, nameError = null) },
-                label = { Text("Nombre", color = TextSecondary) },
-                placeholder = { Text("Ej. María García", color = TextSecondary.copy(alpha = 0.5f)) },
+                label = { Text(stringResource(R.string.member_name_label), color = TextSecondary) },
+                placeholder = { Text(stringResource(R.string.member_name_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                 isError = form.nameError != null,
                 supportingText = form.nameError?.let { err ->
                     { Text(err, color = AccentRed) }
@@ -263,8 +270,8 @@ fun AddMemberSheet(
                 OutlinedTextField(
                     value = form.phone,
                     onValueChange = { form = form.copy(phone = it, phoneError = null) },
-                    label = { Text("Teléfono", color = TextSecondary) },
-                    placeholder = { Text("Ej. 3001234567", color = TextSecondary.copy(alpha = 0.5f)) },
+                    label = { Text(stringResource(R.string.member_phone_label), color = TextSecondary) },
+                    placeholder = { Text(stringResource(R.string.member_phone_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                     isError = form.phoneError != null,
                     supportingText = form.phoneError?.let { err ->
                         { Text(err, color = AccentRed) }
@@ -286,7 +293,7 @@ fun AddMemberSheet(
             Spacer(modifier = Modifier.height(20.dp))
 
             // ── Rol ───────────────────────────────────
-            Text("¿Qué papel tendrá en tu círculo?",
+            Text(stringResource(R.string.member_role_question),
                 color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
 
             Spacer(modifier = Modifier.height(12.dp))
@@ -296,16 +303,16 @@ fun AddMemberSheet(
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 RoleCard(
-                    title = "Guardián",
-                    description = "Recibe todas las alertas:\npánico, check-in y zonas",
+                    title = stringResource(R.string.member_role_guardian_title),
+                    description = stringResource(R.string.member_role_guardian_desc),
                     color = AccentGreen,
                     isSelected = form.role == MemberRole.GUARDIAN,
                     modifier = Modifier.weight(1f)
                 ) { form = form.copy(role = MemberRole.GUARDIAN) }
 
                 RoleCard(
-                    title = "Miembro",
-                    description = "Solo recibe alertas\nde emergencia",
+                    title = stringResource(R.string.member_role_member_title),
+                    description = stringResource(R.string.member_role_member_desc),
                     color = AccentBlue,
                     isSelected = form.role == MemberRole.MEMBER,
                     modifier = Modifier.weight(1f)
@@ -315,9 +322,16 @@ fun AddMemberSheet(
             Spacer(modifier = Modifier.height(28.dp))
 
             // ── Guardar ───────────────────────────────
+            val nameEmptyMsg = stringResource(R.string.member_name_empty_error)
+            val phoneEmptyMsg = stringResource(R.string.member_phone_empty_error)
+            val phoneIncompleteMsg = stringResource(R.string.member_phone_incomplete_error)
             Button(
                 onClick = {
-                    val validated = form.validate()
+                    val validated = form.validate(
+                        nameEmptyMsg = nameEmptyMsg,
+                        phoneEmptyMsg = phoneEmptyMsg,
+                        phoneIncompleteMsg = { countryName -> phoneIncompleteMsg.format(countryName) }
+                    )
                     form = validated
                     if (validated.isValid) {
                         val member = CircleMember(
@@ -339,13 +353,13 @@ fun AddMemberSheet(
                 Icon(
                     Icons.Default.Person,
                     contentDescription = null,
-                    tint = TextPrimary,
+                    tint = AliciaOnAccent,
                     modifier = Modifier.size(22.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
-                    if (editingMember != null) "Guardar cambios" else "Agregar al círculo",
-                    color = TextPrimary,
+                    if (editingMember != null) stringResource(R.string.member_save_changes_button) else stringResource(R.string.member_sheet_add_title),
+                    color = AliciaOnAccent,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold
                 )

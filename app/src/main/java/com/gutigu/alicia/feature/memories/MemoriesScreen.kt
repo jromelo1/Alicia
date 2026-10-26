@@ -71,6 +71,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
@@ -82,10 +83,10 @@ import androidx.core.content.FileProvider
 import androidx.hilt.navigation.compose.hiltViewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
+import com.gutigu.alicia.R
 import com.gutigu.alicia.ui.theme.AliciaAccent
 import com.gutigu.alicia.ui.theme.AliciaBackground
-import com.gutigu.alicia.ui.theme.AliciaCircle
-import com.gutigu.alicia.ui.theme.AliciaCircleSoft
+import com.gutigu.alicia.ui.theme.AliciaAccentSoft
 import com.gutigu.alicia.ui.theme.AliciaFormAlert
 import com.gutigu.alicia.ui.theme.AliciaSurfaceAlt
 import com.gutigu.alicia.ui.theme.AliciaText
@@ -103,10 +104,9 @@ private val AccentGreen   = AliciaAccent
 private val AccentRed     = AliciaFormAlert
 private val TextPrimary   = AliciaText
 private val TextSecondary = AliciaTextSecondary
-// Morado del círculo — reservado para "Recuerdos" para distinguirse a simple
-// vista de Medicina (azul) y Bienestar/SOS (verde/rojo).
-private val AccentPurple     = AliciaCircle
-private val AccentPurpleSoft = AliciaCircleSoft
+// Acento de marca (terracota) — Recuerdos usa el color principal de la app.
+private val AccentPurple     = AliciaAccent
+private val AccentPurpleSoft = AliciaAccentSoft
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Pantalla principal
@@ -127,7 +127,7 @@ fun MemoriesScreen(viewModel: MemoriesViewModel = hiltViewModel()) {
                     containerColor = AccentPurple,
                     contentColor = Color.White,
                     icon = { Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(26.dp)) },
-                    text = { Text("Agregar recuerdo", fontSize = 16.sp, fontWeight = FontWeight.Bold) }
+                    text = { Text(stringResource(R.string.memory_add_fab), fontSize = 16.sp, fontWeight = FontWeight.Bold) }
                 )
             }
         }
@@ -141,12 +141,12 @@ fun MemoriesScreen(viewModel: MemoriesViewModel = hiltViewModel()) {
             item { Spacer(modifier = Modifier.height(24.dp)) }
 
             item {
-                Text("Línea de Tiempo", color = TextPrimary, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.memory_timeline_title), color = TextPrimary, fontSize = 28.sp, fontWeight = FontWeight.Bold)
                 Text(
                     if (state.isFamiliar)
-                        "Agrega fotos y momentos para que tu familiar los recuerde"
+                        stringResource(R.string.memory_timeline_subtitle_familiar)
                     else
-                        "Tus recuerdos y las personas que quieres",
+                        stringResource(R.string.memory_timeline_subtitle_elder),
                     color = TextSecondary,
                     fontSize = 15.sp,
                     modifier = Modifier.padding(top = 4.dp, bottom = 20.dp)
@@ -166,7 +166,7 @@ fun MemoriesScreen(viewModel: MemoriesViewModel = hiltViewModel()) {
                             strokeWidth = 2.dp
                         )
                         Spacer(modifier = Modifier.width(10.dp))
-                        Text("Subiendo foto del recuerdo…", color = TextSecondary, fontSize = 14.sp)
+                        Text(stringResource(R.string.memory_uploading_photo), color = TextSecondary, fontSize = 14.sp)
                     }
                     Spacer(modifier = Modifier.height(12.dp))
                 }
@@ -306,10 +306,16 @@ private fun MemoryTimelineCard(memory: Memory) {
 }
 
 /** "Este es tu hijo Gustavo" / "Esta es tu nieta Sofía" — heurística de género por terminación. */
+@Composable
 private fun memoryTagPhrase(tag: MemoryTag): String {
     val relationship = tag.relationship.trim()
     if (relationship.isBlank()) return tag.name
-    val pronoun = if (relationship.endsWith("a", ignoreCase = true)) "Esta es tu" else "Este es tu"
+    val pronoun = stringResource(
+        if (relationship.endsWith("a", ignoreCase = true))
+            R.string.memory_tag_pronoun_feminine
+        else
+            R.string.memory_tag_pronoun_masculine
+    )
     return "$pronoun $relationship ${tag.name}"
 }
 
@@ -362,7 +368,7 @@ private fun MemoryManageCard(memory: Memory, onDelete: () -> Unit) {
 
             Column(modifier = Modifier.weight(1f)) {
                 Text(
-                    memory.title.ifBlank { "Sin título" },
+                    memory.title.ifBlank { stringResource(R.string.memory_untitled) },
                     color = TextPrimary,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.SemiBold,
@@ -387,7 +393,7 @@ private fun MemoryManageCard(memory: Memory, onDelete: () -> Unit) {
             IconButton(onClick = onDelete, modifier = Modifier.size(40.dp)) {
                 Icon(
                     Icons.Default.Delete,
-                    contentDescription = "Eliminar recuerdo",
+                    contentDescription = stringResource(R.string.memory_delete_desc),
                     tint = AccentRed.copy(alpha = 0.7f),
                     modifier = Modifier.size(20.dp)
                 )
@@ -409,7 +415,7 @@ private fun EmptyMemoriesState(isFamiliar: Boolean) {
         Text("📔", fontSize = 72.sp, textAlign = TextAlign.Center)
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            "Aún no hay recuerdos",
+            stringResource(R.string.memory_empty_title),
             color = TextPrimary,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
@@ -418,9 +424,9 @@ private fun EmptyMemoriesState(isFamiliar: Boolean) {
         Spacer(modifier = Modifier.height(10.dp))
         Text(
             if (isFamiliar)
-                "Agrega una foto familiar con nombres y parentescos\npara que tu familiar la recuerde."
+                stringResource(R.string.memory_empty_subtitle_familiar)
             else
-                "Cuando tu familia agregue fotos y momentos,\naparecerán aquí.",
+                stringResource(R.string.memory_empty_subtitle_elder),
             color = TextSecondary,
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
@@ -501,11 +507,11 @@ private fun AddMemoryDialog(
                     .imePadding()
                     .padding(24.dp)
             ) {
-                Text("Nuevo recuerdo", color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.memory_dialog_title), color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // ── FOTO ───────────────────────────────────────────────────
-                Text("Foto", color = TextPrimary, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.memory_photo_label), color = TextPrimary, fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(8.dp))
                 Row(
                     modifier = Modifier.fillMaxWidth(),
@@ -531,7 +537,7 @@ private fun AddMemoryDialog(
                                     .data(localPhotoUri)
                                     .crossfade(true)
                                     .build(),
-                                contentDescription = "Preview",
+                                contentDescription = stringResource(R.string.memory_photo_preview_desc),
                                 contentScale = ContentScale.Crop,
                                 modifier = Modifier.size(72.dp).clip(RoundedCornerShape(14.dp))
                             )
@@ -555,12 +561,12 @@ private fun AddMemoryDialog(
                             },
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(containerColor = NavyDark, contentColor = AccentPurple)
-                        ) { Text("📸 Cámara", fontSize = 14.sp) }
+                        ) { Text(stringResource(R.string.memory_camera_button), fontSize = 14.sp) }
                         FilledTonalButton(
                             onClick = { galleryLauncher.launch("image/*") },
                             shape = RoundedCornerShape(10.dp),
                             colors = ButtonDefaults.filledTonalButtonColors(containerColor = NavyDark, contentColor = TextSecondary)
-                        ) { Text("🖼️ Galería", fontSize = 14.sp) }
+                        ) { Text(stringResource(R.string.memory_gallery_button), fontSize = 14.sp) }
                     }
                 }
 
@@ -569,8 +575,8 @@ private fun AddMemoryDialog(
                 OutlinedTextField(
                     value = title,
                     onValueChange = { title = it },
-                    label = { Text("Título", color = TextSecondary) },
-                    placeholder = { Text("Ej. Cumpleaños 80 de la abuela", color = TextSecondary.copy(alpha = 0.5f)) },
+                    label = { Text(stringResource(R.string.memory_title_label), color = TextSecondary) },
+                    placeholder = { Text(stringResource(R.string.memory_title_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                     colors = fieldColors(),
@@ -583,8 +589,8 @@ private fun AddMemoryDialog(
                 OutlinedTextField(
                     value = description,
                     onValueChange = { description = it },
-                    label = { Text("Descripción (opcional)", color = TextSecondary) },
-                    placeholder = { Text("Ej. Fue en la casa de la finca, con toda la familia", color = TextSecondary.copy(alpha = 0.5f)) },
+                    label = { Text(stringResource(R.string.memory_description_label), color = TextSecondary) },
+                    placeholder = { Text(stringResource(R.string.memory_description_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                     colors = fieldColors(),
                     modifier = Modifier.fillMaxWidth(),
                     minLines = 2,
@@ -594,7 +600,7 @@ private fun AddMemoryDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // ── FECHA ─────────────────────────────────────────────────
-                Text("Fecha del recuerdo", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.memory_date_label), color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(8.dp))
                 FilledTonalButton(
                     onClick = { showDatePicker = true },
@@ -610,10 +616,10 @@ private fun AddMemoryDialog(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 // ── ETIQUETAS (personas) ────────────────────────────────────
-                Text("Personas en la foto", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.memory_people_label), color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    "Ej. nombre \"Gustavo\", parentesco \"hijo\"",
+                    stringResource(R.string.memory_people_hint),
                     color = TextSecondary,
                     fontSize = 12.sp
                 )
@@ -626,7 +632,7 @@ private fun AddMemoryDialog(
                     OutlinedTextField(
                         value = tagName,
                         onValueChange = { tagName = it },
-                        label = { Text("Nombre", color = TextSecondary) },
+                        label = { Text(stringResource(R.string.memory_name_label), color = TextSecondary) },
                         singleLine = true,
                         keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
                         colors = fieldColors(),
@@ -636,7 +642,7 @@ private fun AddMemoryDialog(
                     OutlinedTextField(
                         value = tagRelationship,
                         onValueChange = { tagRelationship = it },
-                        label = { Text("Parentesco", color = TextSecondary) },
+                        label = { Text(stringResource(R.string.memory_relationship_label), color = TextSecondary) },
                         singleLine = true,
                         colors = fieldColors(),
                         modifier = Modifier.weight(1f),
@@ -655,7 +661,7 @@ private fun AddMemoryDialog(
                             .clip(RoundedCornerShape(10.dp))
                             .background(if (tagName.isNotBlank()) AccentPurple else TextSecondary.copy(alpha = 0.2f))
                     ) {
-                        Icon(Icons.Default.Add, contentDescription = "Agregar persona", tint = Color.White)
+                        Icon(Icons.Default.Add, contentDescription = stringResource(R.string.memory_add_person_desc), tint = Color.White)
                     }
                 }
 
@@ -682,7 +688,7 @@ private fun AddMemoryDialog(
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Icon(
                                     Icons.Default.Close,
-                                    contentDescription = "Quitar",
+                                    contentDescription = stringResource(R.string.memory_remove_person_desc),
                                     tint = AccentPurple,
                                     modifier = Modifier
                                         .size(18.dp)
@@ -701,7 +707,7 @@ private fun AddMemoryDialog(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     TextButton(onClick = onDismiss, modifier = Modifier.weight(1f).height(52.dp)) {
-                        Text("Cancelar", color = TextSecondary, fontSize = 16.sp)
+                        Text(stringResource(R.string.action_cancel), color = TextSecondary, fontSize = 16.sp)
                     }
                     Button(
                         onClick = {
@@ -714,7 +720,7 @@ private fun AddMemoryDialog(
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = AccentPurple)
                     ) {
-                        Text("Guardar", color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.action_save), color = Color.White, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -754,10 +760,10 @@ private fun AddMemoryDialog(
                         selectedDay   = utcCal.get(Calendar.DAY_OF_MONTH)
                     }
                     showDatePicker = false
-                }) { Text("Aceptar", color = AccentPurple, fontWeight = FontWeight.Bold) }
+                }) { Text(stringResource(R.string.action_accept), color = AccentPurple, fontWeight = FontWeight.Bold) }
             },
             dismissButton = {
-                TextButton(onClick = { showDatePicker = false }) { Text("Cancelar", color = TextSecondary) }
+                TextButton(onClick = { showDatePicker = false }) { Text(stringResource(R.string.action_cancel), color = TextSecondary) }
             }
         ) {
             DatePicker(state = datePickerState)

@@ -4,6 +4,10 @@ import androidx.compose.ui.graphics.Color
 import com.gutigu.alicia.CircleMember
 import com.gutigu.alicia.data.AppointmentEntity
 import com.gutigu.alicia.data.CheckInHistoryEntity
+import com.gutigu.alicia.ui.theme.AliciaAlert
+import com.gutigu.alicia.ui.theme.AliciaSuccess
+import com.gutigu.alicia.ui.theme.AliciaTextSecondary
+import com.gutigu.alicia.ui.theme.AliciaWarning
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Estado de bienestar del adulto mayor (alimenta el Hero del dashboard)
@@ -72,10 +76,10 @@ data class DashboardState(
 // ─────────────────────────────────────────────────────────────────────────────
 
 fun WellbeingStatus.heroColor(): Color = when (this) {
-    WellbeingStatus.OK      -> Color(0xFF27AE60)
-    WellbeingStatus.PENDING -> Color(0xFFE67E22)
-    WellbeingStatus.ALERT   -> Color(0xFFE74C3C)
-    WellbeingStatus.UNKNOWN -> Color(0xFF3A5068)
+    WellbeingStatus.OK      -> AliciaSuccess
+    WellbeingStatus.PENDING -> AliciaWarning
+    WellbeingStatus.ALERT   -> AliciaAlert
+    WellbeingStatus.UNKNOWN -> AliciaTextSecondary
 }
 
 fun WellbeingStatus.heroEmoji(): String = when (this) {

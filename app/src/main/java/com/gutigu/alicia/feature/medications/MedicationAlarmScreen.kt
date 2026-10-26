@@ -52,23 +52,27 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import kotlinx.coroutines.delay
 import com.gutigu.alicia.ui.theme.AliciaAccent
-import com.gutigu.alicia.ui.theme.AliciaAccentSoft
+import com.gutigu.alicia.ui.theme.AliciaSuccessSoft
 import com.gutigu.alicia.ui.theme.AliciaBackground
 import com.gutigu.alicia.ui.theme.AliciaSurfaceAlt
 import com.gutigu.alicia.ui.theme.AliciaText
 import com.gutigu.alicia.ui.theme.AliciaTextSecondary
 import java.util.Locale
+import com.gutigu.alicia.ui.theme.AliciaAlert
+import com.gutigu.alicia.ui.theme.AliciaSecondary
+import com.gutigu.alicia.ui.theme.AliciaWarningStrong
+import com.gutigu.alicia.ui.theme.AliciaSuccess
 
 // ── Paleta, centralizada en ui/theme/Color.kt donde coincide ──────────────────
 
 private val BgNormal   = AliciaBackground   // claro — alarma normal
 private val BgUrgent   = Color(0xFFFBDAD3)   // rojo suave — urgencia, últimos 30s
-private val BgTaken    = AliciaAccentSoft    // verde suave — confirmado
+private val BgTaken    = AliciaSuccessSoft    // verde suave — confirmado
 private val SurfaceAlt  = AliciaSurfaceAlt
-private val BorderGreen = AliciaAccent
+private val BorderGreen = AliciaSuccess
 private val TextPrimary = AliciaText
 private val TextMuted   = AliciaTextSecondary
-private val OrangeFood  = Color(0xFFB9770E)
+private val OrangeFood  = AliciaWarningStrong
 
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -322,14 +326,14 @@ private fun ActiveAlarmContent(
                     "✅  YA LA TOMÉ",
                     fontSize = 26.sp,
                     fontWeight = FontWeight.ExtraBold,
-                    color = Color(0xFF0D1B2A)
+                    color = AliciaText
                 )
             }
 
             // Cuenta regresiva — se vuelve roja al final
             Text(
                 if (isUrgent) "⏳ Quedan $countdown s" else "Tiempo: $countdown s",
-                color = if (isUrgent) Color(0xFFD63A1F) else TextMuted,
+                color = if (isUrgent) AliciaAlert else TextMuted,
                 fontSize = 15.sp
             )
         }
@@ -351,7 +355,7 @@ private fun TakenScreen(medName: String) {
                 .fillMaxSize()
                 .background(
                     Brush.radialGradient(
-                        listOf(Color(0xFFE3F9EC), Color(0xFFFAF8FB))
+                        listOf(AliciaSuccessSoft, AliciaBackground)
                     )
                 ),
             contentAlignment = Alignment.Center
@@ -364,13 +368,13 @@ private fun TakenScreen(medName: String) {
                 Text("✅", fontSize = 96.sp)
                 Text(
                     "¡Perfecto!",
-                    color = Color(0xFF1B5E20),
+                    color = AliciaSecondary,
                     fontSize = 42.sp,
                     fontWeight = FontWeight.ExtraBold
                 )
                 Text(
                     "$medName registrado",
-                    color = Color(0xFF1B5E20),
+                    color = AliciaSecondary,
                     fontSize = 22.sp,
                     textAlign = TextAlign.Center
                 )
@@ -397,7 +401,7 @@ private fun ExpiredScreen() {
             .fillMaxSize()
             .background(
                 Brush.radialGradient(
-                    listOf(Color(0xFFFBDAD3), Color(0xFFFAF8FB))
+                    listOf(Color(0xFFFBDAD3), AliciaBackground)
                 )
             ),
         contentAlignment = Alignment.Center
@@ -410,7 +414,7 @@ private fun ExpiredScreen() {
             Text("⏰", fontSize = 80.sp)
             Text(
                 "Tiempo agotado",
-                color = Color(0xFFD63A1F),
+                color = AliciaAlert,
                 fontSize = 34.sp,
                 fontWeight = FontWeight.Bold
             )

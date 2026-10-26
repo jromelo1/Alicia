@@ -34,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
@@ -42,21 +43,23 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.gutigu.alicia.MemberRole
+import com.gutigu.alicia.R
 import com.gutigu.alicia.ui.theme.AliciaAccent
-import com.gutigu.alicia.ui.theme.AliciaAccentBlue
+import com.gutigu.alicia.ui.theme.AliciaSecondary
 import com.gutigu.alicia.ui.theme.AliciaBackground
 import com.gutigu.alicia.ui.theme.AliciaFormAlert
 import com.gutigu.alicia.ui.theme.AliciaSurface
 import com.gutigu.alicia.ui.theme.AliciaSurfaceAlt
 import com.gutigu.alicia.ui.theme.AliciaText
 import com.gutigu.alicia.ui.theme.AliciaTextSecondary
+import com.gutigu.alicia.ui.theme.AliciaOnAccent
 
 // Paleta centralizada en ui/theme/Color.kt
 private val NavyDark      = AliciaBackground   // fondo de pantalla
 private val NavyMedium    = AliciaSurface      // superficie de tarjeta
 private val SurfaceAlt    = AliciaSurfaceAlt
 private val AccentGreen   = AliciaAccent
-private val AccentBlue    = AliciaAccentBlue
+private val AccentBlue    = AliciaSecondary
 private val AccentRed     = AliciaFormAlert
 private val TextPrimary   = AliciaText
 private val TextSecondary = AliciaTextSecondary
@@ -92,7 +95,7 @@ fun JoinCircleScreen(
         ) {
             Text("🔗", fontSize = 56.sp)
             Text(
-                "Únete a un círculo",
+                stringResource(R.string.join_circle_title),
                 color = TextPrimary,
                 fontFamily = MaterialTheme.typography.displayMedium.fontFamily,
                 fontSize = 26.sp,
@@ -100,7 +103,7 @@ fun JoinCircleScreen(
                 textAlign = TextAlign.Center
             )
             Text(
-                "Pídele a tu familiar el código que le aparece al configurar su teléfono",
+                stringResource(R.string.join_circle_subtitle),
                 color = TextSecondary,
                 fontSize = 15.sp,
                 textAlign = TextAlign.Center,
@@ -110,8 +113,8 @@ fun JoinCircleScreen(
             OutlinedTextField(
                 value = code,
                 onValueChange = { code = it.uppercase() },
-                label = { Text("Código de invitación", color = TextSecondary) },
-                placeholder = { Text("Ej. AB3CD9EF", color = TextSecondary.copy(alpha = 0.5f)) },
+                label = { Text(stringResource(R.string.join_circle_code_label), color = TextSecondary) },
+                placeholder = { Text(stringResource(R.string.join_circle_code_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Characters),
                 colors = fieldColors(),
@@ -122,8 +125,8 @@ fun JoinCircleScreen(
             OutlinedTextField(
                 value = elderName,
                 onValueChange = { elderName = it },
-                label = { Text("¿Cómo se llama tu familiar?", color = TextSecondary) },
-                placeholder = { Text("Ej. María — el adulto mayor, no tú", color = TextSecondary.copy(alpha = 0.5f)) },
+                label = { Text(stringResource(R.string.join_circle_elder_name_label), color = TextSecondary) },
+                placeholder = { Text(stringResource(R.string.join_circle_elder_name_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words),
                 colors = fieldColors(),
@@ -143,8 +146,8 @@ fun JoinCircleScreen(
                 OutlinedTextField(
                     value = phone,
                     onValueChange = { phone = it },
-                    label = { Text("Tu teléfono", color = TextSecondary) },
-                    placeholder = { Text("Para que puedan avisarte por SMS", color = TextSecondary.copy(alpha = 0.5f)) },
+                    label = { Text(stringResource(R.string.join_circle_phone_label), color = TextSecondary) },
+                    placeholder = { Text(stringResource(R.string.join_circle_phone_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                     colors = fieldColors(),
@@ -154,7 +157,7 @@ fun JoinCircleScreen(
             }
 
             Text(
-                "¿Qué papel vas a tener?",
+                stringResource(R.string.join_circle_role_question),
                 color = TextPrimary,
                 fontSize = 16.sp,
                 fontWeight = FontWeight.SemiBold,
@@ -162,16 +165,16 @@ fun JoinCircleScreen(
             )
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 RoleCard(
-                    title = "Guardián",
-                    description = "Recibo todas las alertas:\npánico, check-in y zonas",
+                    title = stringResource(R.string.join_circle_role_guardian_title),
+                    description = stringResource(R.string.join_circle_role_guardian_desc),
                     color = AccentGreen,
                     isSelected = role == MemberRole.GUARDIAN,
                     modifier = Modifier.weight(1f)
                 ) { role = MemberRole.GUARDIAN }
 
                 RoleCard(
-                    title = "Miembro",
-                    description = "Solo recibo alertas\nde emergencia",
+                    title = stringResource(R.string.join_circle_role_member_title),
+                    description = stringResource(R.string.join_circle_role_member_desc),
                     color = AccentBlue,
                     isSelected = role == MemberRole.MEMBER,
                     modifier = Modifier.weight(1f)
@@ -201,9 +204,9 @@ fun JoinCircleScreen(
                 colors = ButtonDefaults.buttonColors(containerColor = AccentGreen)
             ) {
                 if (isSubmitting) {
-                    CircularProgressIndicator(color = TextPrimary, modifier = Modifier.height(24.dp), strokeWidth = 2.dp)
+                    CircularProgressIndicator(color = AliciaOnAccent, modifier = Modifier.height(24.dp), strokeWidth = 2.dp)
                 } else {
-                    Text("Unirme al círculo", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                    Text(stringResource(R.string.join_circle_submit_button), color = AliciaOnAccent, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
                 }
             }
         }

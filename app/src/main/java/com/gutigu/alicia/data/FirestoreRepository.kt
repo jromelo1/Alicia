@@ -5,8 +5,11 @@ import com.gutigu.alicia.CircleMember
 import com.gutigu.alicia.MemberRole
 import com.gutigu.alicia.feature.checkin.CheckInScheduleData
 import com.gutigu.alicia.feature.dailycall.CallProfile
+import com.gutigu.alicia.feature.dailycall.CallProfileStatus
 import com.gutigu.alicia.feature.dailycall.CallRecord
+import com.gutigu.alicia.feature.dailycall.CallSpeaker
 import com.gutigu.alicia.feature.dailycall.CallStatus
+import com.gutigu.alicia.feature.dailycall.TranscriptLine
 import com.gutigu.alicia.feature.familiar.CircleProfileData
 import com.gutigu.alicia.feature.memories.Memory
 import com.gutigu.alicia.feature.memories.MemoryTag
@@ -796,6 +799,8 @@ class FirestoreRepository @Inject constructor(
     private fun CallProfile.toFirestoreMap(): Map<String, Any> = mapOf(
         "fullName" to fullName,
         "treatment" to treatment,
+        "useTu" to useTu,
+        "language" to language,
         "originCountry" to originCountry,
         "interests" to interests,
         "familyInfo" to familyInfo,
@@ -807,6 +812,8 @@ class FirestoreRepository @Inject constructor(
         "timeZoneId" to timeZoneId,
         "callEnabled" to callEnabled,
         "consentAcceptedAt" to (consentAcceptedAt ?: 0L),
+        "registeredBy" to registeredBy,
+        "profileStatus" to profileStatus,
         "lastCallNotes" to lastCallNotes,
         "lastCallAt" to (lastCallAt ?: 0L)
     )
@@ -817,6 +824,8 @@ class FirestoreRepository @Inject constructor(
             CallProfile(
                 fullName = this["fullName"] as? String ?: "",
                 treatment = this["treatment"] as? String ?: "",
+                useTu = this["useTu"] as? Boolean ?: false,
+                language = this["language"] as? String ?: "es",
                 originCountry = this["originCountry"] as? String ?: "",
                 interests = this["interests"] as? String ?: "",
                 familyInfo = this["familyInfo"] as? String ?: "",
@@ -828,6 +837,8 @@ class FirestoreRepository @Inject constructor(
                 timeZoneId = this["timeZoneId"] as? String ?: "",
                 callEnabled = this["callEnabled"] as? Boolean ?: false,
                 consentAcceptedAt = (this["consentAcceptedAt"] as? Long)?.takeIf { it > 0 },
+                registeredBy = this["registeredBy"] as? String ?: "",
+                profileStatus = this["profileStatus"] as? String ?: CallProfileStatus.PENDING_INTRO,
                 lastCallNotes = this["lastCallNotes"] as? String ?: "",
                 lastCallAt = (this["lastCallAt"] as? Long)?.takeIf { it > 0 }
             )
@@ -847,7 +858,12 @@ class FirestoreRepository @Inject constructor(
                 summary = getString("summary") ?: "",
                 status = try {
                     CallStatus.valueOf(getString("status") ?: "UNKNOWN")
-                } catch (e: Exception) { CallStatus.UNKNOWN }
+                } catch (e: Exception) { CallStatus.UNKNOWN },
+                transcript = (get("transcript") as? List<*>)?.mapNotNull { raw ->
+                    val line = raw as? Map<*, *> ?: return@mapNotNull null
+                    val text = (line["text"] as? String)?.takeIf { it.isNotBlank() } ?: return@mapNotNull null
+                    TranscriptLine(if (line["role"] == "alicia") CallSpeaker.ALICIA else CallSpeaker.ELDER, text)
+                } ?: emptyList()
             )
         } catch (e: Exception) {
             Log.e(TAG, "Error parseando registro de llamada", e)
