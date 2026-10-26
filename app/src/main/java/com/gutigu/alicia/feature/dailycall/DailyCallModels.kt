@@ -19,6 +19,8 @@ data class CallProfile(
     val interests: String = "",
     /** Texto libre: nombres de familiares y quién es quién, para que Alicia los mencione bien. */
     val familyInfo: String = "",
+    /** Texto libre de la familia: temas delicados y correcciones. Alicia le da prioridad sobre su memoria. */
+    val familyNotes: String = "",
     val emergencyContactName: String = "",
     val emergencyContactPhone: String = "",
     /** Teléfono al que se marca — en formato E.164 completo (con "+" y código de país). */

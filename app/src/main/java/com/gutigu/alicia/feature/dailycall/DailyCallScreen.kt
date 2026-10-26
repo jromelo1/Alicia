@@ -117,6 +117,7 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
     var originCountry by remember { mutableStateOf("") }
     var interests by remember { mutableStateOf("") }
     var familyInfo by remember { mutableStateOf("") }
+    var familyNotes by remember { mutableStateOf("") }
     var emergencyName by remember { mutableStateOf("") }
     var emergencyPhone by remember { mutableStateOf("") }
     var country by remember { mutableStateOf(CountryCodes.default) }
@@ -137,6 +138,7 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
             originCountry = profile.originCountry
             interests = profile.interests
             familyInfo = profile.familyInfo
+            familyNotes = profile.familyNotes
             emergencyName = profile.emergencyContactName
             emergencyPhone = profile.emergencyContactPhone
             val (c, local) = CountryCodes.splitPhone(profile.phoneE164)
@@ -157,6 +159,7 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
         originCountry = originCountry.trim(),
         interests = interests.trim(),
         familyInfo = familyInfo.trim(),
+        familyNotes = familyNotes.trim(),
         emergencyContactName = emergencyName.trim(),
         emergencyContactPhone = emergencyPhone.trim(),
         phoneE164 = "+${country.dialCode}${localPhone.filter(Char::isDigit)}",
@@ -287,6 +290,7 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
                 FormField(stringResource(R.string.call_origin_country_label), originCountry, { originCountry = it }, stringResource(R.string.call_origin_country_placeholder), capitalizeWords = true)
                 FormField(stringResource(R.string.call_interests_label), interests, { interests = it }, stringResource(R.string.call_interests_placeholder), minLines = 2)
                 FormField(stringResource(R.string.call_family_label), familyInfo, { familyInfo = it }, stringResource(R.string.call_family_placeholder), minLines = 2)
+                FormField(stringResource(R.string.call_family_notes_label), familyNotes, { familyNotes = it }, stringResource(R.string.call_family_notes_placeholder), minLines = 3)
             }
 
             item {

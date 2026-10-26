@@ -98,6 +98,8 @@ interface CallProfile {
   originCountry?: string;
   interests?: string;
   familyInfo?: string;
+  /** Notas que escribe la familia (temas delicados, correcciones). Mandan sobre la memoria de Alicia. */
+  familyNotes?: string;
   emergencyContactName?: string;
   emergencyContactPhone?: string;
   phoneE164?: string;
@@ -253,6 +255,7 @@ async function createRetellCall(circleId: string, profile: CallProfile, plan: un
         origin_country: profile.originCountry ?? "",
         interests: profile.interests ?? "",
         family_info: profile.familyInfo ?? "",
+        family_notes: (profile.familyNotes ?? "").slice(0, 800),
         emergency_contact_name: profile.emergencyContactName ?? "",
         emergency_contact_phone: profile.emergencyContactPhone ?? "",
         last_call_notes: profile.lastCallNotes ?? "",
