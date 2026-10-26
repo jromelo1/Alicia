@@ -380,6 +380,8 @@
     <string name="call_interests_placeholder">E.g. loves talking about her grandkids, gardening, and soap operas</string>
     <string name="call_family_label">Family</string>
     <string name="call_family_placeholder">E.g. her daughter is Marta, her grandson is Andrés</string>
+    <string name="call_family_notes_label">What Alicia should know or avoid</string>
+    <string name="call_family_notes_placeholder">E.g. She was widowed in March: don\'t ask about her husband. Her granddaughter Camila lives in Spain.</string>
     <string name="call_phone_label">Phone number to call</string>
     <string name="call_phone_placeholder">3001234567</string>
     <string name="call_emergency_name_label">Emergency contact name</string>

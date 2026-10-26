@@ -380,6 +380,8 @@
     <string name="call_interests_placeholder">Ej. le encanta hablar de sus nietos, jardinería y telenovelas</string>
     <string name="call_family_label">Familia</string>
     <string name="call_family_placeholder">Ej. su hija se llama Marta, su nieto es Andrés</string>
+    <string name="call_family_notes_label">Lo que Alicia debe saber o evitar</string>
+    <string name="call_family_notes_placeholder">Ej. Enviudó en marzo: no preguntes por su esposo. Su nieta Camila vive en España.</string>
     <string name="call_phone_label">Teléfono al que se llama</string>
     <string name="call_phone_placeholder">3001234567</string>
     <string name="call_emergency_name_label">Nombre del contacto de emergencia</string>
