@@ -1,6 +1,15 @@
 ﻿package com.gutigu.alicia.feature.notes
 
+import androidx.annotation.StringRes
 import androidx.compose.ui.graphics.Color
+import com.gutigu.alicia.R
+import com.gutigu.alicia.ui.theme.AliciaAccent
+import com.gutigu.alicia.ui.theme.AliciaAccentDark
+import com.gutigu.alicia.ui.theme.AliciaAlert
+import com.gutigu.alicia.ui.theme.AliciaInk2
+import com.gutigu.alicia.ui.theme.AliciaSuccess
+import com.gutigu.alicia.ui.theme.AliciaTextSecondary
+import com.gutigu.alicia.ui.theme.AliciaWarningStrong
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Enumeraciones
@@ -9,20 +18,22 @@ import androidx.compose.ui.graphics.Color
 /**
  * Categorías de nota con emoji e información de display.
  * [isActionable] = true indica que puede tener un recordatorio con hora.
+ * [labelRes] en vez de texto literal — se resuelve con stringResource() en el
+ * idioma activo (ver ui/theme/AppLanguage.kt), igual que las pestañas de MainActivity.
  */
 enum class NoteCategory(
     val emoji: String,
-    val label: String,
+    @StringRes val labelRes: Int,
     val color: Color,
     val isActionable: Boolean = false
 ) {
-    SHOPPING ("🛒", "Compras",      Color(0xFF1E6FA8), isActionable = false),
-    HEALTH   ("🏥", "Salud",        Color(0xFFD32F2F), isActionable = true),
-    FAMILY   ("👨‍👩‍👧", "Familia",   Color(0xFFC0622E), isActionable = false),
-    TASK     ("✅", "Tarea",        Color(0xFF2E7D32), isActionable = true),
-    REMINDER ("⏰", "Recordatorio", Color(0xFFB7891A), isActionable = true),
-    FAMILIAR ("💌", "Del familiar", Color(0xFF7A1F8A), isActionable = false),
-    GENERAL  ("📝", "General",      Color(0xFF6B6880), isActionable = false)
+    SHOPPING ("🛒", R.string.note_cat_shopping,  AliciaInk2, isActionable = false),
+    HEALTH   ("🏥", R.string.note_cat_health,    AliciaAlert, isActionable = true),
+    FAMILY   ("👨‍👩‍👧", R.string.note_cat_family, AliciaAccent, isActionable = false),
+    TASK     ("✅", R.string.note_cat_task,       AliciaSuccess, isActionable = true),
+    REMINDER ("⏰", R.string.note_cat_reminder,   AliciaWarningStrong, isActionable = true),
+    FAMILIAR ("💌", R.string.note_cat_familiar,   AliciaAccentDark, isActionable = false),
+    GENERAL  ("📝", R.string.note_cat_general,    AliciaTextSecondary, isActionable = false)
 }
 
 enum class NoteSource { VOICE, TEXT, FAMILIAR }

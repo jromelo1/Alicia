@@ -39,17 +39,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.gutigu.alicia.R
 import com.gutigu.alicia.ui.theme.AliciaAccent
 import com.gutigu.alicia.ui.theme.AliciaBackground
 import com.gutigu.alicia.ui.theme.AliciaSurfaceAlt
 import com.gutigu.alicia.ui.theme.AliciaText
 import com.gutigu.alicia.ui.theme.AliciaTextSecondary
+import com.gutigu.alicia.ui.theme.AliciaOnAccent
 
 // Paleta centralizada en ui/theme/Color.kt
 private val NavyDark      = AliciaBackground   // fondo de pantalla
@@ -101,12 +104,12 @@ fun ShareCircleCodeScreen(
                 horizontalAlignment = Alignment.CenterHorizontally,
                 verticalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                Text("No pudimos crear tu círculo", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
+                Text(stringResource(R.string.share_code_error_title), color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.Bold, textAlign = TextAlign.Center)
                 Text(s.message, color = TextSecondary, fontSize = 14.sp, textAlign = TextAlign.Center)
                 Button(
                     onClick = { viewModel.ensureCircleAsOwner(userName) },
                     colors = ButtonDefaults.buttonColors(containerColor = AccentGreen)
-                ) { Text("Reintentar", color = TextPrimary, fontWeight = FontWeight.Bold) }
+                ) { Text(stringResource(R.string.share_code_retry_button), color = AliciaOnAccent, fontWeight = FontWeight.Bold) }
             }
 
             is CircleOnboardingState.Ready -> {
@@ -118,7 +121,7 @@ fun ShareCircleCodeScreen(
                 ) {
                     Text("🎉", fontSize = 56.sp)
                     Text(
-                        "¡Ya tienes tu Círculo!",
+                        stringResource(R.string.share_code_success_title),
                         color = TextPrimary,
                         fontFamily = MaterialTheme.typography.displayMedium.fontFamily,
                         fontSize = 26.sp,
@@ -126,7 +129,7 @@ fun ShareCircleCodeScreen(
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        "Comparte este código con tu familia para que puedan cuidarte",
+                        stringResource(R.string.share_code_success_subtitle),
                         color = TextSecondary,
                         fontSize = 16.sp,
                         textAlign = TextAlign.Center,
@@ -150,24 +153,22 @@ fun ShareCircleCodeScreen(
                             )
                         }
 
+                        val shareLabel = stringResource(R.string.share_code_share_button)
+                        val shareMessage = stringResource(R.string.share_code_share_message, code)
                         OutlinedButton(
                             onClick = {
                                 val shareIntent = Intent(Intent.ACTION_SEND).apply {
                                     type = "text/plain"
-                                    putExtra(
-                                        Intent.EXTRA_TEXT,
-                                        "Únete a mi Círculo de Confianza con este código: $code\n" +
-                                            "Descarga la app y entra el código para que sepas que estoy bien cada día."
-                                    )
+                                    putExtra(Intent.EXTRA_TEXT, shareMessage)
                                 }
-                                context.startActivity(Intent.createChooser(shareIntent, "Compartir código"))
+                                context.startActivity(Intent.createChooser(shareIntent, shareLabel))
                             },
                             modifier = Modifier.fillMaxWidth().height(56.dp),
                             shape = RoundedCornerShape(14.dp)
                         ) {
                             Icon(Icons.Default.Share, contentDescription = null, tint = AccentGreen)
                             Spacer(modifier = Modifier.padding(4.dp))
-                            Text("Compartir código", color = AccentGreen, fontSize = 16.sp, fontWeight = FontWeight.Bold)
+                            Text(shareLabel, color = AccentGreen, fontSize = 16.sp, fontWeight = FontWeight.Bold)
                         }
                     }
 
@@ -177,11 +178,11 @@ fun ShareCircleCodeScreen(
                         shape = RoundedCornerShape(16.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = AccentGreen)
                     ) {
-                        Text("Continuar", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                        Text(stringResource(R.string.action_continue), color = AliciaOnAccent, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
                     }
 
                     Text(
-                        "Podrás ver este código de nuevo en la pestaña Círculo",
+                        stringResource(R.string.share_code_hint),
                         color = TextSecondary,
                         fontSize = 13.sp,
                         textAlign = TextAlign.Center
@@ -195,7 +196,7 @@ fun ShareCircleCodeScreen(
             modifier = Modifier.align(Alignment.BottomCenter).padding(bottom = 8.dp)
         ) {
             Text(
-                "¿Ya tenías un círculo con esta app? Recupéralo con tu código",
+                stringResource(R.string.share_code_recover_prompt),
                 color = TextSecondary,
                 fontSize = 13.sp,
                 textAlign = TextAlign.Center
@@ -228,7 +229,7 @@ private fun RecoverCircleContent(
                     ) {
                         Text("🎉", fontSize = 56.sp)
                         Text(
-                            "¡Recuperamos tu Círculo!",
+                            stringResource(R.string.share_code_recovered_title),
                             color = TextPrimary,
                             fontFamily = MaterialTheme.typography.displayMedium.fontFamily,
                             fontSize = 26.sp,
@@ -236,7 +237,7 @@ private fun RecoverCircleContent(
                             textAlign = TextAlign.Center
                         )
                         Text(
-                            "Tu familia sigue conectada contigo, igual que antes.",
+                            stringResource(R.string.share_code_recovered_subtitle),
                             color = TextSecondary,
                             fontSize = 16.sp,
                             textAlign = TextAlign.Center,
@@ -248,7 +249,7 @@ private fun RecoverCircleContent(
                             shape = RoundedCornerShape(16.dp),
                             colors = ButtonDefaults.buttonColors(containerColor = AccentGreen)
                         ) {
-                            Text("Continuar", color = TextPrimary, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
+                            Text(stringResource(R.string.action_continue), color = AliciaOnAccent, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold)
                         }
                     }
                 } else {
@@ -289,7 +290,7 @@ private fun RecoverCircleForm(
     ) {
         Text("🔑", fontSize = 56.sp)
         Text(
-            "Recupera tu círculo",
+            stringResource(R.string.recover_circle_title),
             color = TextPrimary,
             fontFamily = MaterialTheme.typography.displayMedium.fontFamily,
             fontSize = 26.sp,
@@ -297,7 +298,7 @@ private fun RecoverCircleForm(
             textAlign = TextAlign.Center
         )
         Text(
-            "Ingresa el código que compartiste con tu familia — es el mismo de siempre, pídeselo si no lo recuerdas.",
+            stringResource(R.string.recover_circle_subtitle),
             color = TextSecondary,
             fontSize = 15.sp,
             textAlign = TextAlign.Center,
@@ -306,8 +307,8 @@ private fun RecoverCircleForm(
         OutlinedTextField(
             value = code,
             onValueChange = { onCodeChange(it.uppercase()) },
-            label = { Text("Código de invitación", color = TextSecondary) },
-            placeholder = { Text("Ej. AB3CD9EF", color = TextSecondary.copy(alpha = 0.5f)) },
+            label = { Text(stringResource(R.string.join_circle_code_label), color = TextSecondary) },
+            placeholder = { Text(stringResource(R.string.join_circle_code_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
             singleLine = true,
             keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Characters),
             colors = OutlinedTextFieldDefaults.colors(
@@ -328,10 +329,10 @@ private fun RecoverCircleForm(
             shape = RoundedCornerShape(16.dp),
             colors = ButtonDefaults.buttonColors(containerColor = AccentGreen)
         ) {
-            Text("Recuperar mi círculo", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
+            Text(stringResource(R.string.recover_circle_button), color = AliciaOnAccent, fontSize = 18.sp, fontWeight = FontWeight.ExtraBold)
         }
         TextButton(onClick = onBack) {
-            Text("Prefiero crear un círculo nuevo", color = TextSecondary, fontSize = 14.sp)
+            Text(stringResource(R.string.recover_circle_create_new_button), color = TextSecondary, fontSize = 14.sp)
         }
     }
 }

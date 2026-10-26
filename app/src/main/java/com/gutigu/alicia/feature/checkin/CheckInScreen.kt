@@ -39,6 +39,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalLifecycleOwner
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -51,8 +52,9 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import com.gutigu.alicia.R
 import com.gutigu.alicia.ui.theme.AliciaAccent
-import com.gutigu.alicia.ui.theme.AliciaAccentSoft
+import com.gutigu.alicia.ui.theme.AliciaSuccessSoft
 import com.gutigu.alicia.ui.theme.AliciaAlert
 import com.gutigu.alicia.ui.theme.AliciaBackground
 import com.gutigu.alicia.ui.theme.AliciaLine
@@ -61,6 +63,8 @@ import com.gutigu.alicia.ui.theme.AliciaSurfaceAlt
 import com.gutigu.alicia.ui.theme.AliciaText
 import com.gutigu.alicia.ui.theme.AliciaTextSecondary
 import com.gutigu.alicia.ui.theme.AliciaWarning
+import com.gutigu.alicia.ui.theme.AliciaOnAccent
+import com.gutigu.alicia.ui.theme.AliciaSuccess
 
 // ─── Paleta, centralizada en ui/theme/Color.kt donde coincide ────────────────
 private val NavyDark         = AliciaBackground   // fondo de pantalla (nombre heredado, valor claro)
@@ -76,7 +80,7 @@ private val TextSecondary    = AliciaTextSecondary
 private val BgAwakening     = Color(0xFFFDF3E3)   // ámbar muy suave
 private val BgMain          = Color(0xFFFBEAC8)   // ámbar más presente
 private val BgFinalWarning  = Color(0xFFFBDAD3)   // rojo suave — urgencia, todavía no es la alerta roja del SOS
-private val BgResponded     = AliciaAccentSoft    // verde suave — éxito
+private val BgResponded     = AliciaSuccessSoft    // verde suave — éxito
 
 @Composable
 fun CheckInScreen(viewModel: CheckInViewModel = hiltViewModel()) {
@@ -252,7 +256,7 @@ private fun CalmConfirmationContent(
 ) {
     val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
     val timeEmoji = when { hour < 12 -> "🌅"; hour < 19 -> "🌤️"; else -> "🌙" }
-    val amberGlow = Color(0xFFF39C12)
+    val amberGlow = AliciaWarning
 
     // Animación de latido sobre el botón (fase MAIN y FINAL_WARNING)
     val infiniteTransition = rememberInfiniteTransition(label = "heartbeat")
@@ -287,7 +291,7 @@ private fun CalmConfirmationContent(
                     Text(timeEmoji, fontSize = 72.sp)
                     Spacer(Modifier.height(20.dp))
                     Text(
-                        "Hola, ${config.userName}",
+                        stringResource(R.string.checkin_greeting, config.userName),
                         color      = amberGlow,
                         fontFamily = MaterialTheme.typography.headlineLarge.fontFamily,
                         fontSize   = 32.sp,
@@ -296,7 +300,7 @@ private fun CalmConfirmationContent(
                     )
                     Spacer(Modifier.height(12.dp))
                     Text(
-                        "¿Estás por ahí?",
+                        stringResource(R.string.checkin_are_you_there),
                         color      = TextPrimary,
                         fontSize   = 24.sp,
                         textAlign  = TextAlign.Center,
@@ -313,13 +317,13 @@ private fun CalmConfirmationContent(
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text       = "$countdownSeconds",
-                        color      = Color(0xFFD63A1F),
+                        color      = AliciaAlert,
                         fontSize   = 110.sp,
                         fontWeight = FontWeight.ExtraBold
                     )
                     Text(
-                        "segundos para avisar\na tu familia",
-                        color      = Color(0xFFA84B33),
+                        stringResource(R.string.checkin_seconds_warning),
+                        color      = AliciaAccent,
                         fontSize   = 18.sp,
                         textAlign  = TextAlign.Center,
                         lineHeight = 26.sp
@@ -374,7 +378,7 @@ private fun CalmConfirmationContent(
                 .height(buttonHeight)
                 .scale(if (alarmPhase == AlarmPhase.MAIN) heartbeatScale else 1f),
             shape  = RoundedCornerShape(28.dp),
-            colors = ButtonDefaults.buttonColors(containerColor = AccentGreen),
+            colors = ButtonDefaults.buttonColors(containerColor = AliciaSuccess),
             elevation = ButtonDefaults.buttonElevation(
                 defaultElevation = if (alarmPhase == AlarmPhase.MAIN) 12.dp else 4.dp
             )
@@ -386,13 +390,13 @@ private fun CalmConfirmationContent(
                 Icon(
                     Icons.Default.Check,
                     contentDescription = null,
-                    tint     = TextPrimary,
+                    tint = AliciaOnAccent,
                     modifier = Modifier.size(if (alarmPhase == AlarmPhase.MAIN) 48.dp else 32.dp)
                 )
                 Spacer(Modifier.height(8.dp))
                 Text(
-                    "SÍ, ESTOY BIEN",
-                    color      = TextPrimary,
+                    stringResource(R.string.checkin_yes_im_okay_button),
+                    color = AliciaOnAccent,
                     fontSize   = buttonFontSize.sp,
                     fontWeight = FontWeight.ExtraBold,
                     textAlign  = TextAlign.Center
@@ -409,7 +413,7 @@ private fun CalmConfirmationContent(
         ) {
             if (alarmPhase == AlarmPhase.AWAKENING) {
                 Text(
-                    "Presiona si estás bien",
+                    stringResource(R.string.checkin_press_if_okay),
                     color    = TextSecondary,
                     fontSize = 15.sp,
                     modifier = Modifier.padding(bottom = 10.dp)
@@ -424,8 +428,8 @@ private fun CalmConfirmationContent(
             )
             val barColor = when {
                 countdownSeconds > 15 -> amberGlow
-                countdownSeconds > 7  -> Color(0xFFE67E22)
-                else                  -> Color(0xFFE74C3C)
+                countdownSeconds > 7  -> AliciaWarning
+                else                  -> AliciaAlert
             }
             LinearProgressIndicator(
                 progress      = { progress },
@@ -454,7 +458,7 @@ private fun RespondedHappilyScreen(name: String) {
             .fillMaxSize()
             .background(
                 Brush.radialGradient(
-                    colors = listOf(Color(0xFFE3F9EC), Color(0xFFFAF8FB))
+                    colors = listOf(AliciaSuccessSoft, AliciaBackground)
                 )
             ),
         contentAlignment = Alignment.Center
@@ -467,15 +471,15 @@ private fun RespondedHappilyScreen(name: String) {
             Text("✅", fontSize = 96.sp)
 
             Text(
-                text       = "¡Perfecto, $name!",
-                color      = AccentGreen.copy(alpha = sparkleAlpha),
+                text       = stringResource(R.string.checkin_perfect_name, name),
+                color      = AliciaSuccess.copy(alpha = sparkleAlpha),
                 fontSize   = 34.sp,
                 fontWeight = FontWeight.ExtraBold,
                 textAlign  = TextAlign.Center
             )
 
             Text(
-                text      = "Seguimos conectados.\nQue tengas un lindo día.",
+                text      = stringResource(R.string.checkin_stay_connected),
                 color     = TextPrimary,
                 fontSize  = 20.sp,
                 textAlign = TextAlign.Center,
@@ -487,12 +491,12 @@ private fun RespondedHappilyScreen(name: String) {
             Box(
                 modifier = Modifier
                     .clip(CircleShape)
-                    .background(AccentGreen.copy(alpha = 0.12f))
+                    .background(AliciaSuccess.copy(alpha = 0.12f))
                     .padding(horizontal = 24.dp, vertical = 12.dp)
             ) {
                 Text(
-                    "Tu familia ya sabe que estás bien 💚",
-                    color    = AccentGreen,
+                    stringResource(R.string.checkin_family_knows),
+                    color    = AliciaSuccess,
                     fontSize = 15.sp,
                     textAlign = TextAlign.Center
                 )
@@ -550,14 +554,14 @@ private fun CheckInSettingsScreen(
         Spacer(modifier = Modifier.height(24.dp))
 
         Text(
-            "Check-in de Bienestar",
+            stringResource(R.string.checkin_settings_title),
             color = TextPrimary,
             fontFamily = MaterialTheme.typography.headlineLarge.fontFamily,
             fontSize = 26.sp,
             fontWeight = FontWeight.Bold
         )
         Text(
-            "Una vez al día recibirás una alarma con saludo.",
+            stringResource(R.string.checkin_settings_subtitle),
             color = TextSecondary,
             fontSize = 15.sp,
             modifier = Modifier.padding(top = 4.dp)
@@ -576,7 +580,7 @@ private fun CheckInSettingsScreen(
                         Icon(Icons.Default.Warning, contentDescription = null, tint = AccentAmber, modifier = Modifier.size(20.dp))
                         Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            "Sin notificaciones activadas no vas a escuchar tu alarma de bienestar ni la de tus medicamentos.",
+                            stringResource(R.string.checkin_notif_warning),
                             color = TextSecondary,
                             fontSize = 13.sp,
                             lineHeight = 18.sp
@@ -591,7 +595,7 @@ private fun CheckInSettingsScreen(
                         },
                         modifier = Modifier.align(Alignment.End)
                     ) {
-                        Text("Activar en Ajustes", color = AccentAmber, fontWeight = FontWeight.Bold, fontSize = 14.sp)
+                        Text(stringResource(R.string.open_settings_button), color = AccentAmber, fontWeight = FontWeight.Bold, fontSize = 14.sp)
                     }
                 }
             }
@@ -612,7 +616,7 @@ private fun CheckInSettingsScreen(
                     Icon(Icons.Default.Warning, contentDescription = null, tint = AccentAmber, modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(10.dp))
                     Text(
-                        "Todavía no tienes a nadie en tu círculo. Agrega al menos un familiar en la pestaña Círculo antes de activar la alarma, o no le avisará a nadie.",
+                        stringResource(R.string.checkin_no_contacts_warning),
                         color = TextSecondary,
                         fontSize = 13.sp,
                         lineHeight = 18.sp
@@ -627,24 +631,27 @@ private fun CheckInSettingsScreen(
         // ya sincronizado por Firestore (ver CheckInViewModel.observeRemoteSchedule).
         SettingsCard {
             Column {
-                Text("Chequeo diario", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.checkin_daily_title), color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
                 Text(
-                    "Tu familia configura este horario desde su app",
+                    stringResource(R.string.checkin_family_configures),
                     color = TextSecondary, fontSize = 14.sp,
                     modifier = Modifier.padding(top = 2.dp, bottom = 14.dp)
                 )
                 if (state.config.isEnabled) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(Icons.Default.Check, contentDescription = null, tint = AccentGreen, modifier = Modifier.size(20.dp))
+                        Icon(Icons.Default.Check, contentDescription = null, tint = AliciaSuccess, modifier = Modifier.size(20.dp))
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            "Activo — recibirás el saludo a las %02d:%02d".format(state.config.scheduledHour, state.config.scheduledMinute),
+                            stringResource(
+                                R.string.checkin_active_at_time,
+                                "%02d:%02d".format(state.config.scheduledHour, state.config.scheduledMinute)
+                            ),
                             color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.Medium
                         )
                     }
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        "Si no abres la app en ${state.config.timeoutMinutes / 60} horas, tu familia recibirá un aviso.",
+                        stringResource(R.string.checkin_timeout_warning, state.config.timeoutMinutes / 60),
                         color = TextSecondary, fontSize = 13.sp, lineHeight = 18.sp
                     )
                 } else {
@@ -652,13 +659,13 @@ private fun CheckInSettingsScreen(
                         Icon(Icons.Default.Warning, contentDescription = null, tint = AccentAmber, modifier = Modifier.size(20.dp))
                         Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            "Tu familia aún no ha activado el chequeo diario",
+                            stringResource(R.string.checkin_not_activated),
                             color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.Medium
                         )
                     }
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        "Puede activarlo desde su propia pestaña Bienestar.",
+                        stringResource(R.string.checkin_activate_from_wellness_tab),
                         color = TextSecondary, fontSize = 13.sp, lineHeight = 18.sp
                     )
                 }
@@ -669,13 +676,13 @@ private fun CheckInSettingsScreen(
 
         SettingsCard {
             Column {
-                Text("Tu número de teléfono", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
-                Text("Para que tu familia pueda llamarte directamente", color = TextSecondary, fontSize = 14.sp,
+                Text(stringResource(R.string.checkin_phone_title), color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.checkin_phone_subtitle), color = TextSecondary, fontSize = 14.sp,
                     modifier = Modifier.padding(top = 2.dp, bottom = 12.dp))
                 OutlinedTextField(
                     value = state.config.userPhone,
                     onValueChange = { viewModel.updateConfig(state.config.copy(userPhone = it)) },
-                    placeholder = { Text("Ej. 5512345678", color = TextSecondary.copy(alpha = 0.5f)) },
+                    placeholder = { Text(stringResource(R.string.checkin_phone_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
                     singleLine = true,
                     keyboardOptions = androidx.compose.foundation.text.KeyboardOptions(
                         keyboardType = androidx.compose.ui.text.input.KeyboardType.Phone
@@ -685,7 +692,7 @@ private fun CheckInSettingsScreen(
                     // parezca que el campo "no hace nada".
                     trailingIcon = {
                         if (state.config.userPhone.length >= 7) {
-                            Icon(Icons.Default.Check, contentDescription = "Guardado", tint = AccentGreen)
+                            Icon(Icons.Default.Check, contentDescription = stringResource(R.string.checkin_phone_saved_desc), tint = AliciaSuccess)
                         }
                     },
                     colors = OutlinedTextFieldDefaults.colors(
@@ -701,7 +708,7 @@ private fun CheckInSettingsScreen(
                 )
                 if (state.config.userPhone.length >= 7) {
                     Text(
-                        "✓ Guardado — tu familia ya puede ver este número",
+                        stringResource(R.string.checkin_phone_saved),
                         color = AccentGreen,
                         fontSize = 13.sp,
                         modifier = Modifier.padding(top = 6.dp)
@@ -725,7 +732,7 @@ private fun CheckInSettingsScreen(
                 Icon(Icons.Default.Warning, contentDescription = null, tint = AccentAmber, modifier = Modifier.size(20.dp))
                 Spacer(modifier = Modifier.width(10.dp))
                 Text(
-                    "Al abrir la app cuando suene la alarma, tendrás 30 segundos para tocar \"¡Estoy bien!\". Si no respondes, se enviará un SMS a tu grupo familiar.",
+                    stringResource(R.string.checkin_countdown_note),
                     color = TextSecondary,
                     fontSize = 13.sp,
                     lineHeight = 18.sp
@@ -741,7 +748,7 @@ private fun CheckInSettingsScreen(
             shape = RoundedCornerShape(14.dp),
             colors = ButtonDefaults.buttonColors(containerColor = NavyMedium)
         ) {
-            Text("Probar alarma ahora", color = AccentGreen, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+            Text(stringResource(R.string.checkin_test_alarm_button), color = AccentGreen, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
         }
 
         Spacer(modifier = Modifier.height(32.dp))
@@ -754,24 +761,24 @@ private fun CheckInSettingsScreen(
 private fun TodayStatusCard(record: CheckInRecord?) {
     val (icon, tint, title, subtitle) = when (record?.status) {
         CheckInStatus.RESPONDED -> CheckInStatusDisplay(
-            Icons.Default.Check, AccentGreen,
-            "Respondiste hoy",
-            record.respondedAt?.let { "A las ${formatTime(it)}" } ?: ""
+            Icons.Default.Check, AliciaSuccess,
+            stringResource(R.string.checkin_status_responded_title),
+            record.respondedAt?.let { stringResource(R.string.checkin_status_responded_subtitle, formatTime(it)) } ?: ""
         )
         CheckInStatus.MISSED -> CheckInStatusDisplay(
-            Icons.Default.Warning, Color(0xFFFF8C00),
-            "Sin respuesta hoy",
-            "Tu familia recibió un aviso. Espero que estés bien."
+            Icons.Default.Warning, AliciaWarning,
+            stringResource(R.string.checkin_status_missed_title),
+            stringResource(R.string.checkin_status_missed_subtitle)
         )
         CheckInStatus.PENDING -> CheckInStatusDisplay(
             Icons.Default.Warning, AccentAmber,
-            "Alarma pendiente",
-            "Aún no has respondido el check-in de hoy"
+            stringResource(R.string.checkin_status_pending_title),
+            stringResource(R.string.checkin_status_pending_subtitle)
         )
         null -> CheckInStatusDisplay(
             Icons.Default.Check, TextSecondary,
-            "Sin alarma hoy aún",
-            "Recibirás la alarma a la hora configurada"
+            stringResource(R.string.checkin_status_none_title),
+            stringResource(R.string.checkin_status_none_subtitle)
         )
     }
 
@@ -815,7 +822,7 @@ internal fun TimeAdjuster(hour: Int, minute: Int, enabled: Boolean, onAdjust: (I
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier.size(width = 80.dp, height = 52.dp),
             colors = ButtonDefaults.filledTonalButtonColors(containerColor = SurfaceAlt, contentColor = AccentGreen)
-        ) { Text("- 30 min", fontSize = 13.sp) }
+        ) { Text(stringResource(R.string.time_adjuster_minus), fontSize = 13.sp) }
 
         Text(
             text = "%02d:%02d".format(hour, minute),
@@ -831,7 +838,7 @@ internal fun TimeAdjuster(hour: Int, minute: Int, enabled: Boolean, onAdjust: (I
             shape = RoundedCornerShape(12.dp),
             modifier = Modifier.size(width = 80.dp, height = 52.dp),
             colors = ButtonDefaults.filledTonalButtonColors(containerColor = SurfaceAlt, contentColor = AccentGreen)
-        ) { Text("+ 30 min", fontSize = 13.sp) }
+        ) { Text(stringResource(R.string.time_adjuster_plus), fontSize = 13.sp) }
     }
 }
 
@@ -839,7 +846,11 @@ internal fun TimeAdjuster(hour: Int, minute: Int, enabled: Boolean, onAdjust: (I
 
 @Composable
 internal fun TimeoutChips(selectedMinutes: Int, enabled: Boolean, onSelect: (Int) -> Unit) {
-    val options = listOf(60 to "1 hora", 120 to "2 horas", 240 to "4 horas")
+    val options = listOf(
+        60 to stringResource(R.string.timeout_chip_1h),
+        120 to stringResource(R.string.timeout_chip_2h),
+        240 to stringResource(R.string.timeout_chip_4h)
+    )
     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         options.forEach { (minutes, label) ->
             val sel = selectedMinutes == minutes
@@ -850,7 +861,7 @@ internal fun TimeoutChips(selectedMinutes: Int, enabled: Boolean, onSelect: (Int
                 modifier = Modifier.weight(1f).height(46.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = if (sel) AccentGreen else SurfaceAlt,
-                    contentColor   = if (sel) TextPrimary else TextSecondary
+                    contentColor   = if (sel) AliciaOnAccent else TextSecondary
                 )
             ) {
                 Text(label, fontSize = 14.sp, fontWeight = if (sel) FontWeight.Bold else FontWeight.Normal)

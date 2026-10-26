@@ -18,11 +18,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.*
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.gutigu.alicia.R
 import com.gutigu.alicia.ui.theme.AliciaAccent
 import com.gutigu.alicia.ui.theme.AliciaAlertSoft
 import com.gutigu.alicia.ui.theme.AliciaBackground
@@ -30,6 +32,7 @@ import com.gutigu.alicia.ui.theme.AliciaFormAlert
 import com.gutigu.alicia.ui.theme.AliciaSurfaceAlt
 import com.gutigu.alicia.ui.theme.AliciaText
 import com.gutigu.alicia.ui.theme.AliciaTextSecondary
+import com.gutigu.alicia.ui.theme.AliciaOnAccent
 
 // Paleta centralizada en ui/theme/Color.kt
 private val NavyDark    = AliciaBackground   // fondo de pantalla
@@ -66,13 +69,13 @@ fun LoginScreen(
         ) {
             // Logo / título
             Text(
-                text = "Círculo de Confianza",
+                text = stringResource(R.string.login_app_title),
                 color = AccentGreen,
                 fontSize = 28.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
-                text = if (state.isSignUp) "Crear cuenta" else "Bienvenido de vuelta",
+                text = if (state.isSignUp) stringResource(R.string.login_create_account) else stringResource(R.string.login_welcome_back),
                 color = TextSecondary,
                 fontSize = 16.sp
             )
@@ -89,7 +92,7 @@ fun LoginScreen(
             PasswordField(
                 value = state.password,
                 onValueChange = viewModel::onPasswordChange,
-                label = "Contraseña",
+                label = stringResource(R.string.login_password_label),
                 enabled = !state.isLoading
             )
 
@@ -97,7 +100,7 @@ fun LoginScreen(
                 PasswordField(
                     value = state.confirmPassword,
                     onValueChange = viewModel::onConfirmPasswordChange,
-                    label = "Confirmar contraseña",
+                    label = stringResource(R.string.login_confirm_password_label),
                     enabled = !state.isLoading,
                     isLast = true,
                     onDone = { viewModel.submit() }
@@ -132,16 +135,16 @@ fun LoginScreen(
             ) {
                 if (state.isLoading) {
                     CircularProgressIndicator(
-                        color = TextPrimary,
+                        color = AliciaOnAccent,
                         modifier = Modifier.size(24.dp),
                         strokeWidth = 2.dp
                     )
                 } else {
                     Text(
-                        text = if (state.isSignUp) "Crear cuenta" else "Iniciar sesión",
+                        text = if (state.isSignUp) stringResource(R.string.login_create_account) else stringResource(R.string.login_sign_in_button),
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Bold,
-                        color = TextPrimary
+                        color = AliciaOnAccent
                     )
                 }
             }
@@ -150,9 +153,9 @@ fun LoginScreen(
             TextButton(onClick = { viewModel.toggleMode() }) {
                 Text(
                     text = if (state.isSignUp)
-                        "¿Ya tienes cuenta? Inicia sesión"
+                        stringResource(R.string.login_have_account)
                     else
-                        "¿Nuevo aquí? Crear cuenta",
+                        stringResource(R.string.login_new_here),
                     color = TextSecondary,
                     fontSize = 14.sp
                 )
@@ -171,7 +174,7 @@ private fun EmailField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        label = { Text("Email") },
+        label = { Text(stringResource(R.string.login_email_label)) },
         leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = TextSecondary) },
         singleLine = true,
         enabled = enabled,
@@ -206,7 +209,7 @@ private fun PasswordField(
             IconButton(onClick = { passwordVisible = !passwordVisible }) {
                 Icon(
                     imageVector = if (passwordVisible) Icons.Default.VisibilityOff else Icons.Default.Visibility,
-                    contentDescription = if (passwordVisible) "Ocultar" else "Mostrar",
+                    contentDescription = if (passwordVisible) stringResource(R.string.login_hide_password) else stringResource(R.string.login_show_password),
                     tint = TextSecondary
                 )
             }

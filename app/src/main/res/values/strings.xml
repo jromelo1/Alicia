@@ -1,3 +1,408 @@
 <resources>
     <string name="app_name">Alicia</string>
+
+    <!-- Onboarding: elegir perfil -->
+    <string name="onboarding_title">Círculo de\nConfianza</string>
+    <string name="onboarding_subtitle">¿Cómo vas a usar la app?</string>
+    <string name="onboarding_elder_title">Soy Adulto Mayor</string>
+    <string name="onboarding_elder_description">Quiero que mi familia sepa\nque estoy bien cada día.</string>
+    <string name="onboarding_familiar_title">Soy Familiar</string>
+    <string name="onboarding_familiar_description">Quiero estar al tanto de mi\nser querido y saber que está bien.</string>
+    <string name="onboarding_name_label_elder">¿Cómo te llamas?</string>
+    <string name="onboarding_name_label_familiar">Tu nombre</string>
+    <string name="onboarding_name_placeholder_elder">Ej. María</string>
+    <string name="onboarding_name_placeholder_familiar">Ej. Carlos</string>
+    <string name="onboarding_start_button">Comenzar</string>
+
+    <!-- Navegación: pestañas -->
+    <string name="tab_sos">SOS</string>
+    <string name="tab_bienestar">Bienestar</string>
+    <string name="tab_llamada">Llamada</string>
+    <string name="tab_recuerdos">Recuerdos</string>
+    <string name="tab_medicina">Medicina</string>
+    <string name="tab_notas">Notas</string>
+    <string name="tab_circulo">Círculo</string>
+    <string name="tab_estado">Estado</string>
+    <string name="tab_zonas">Zonas</string>
+    <string name="change_profile">Cambiar de perfil</string>
+
+    <!-- Círculo: selector de idioma -->
+    <string name="language_section_title">Idioma de la app</string>
+    <string name="language_spanish">Español</string>
+    <string name="language_english">English</string>
+
+    <!-- Familiar: accesos rápidos en el dashboard -->
+    <string name="quick_access_title">Accesos rápidos</string>
+
+    <!-- SOS: pantalla principal -->
+    <string name="panic_title_line1">CÍRCULO DE</string>
+    <string name="panic_title_line2">CONFIANZA</string>
+    <string name="panic_help_label">AYUDA</string>
+    <string name="panic_tap_instruction">Toca para alertar a tu círculo</string>
+    <string name="panic_no_contacts_warning">⚠️ Todavía no tienes a nadie en tu círculo — agrega a un familiar para que esta alerta le llegue a alguien</string>
+    <string name="panic_countdown_title">Enviando alerta en...</string>
+    <string name="panic_cancel_button">CANCELAR</string>
+    <string name="panic_cancel_instruction">Toca CANCELAR si estás bien</string>
+    <string name="panic_sending_title">Alertando a tu círculo...</string>
+    <string name="panic_sending_subtitle">Obteniendo tu ubicación\ny notificando a familia</string>
+    <string name="panic_active_title_registered">ALERTA REGISTRADA</string>
+    <string name="panic_active_title_sent">¡ALERTA ENVIADA!</string>
+    <string name="panic_status_empty_circle">Tu círculo está vacío: nadie fue avisado</string>
+    <string name="panic_status_sms_failed">No se pudo avisar a tu círculo por SMS</string>
+    <string name="panic_status_partial">Avisamos a %1$d de %2$d personas</string>
+    <string name="panic_status_notified">Tu círculo fue notificado</string>
+    <string name="panic_location_shared">Ubicación compartida</string>
+    <string name="panic_location_unavailable">Ubicación no disponible</string>
+    <string name="panic_call_directly">⚠️ Llama directamente al\n123 o a un familiar</string>
+    <string name="panic_already_okay_question">¿Ya estás bien?</string>
+    <string name="panic_false_alarm_button">Falsa alarma</string>
+    <string name="panic_im_okay_button">Estoy bien</string>
+    <string name="panic_resolved_title">Tu círculo fue\navisado que estás bien</string>
+    <string name="panic_resolved_subtitle">Gracias por confirmar</string>
+    <string name="panic_error_title">No se pudo enviar la alerta</string>
+
+    <!-- Check-in: alarma de Confirmación Calmada -->
+    <string name="checkin_greeting">Hola, %1$s</string>
+    <string name="checkin_are_you_there">¿Estás por ahí?</string>
+    <string name="checkin_seconds_warning">segundos para avisar\na tu familia</string>
+    <string name="checkin_yes_im_okay_button">SÍ, ESTOY BIEN</string>
+    <string name="checkin_press_if_okay">Presiona si estás bien</string>
+    <string name="checkin_perfect_name">¡Perfecto, %1$s!</string>
+    <string name="checkin_stay_connected">Seguimos conectados.\nQue tengas un lindo día.</string>
+    <string name="checkin_family_knows">Tu familia ya sabe que estás bien 💚</string>
+
+    <!-- Check-in: pantalla de configuración -->
+    <string name="checkin_settings_title">Check-in de Bienestar</string>
+    <string name="checkin_settings_subtitle">Una vez al día recibirás una alarma con saludo.</string>
+    <string name="checkin_notif_warning">Sin notificaciones activadas no vas a escuchar tu alarma de bienestar ni la de tus medicamentos.</string>
+    <string name="open_settings_button">Activar en Ajustes</string>
+    <string name="checkin_no_contacts_warning">Todavía no tienes a nadie en tu círculo. Agrega al menos un familiar en la pestaña Círculo antes de activar la alarma, o no le avisará a nadie.</string>
+    <string name="checkin_daily_title">Chequeo diario</string>
+    <string name="checkin_family_configures">Tu familia configura este horario desde su app</string>
+    <string name="checkin_active_at_time">Activo — recibirás el saludo a las %1$s</string>
+    <string name="checkin_timeout_warning">Si no abres la app en %1$d horas, tu familia recibirá un aviso.</string>
+    <string name="checkin_not_activated">Tu familia aún no ha activado el chequeo diario</string>
+    <string name="checkin_activate_from_wellness_tab">Puede activarlo desde su propia pestaña Bienestar.</string>
+    <string name="checkin_phone_title">Tu número de teléfono</string>
+    <string name="checkin_phone_subtitle">Para que tu familia pueda llamarte directamente</string>
+    <string name="checkin_phone_placeholder">Ej. 5512345678</string>
+    <string name="checkin_phone_saved_desc">Guardado</string>
+    <string name="checkin_phone_saved">✓ Guardado — tu familia ya puede ver este número</string>
+    <string name="checkin_countdown_note">Al abrir la app cuando suene la alarma, tendrás 30 segundos para tocar \"¡Estoy bien!\". Si no respondes, se enviará un SMS a tu grupo familiar.</string>
+    <string name="checkin_test_alarm_button">Probar alarma ahora</string>
+
+    <!-- Check-in: estado de hoy -->
+    <string name="checkin_status_responded_title">Respondiste hoy</string>
+    <string name="checkin_status_responded_subtitle">A las %1$s</string>
+    <string name="checkin_status_missed_title">Sin respuesta hoy</string>
+    <string name="checkin_status_missed_subtitle">Tu familia recibió un aviso. Espero que estés bien.</string>
+    <string name="checkin_status_pending_title">Alarma pendiente</string>
+    <string name="checkin_status_pending_subtitle">Aún no has respondido el check-in de hoy</string>
+    <string name="checkin_status_none_title">Sin alarma hoy aún</string>
+    <string name="checkin_status_none_subtitle">Recibirás la alarma a la hora configurada</string>
+
+    <!-- Check-in: controles reutilizables (ajustador de hora, chips de tiempo) -->
+    <string name="time_adjuster_minus">- 30 min</string>
+    <string name="time_adjuster_plus">+ 30 min</string>
+    <string name="timeout_chip_1h">1 hora</string>
+    <string name="timeout_chip_2h">2 horas</string>
+    <string name="timeout_chip_4h">4 horas</string>
+
+    <!-- Check-in: pantalla del Familiar -->
+    <string name="familiar_checkin_title">Bienestar</string>
+    <string name="familiar_checkin_subtitle">Configura el chequeo diario de tu familiar</string>
+    <string name="familiar_checkin_notif_warning">Sin notificaciones activadas no vas a ver las alertas de tu familiar (pánico o check-in perdido).</string>
+    <string name="familiar_checkin_no_contacts_warning">Todavía no hay nadie en el círculo de tu familiar. Únete o agrega un guardián antes de activar la alarma, o no le avisará a nadie.</string>
+    <string name="familiar_checkin_enable_title">Activar chequeo diario</string>
+    <string name="familiar_checkin_enable_subtitle">Tu familiar recibirá una alarma con saludo cada día</string>
+    <string name="familiar_checkin_time_title">Hora de la alarma</string>
+    <string name="familiar_checkin_time_subtitle">Tu familiar recibirá el saludo a esta hora</string>
+    <string name="familiar_checkin_timeout_title">Si no abre la app en...</string>
+    <string name="familiar_checkin_timeout_subtitle">Recibirás un aviso a este círculo</string>
+    <string name="familiar_checkin_synced">Sincronizado — tu familiar ya ve este horario</string>
+    <string name="familiar_checkin_disabled">El chequeo está desactivado</string>
+
+    <!-- Acciones genéricas reutilizadas en varios diálogos -->
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_save">Guardar</string>
+    <string name="action_accept">Aceptar</string>
+    <string name="time_offset_minus_30">−30m</string>
+    <string name="time_offset_plus_30">+30m</string>
+
+    <!-- Medicamentos -->
+    <string name="med_add_appointment_fab">Agregar cita médica</string>
+    <string name="med_add_medication_fab">Agregar medicamento</string>
+    <string name="med_section_title">Medicamentos</string>
+    <string name="med_section_subtitle">Recordatorios para tomar tus medicamentos</string>
+    <string name="med_no_guardians_warning">Todavía no hay ningún guardián en tu círculo. Si no confirmas que tomaste tu medicamento, no habrá nadie a quien avisar.</string>
+    <string name="med_uploading_photo">Subiendo foto de la pastilla…</string>
+    <string name="med_delete_desc">Eliminar</string>
+    <string name="med_dialog_title">Nuevo medicamento</string>
+    <string name="med_photo_label">Foto de la pastilla</string>
+    <string name="med_photo_preview_desc">Vista previa</string>
+    <string name="med_camera_button">📸 Cámara</string>
+    <string name="med_gallery_button">🖼️ Galería</string>
+    <string name="med_name_label">Nombre del medicamento</string>
+    <string name="med_name_placeholder">Ej. Metformina</string>
+    <string name="med_dose_label">Dosis (opcional)</string>
+    <string name="med_dose_placeholder">Ej. 500mg, 1 pastilla</string>
+    <string name="med_note_label">Instrucción adicional (opcional)</string>
+    <string name="med_note_placeholder">Ej. Con un vaso de agua</string>
+    <string name="med_with_food">Con comida</string>
+    <string name="med_fasting">En ayunas</string>
+    <string name="med_with_food_subtitle">Tomar después de comer</string>
+    <string name="med_fasting_subtitle">Tomar sin haber comido</string>
+    <string name="med_reminder_time_label">Hora del recordatorio</string>
+    <string name="med_empty_title">Sin medicamentos</string>
+    <string name="med_empty_subtitle">Agrega tus medicamentos y\nrecibirás un recordatorio a la hora indicada.</string>
+
+    <!-- Citas médicas -->
+    <string name="appt_section_title">Citas médicas</string>
+    <string name="appt_section_subtitle">Te avisamos el día y la hora de cada cita</string>
+    <string name="appt_delete_desc">Eliminar cita</string>
+    <string name="appt_empty_title">Sin citas médicas</string>
+    <string name="appt_empty_subtitle">Agrega tu próxima cita y te avisamos\nel día y la hora que elijas.</string>
+    <string name="appt_dialog_title">Nueva cita médica</string>
+    <string name="appt_with_whom_label">Con quién es la cita</string>
+    <string name="appt_with_whom_placeholder">Ej. Dra. Pérez</string>
+    <string name="appt_specialty_label">Especialidad (opcional)</string>
+    <string name="appt_specialty_placeholder">Ej. Cardiología</string>
+    <string name="appt_location_label">Lugar (opcional)</string>
+    <string name="appt_location_placeholder">Ej. Clínica del Country, consultorio 302</string>
+    <string name="appt_note_label">Nota adicional (opcional)</string>
+    <string name="appt_note_placeholder">Ej. Llevar exámenes de sangre</string>
+    <string name="appt_date_label">Fecha de la cita</string>
+    <string name="appt_time_label">Hora de la cita</string>
+
+    <!-- Notas: categorías -->
+    <string name="note_cat_shopping">Compras</string>
+    <string name="note_cat_health">Salud</string>
+    <string name="note_cat_family">Familia</string>
+    <string name="note_cat_task">Tarea</string>
+    <string name="note_cat_reminder">Recordatorio</string>
+    <string name="note_cat_familiar">Del familiar</string>
+    <string name="note_cat_general">General</string>
+
+    <!-- Notas: pantalla principal -->
+    <string name="notes_title">🎤 Mis Notas</string>
+    <string name="notes_subtitle">Tu diario privado — no se comparte con tu familia</string>
+    <string name="notes_manual_note_desc">Nota manual</string>
+    <string name="notes_unread_one">Tu familiar te dejó 1 nota nueva</string>
+    <string name="notes_unread_many">Tu familiar te dejó %1$d notas nuevas</string>
+    <string name="notes_speak_desc">Hablar</string>
+    <string name="notes_tap_to_speak">Toca para hablar</string>
+    <string name="notes_listening_placeholder">Te escucho…</string>
+    <string name="notes_stop_button">Detener</string>
+    <string name="notes_save_question">¿Guardo esto?</string>
+    <string name="notes_reminder_at">Recordatorio a las %1$s</string>
+    <string name="notes_discard_button">Descartar</string>
+    <string name="notes_save_confirm_button">✓  Guardar</string>
+    <string name="notes_new_badge">NUEVA</string>
+    <string name="notes_delete_desc">Eliminar</string>
+    <string name="notes_empty_title">Habla y yo recuerdo</string>
+    <string name="notes_empty_subtitle">Toca el micrófono y dile a Alicia\nqué quieres que recuerde por ti.\nEs privado: tu familia no lo verá.</string>
+    <string name="notes_speak_with_alicia">Hablar con Alicia</string>
+    <string name="notes_dialog_title">Nueva nota</string>
+    <string name="notes_dialog_label">¿Qué quieres anotar?</string>
+    <string name="notes_reminder_dialog_title">¿A qué hora te lo recuerdo?</string>
+    <string name="notes_no_reminder_button">Sin recordatorio</string>
+
+    <!-- Recuerdos -->
+    <string name="memory_timeline_title">Línea de Tiempo</string>
+    <string name="memory_timeline_subtitle_familiar">Agrega fotos y momentos para que tu familiar los recuerde</string>
+    <string name="memory_timeline_subtitle_elder">Tus recuerdos y las personas que quieres</string>
+    <string name="memory_uploading_photo">Subiendo foto del recuerdo…</string>
+    <string name="memory_add_fab">Agregar recuerdo</string>
+    <string name="memory_tag_pronoun_masculine">Este es tu</string>
+    <string name="memory_tag_pronoun_feminine">Esta es tu</string>
+    <string name="memory_untitled">Sin título</string>
+    <string name="memory_delete_desc">Eliminar recuerdo</string>
+    <string name="memory_empty_title">Aún no hay recuerdos</string>
+    <string name="memory_empty_subtitle_familiar">Agrega una foto familiar con nombres y parentescos\npara que tu familiar la recuerde.</string>
+    <string name="memory_empty_subtitle_elder">Cuando tu familia agregue fotos y momentos,\naparecerán aquí.</string>
+    <string name="memory_dialog_title">Nuevo recuerdo</string>
+    <string name="memory_photo_label">Foto</string>
+    <string name="memory_camera_button">📸 Cámara</string>
+    <string name="memory_gallery_button">🖼️ Galería</string>
+    <string name="memory_photo_preview_desc">Vista previa</string>
+    <string name="memory_title_label">Título</string>
+    <string name="memory_title_placeholder">Ej. Cumpleaños 80 de la abuela</string>
+    <string name="memory_description_label">Descripción (opcional)</string>
+    <string name="memory_description_placeholder">Ej. Fue en la casa de la finca, con toda la familia</string>
+    <string name="memory_date_label">Fecha del recuerdo</string>
+    <string name="memory_people_label">Personas en la foto</string>
+    <string name="memory_people_hint">Ej. nombre \"Gustavo\", parentesco \"hijo\"</string>
+    <string name="memory_name_label">Nombre</string>
+    <string name="memory_relationship_label">Parentesco</string>
+    <string name="memory_add_person_desc">Agregar persona</string>
+    <string name="memory_remove_person_desc">Quitar</string>
+
+    <!-- Acción genérica adicional -->
+    <string name="action_delete">Eliminar</string>
+
+    <!-- Zonas Seguras -->
+    <string name="safezone_your_location">Tu ubicación</string>
+    <string name="safezone_marker_snippet">Radio: %1$d m · %2$s</string>
+    <string name="safezone_active">Activa</string>
+    <string name="safezone_inactive">Inactiva</string>
+    <string name="safezone_title">Zonas Seguras</string>
+    <string name="safezone_title_with_count">Zonas Seguras (%1$d)</string>
+    <string name="safezone_empty_hint">Toca + para agregar tu primera zona</string>
+    <string name="safezone_my_location_desc">Mi ubicación</string>
+    <string name="safezone_zone_list_desc">Lista de zonas</string>
+    <string name="safezone_add_zone_desc">Agregar zona</string>
+    <string name="safezone_collapse_desc">Colapsar</string>
+    <string name="safezone_delete_desc">Eliminar</string>
+    <string name="safezone_delete_dialog_title">¿Eliminar zona?</string>
+    <string name="safezone_delete_dialog_text">Se eliminará \"%1$s\" del mapa.</string>
+    <string name="safezone_perm_enable_location">Activa la ubicación para ver el mapa</string>
+    <string name="safezone_perm_enable_background">Activa \'Siempre\' en ubicación para alertas en segundo plano</string>
+    <string name="safezone_activate_button">Activar</string>
+    <string name="safezone_no_guardians_warning">Todavía no hay ningún guardián en tu círculo. Si sales de una zona segura, no habrá nadie a quien avisar.</string>
+    <string name="safezone_add_dialog_title">Nueva Zona Segura</string>
+    <string name="safezone_name_label">Nombre</string>
+    <string name="safezone_name_placeholder">Ej: Casa, Parque, Panadería</string>
+    <string name="safezone_radius_label">Radio en metros</string>
+    <string name="safezone_centered_hint">Se centrará en tu ubicación actual.</string>
+    <string name="safezone_add_button">Agregar</string>
+
+    <!-- Login -->
+    <string name="login_app_title">Círculo de Confianza</string>
+    <string name="login_create_account">Crear cuenta</string>
+    <string name="login_welcome_back">Bienvenido de vuelta</string>
+    <string name="login_email_label">Email</string>
+    <string name="login_password_label">Contraseña</string>
+    <string name="login_confirm_password_label">Confirmar contraseña</string>
+    <string name="login_sign_in_button">Iniciar sesión</string>
+    <string name="login_have_account">¿Ya tienes cuenta? Inicia sesión</string>
+    <string name="login_new_here">¿Nuevo aquí? Crear cuenta</string>
+    <string name="login_hide_password">Ocultar</string>
+    <string name="login_show_password">Mostrar</string>
+
+    <!-- Aviso de privacidad (pendiente de revisión legal antes de producción, ver TODO_LEGAL en PrivacyConsentScreen.kt) -->
+    <string name="privacy_title">Antes de empezar</string>
+    <string name="privacy_responsible_pending">Gutigu, el equipo detrás de Círculo de Confianza. Publicaremos aquí el registro legal completo (razón social, NIT y domicilio) antes del lanzamiento.</string>
+    <string name="privacy_section1_title">¿Quién es responsable de tus datos?</string>
+    <string name="privacy_section2_title">¿Qué datos guardamos?</string>
+    <string name="privacy_section2_body">Tu nombre y teléfono, los nombres y teléfonos de las personas que agregues a tu círculo, y si confirmaste que estás bien cada día. Tu ubicación y la información de tus medicamentos son datos sensibles: no estás obligado(a) a autorizarlos, pero sin ellos no podemos ofrecerte las alertas de zonas seguras ni los recordatorios de medicinas.</string>
+    <string name="privacy_section3_title">¿Para qué los usamos?</string>
+    <string name="privacy_section3_body">Únicamente para que la app funcione: avisar a tu círculo si necesitas ayuda o si no confirmaste tu bienestar. Nunca los usamos para publicidad ni los vendemos a nadie.</string>
+    <string name="privacy_section4_title">¿Con quién los compartimos?</string>
+    <string name="privacy_section4_body">Solo con las personas que tú agregas a tu círculo de confianza. Nadie más tiene acceso. Usamos Firebase (Google) para guardar tu información de forma segura, lo que significa que puede procesarse en servidores fuera de Colombia, bajo los estándares de protección de Google.</string>
+    <string name="privacy_section5_title">¿Cuánto tiempo guardamos tus datos?</string>
+    <string name="privacy_section5_body">Mientras tu círculo esté activo. Si sales del círculo o nos pides eliminar tu cuenta, borramos tus datos en un máximo de 30 días, salvo que la ley nos obligue a conservarlos más tiempo.</string>
+    <string name="privacy_section6_title">Tus derechos</string>
+    <string name="privacy_section6_body">Puedes conocer, actualizar, corregir o pedir la eliminación de tus datos, y puedes retirar este consentimiento cuando quieras — al hacerlo, dejaremos de poder darte el servicio de alertas. Respondemos tus consultas en máximo 10 días hábiles y tus reclamos en máximo 15 días hábiles. Si no quedas conforme, puedes presentar una queja ante la Superintendencia de Industria y Comercio (SIC).</string>
+    <string name="privacy_section7_title">Contacto</string>
+    <string name="privacy_section7_body">Para ejercer estos derechos escríbenos a contacto@gutigu.com.</string>
+    <string name="privacy_accept_button">Acepto y continúo</string>
+    <string name="privacy_decline_button">No acepto</string>
+    <string name="privacy_decline_dialog_title">¿Seguro que no aceptas?</string>
+    <string name="privacy_decline_dialog_text">Sin aceptar no podemos avisar a tu círculo si necesitas ayuda. La app se va a cerrar — puedes volver a abrirla cuando quieras para decidir de nuevo.</string>
+    <string name="privacy_close_app_button">Cerrar la app</string>
+    <string name="privacy_keep_viewing_button">Seguir viendo</string>
+
+    <!-- Unirse a un círculo (Familiar) -->
+    <string name="join_circle_title">Únete a un círculo</string>
+    <string name="join_circle_subtitle">Pídele a tu familiar el código que le aparece al configurar su teléfono</string>
+    <string name="join_circle_code_label">Código de invitación</string>
+    <string name="join_circle_code_placeholder">Ej. AB3CD9EF</string>
+    <string name="join_circle_elder_name_label">¿Cómo se llama tu familiar?</string>
+    <string name="join_circle_elder_name_placeholder">Ej. María — el adulto mayor, no tú</string>
+    <string name="join_circle_phone_label">Tu teléfono</string>
+    <string name="join_circle_phone_placeholder">Para que puedan avisarte por SMS</string>
+    <string name="join_circle_role_question">¿Qué papel vas a tener?</string>
+    <string name="join_circle_role_guardian_title">Guardián</string>
+    <string name="join_circle_role_guardian_desc">Recibo todas las alertas:\npánico, check-in y zonas</string>
+    <string name="join_circle_role_member_title">Miembro</string>
+    <string name="join_circle_role_member_desc">Solo recibo alertas\nde emergencia</string>
+    <string name="join_circle_submit_button">Unirme al círculo</string>
+
+    <!-- Acción genérica adicional -->
+    <string name="action_continue">Continuar</string>
+
+    <!-- Compartir código del círculo (Adulto Mayor) -->
+    <string name="share_code_error_title">No pudimos crear tu círculo</string>
+    <string name="share_code_retry_button">Reintentar</string>
+    <string name="share_code_success_title">¡Ya tienes tu Círculo!</string>
+    <string name="share_code_success_subtitle">Comparte este código con tu familia para que puedan cuidarte</string>
+    <string name="share_code_share_button">Compartir código</string>
+    <string name="share_code_share_message">Únete a mi Círculo de Confianza con este código: %1$s\nDescarga la app y entra el código para que sepas que estoy bien cada día.</string>
+    <string name="share_code_hint">Podrás ver este código de nuevo en la pestaña Círculo</string>
+    <string name="share_code_recover_prompt">¿Ya tenías un círculo con esta app? Recupéralo con tu código</string>
+    <string name="share_code_recovered_title">¡Recuperamos tu Círculo!</string>
+    <string name="share_code_recovered_subtitle">Tu familia sigue conectada contigo, igual que antes.</string>
+    <string name="recover_circle_title">Recupera tu círculo</string>
+    <string name="recover_circle_subtitle">Ingresa el código que compartiste con tu familia — es el mismo de siempre, pídeselo si no lo recuerdas.</string>
+    <string name="recover_circle_button">Recuperar mi círculo</string>
+    <string name="recover_circle_create_new_button">Prefiero crear un círculo nuevo</string>
+
+    <!-- Agregar/editar miembro del círculo -->
+    <string name="member_name_empty_error">Escribe el nombre de la persona</string>
+    <string name="member_phone_empty_error">Escribe el número de teléfono</string>
+    <string name="member_phone_incomplete_error">El número se ve incompleto para %1$s</string>
+    <string name="member_sheet_edit_title">Editar miembro</string>
+    <string name="member_sheet_add_title">Agregar al círculo</string>
+    <string name="member_import_contacts_button">Importar desde Contactos</string>
+    <string name="member_or_manual_hint">— o escribe los datos manualmente —</string>
+    <string name="member_name_label">Nombre</string>
+    <string name="member_name_placeholder">Ej. María García</string>
+    <string name="member_phone_label">Teléfono</string>
+    <string name="member_phone_placeholder">Ej. 3001234567</string>
+    <string name="member_role_question">¿Qué papel tendrá en tu círculo?</string>
+    <string name="member_role_guardian_title">Guardián</string>
+    <string name="member_role_guardian_desc">Recibe todas las alertas:\npánico, check-in y zonas</string>
+    <string name="member_role_member_title">Miembro</string>
+    <string name="member_role_member_desc">Solo recibe alertas\nde emergencia</string>
+    <string name="member_save_changes_button">Guardar cambios</string>
+
+    <!-- Llamada diaria -->
+    <string name="call_title">📞 Llamada diaria</string>
+    <string name="call_subtitle">Alicia llama todos los días a tu familiar, a la hora que elijas, para conversar un rato — y aquí queda el registro de lo que hablaron</string>
+    <string name="call_enabled_label">Llamada activada</string>
+    <string name="call_will_ring_at">Sonará a las %1$s</string>
+    <string name="call_incomplete_hint">Completa el nombre, el teléfono y el consentimiento para activarla</string>
+    <string name="call_save_to_enable_hint">Guarda para activarla</string>
+    <string name="call_status_prefix">Estado: %1$s</string>
+    <string name="call_status_pending_intro">Pendiente de la llamada de presentación</string>
+    <string name="call_data_section_title">Datos para la llamada</string>
+    <string name="call_full_name_label">Nombre completo</string>
+    <string name="call_full_name_placeholder">Ej. Rosa Elena Gómez</string>
+    <string name="call_nickname_label">¿Cómo le gusta que le llamen?</string>
+    <string name="call_nickname_placeholder">Ej. Doña Rosa</string>
+    <string name="call_formality_label">¿De tú o de usted?</string>
+    <string name="call_formality_formal">De usted</string>
+    <string name="call_formality_informal">De tú</string>
+    <string name="call_language_label">Idioma de la llamada</string>
+    <string name="call_origin_country_label">País de origen</string>
+    <string name="call_origin_country_placeholder">Ej. Colombia</string>
+    <string name="call_interests_label">Gustos y temas de conversación</string>
+    <string name="call_interests_placeholder">Ej. le encanta hablar de sus nietos, jardinería y telenovelas</string>
+    <string name="call_family_label">Familia</string>
+    <string name="call_family_placeholder">Ej. su hija se llama Marta, su nieto es Andrés</string>
+    <string name="call_phone_label">Teléfono al que se llama</string>
+    <string name="call_phone_placeholder">3001234567</string>
+    <string name="call_emergency_name_label">Nombre del contacto de emergencia</string>
+    <string name="call_emergency_name_placeholder">Ej. Marta Gómez</string>
+    <string name="call_emergency_phone_label">Teléfono de emergencia</string>
+    <string name="call_emergency_phone_placeholder">Solo para casos graves durante la llamada</string>
+    <string name="call_preferred_time_label">Hora preferida de la llamada</string>
+    <string name="call_consent_title">Consentimiento para la llamada con IA</string>
+    <string name="call_consent_body">Estos datos y el audio de la llamada se comparten con Retell, el servicio de voz con inteligencia artificial que hace la llamada en nombre de Alicia. También se guarda el texto de lo que se hable, y podrán leerlo las personas de este círculo. Confirma que la persona a la que se llama sabe y está de acuerdo. Puedes desactivar la llamada diaria cuando quieras.</string>
+    <string name="call_consent_checkbox_label">Autorizo la llamada diaria con IA y guardar la conversación</string>
+    <string name="call_consent_accepted_at">Aceptado el %1$s</string>
+    <string name="call_history_title">Llamadas recientes</string>
+    <string name="call_history_empty">Todavía no ha habido ninguna llamada.</string>
+    <string name="call_view_conversation">Ver conversación ›</string>
+    <string name="call_conversation_title">Conversación con Alicia</string>
+    <string name="call_conversation_summary_title">Resumen</string>
+    <string name="call_conversation_empty">No se guardó el texto de esta llamada: no fue contestada, o es anterior a este registro.</string>
+    <string name="call_speaker_alicia">Alicia</string>
+    <string name="call_speaker_elder_default">Tu familiar</string>
+    <string name="call_duration">Duración %1$s</string>
+    <string name="call_status_completed">Completada</string>
+    <string name="call_status_no_answer">No contestó</string>
+    <string name="call_status_voicemail">Buzón de voz</string>
+    <string name="call_status_failed">No se pudo llamar</string>
+    <string name="call_status_unknown">Registrada</string>
 </resources>

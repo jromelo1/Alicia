@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Ícono pequeño de notificaciones (solo cuenta el canal alfa) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="24dp"
+    android:height="24dp"
+    android:viewportWidth="24"
+    android:viewportHeight="24">
+  <group android:scaleX="0.26" android:scaleY="0.26" android:translateX="-3.98" android:translateY="0.56">
+    <path android:pathData="M28.86,27.89 A39.6,39.6 0 0,0 28.86,73.31" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF" android:strokeWidth="5.2" android:strokeLineCap="round" android:strokeAlpha="0.55" />
+    <path android:pathData="M93.74,27.89 A39.6,39.6 0 0,1 93.74,73.31" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF" android:strokeWidth="5.2" android:strokeLineCap="round" android:strokeAlpha="0.55" />
+    <path android:pathData="M38.8,35.14 A27.3,27.3 0 0,0 38.8,66.06" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF" android:strokeWidth="5" android:strokeLineCap="round" />
+    <path android:pathData="M83.8,35.14 A27.3,27.3 0 0,1 83.8,66.06" android:fillColor="#00000000" android:strokeColor="#FFFFFFFF" android:strokeWidth="5" android:strokeLineCap="round" />
+    <path android:pathData="M61.3,11.9 L57.5,19.4 L65.1,19.4 Z" android:fillColor="#FFFFFFFF" android:strokeColor="#FFFFFFFF" android:strokeWidth="1.2" android:strokeLineJoin="round" />
+    <path android:pathData="M46.4,17.9 L53.8,20.1 L48.1,25 Z" android:fillColor="#FFFFFFFF" android:strokeColor="#FFFFFFFF" android:strokeWidth="1.2" android:strokeLineJoin="round" />
+    <path android:pathData="M76.2,17.9 L68.8,20.1 L74.5,25 Z" android:fillColor="#FFFFFFFF" android:strokeColor="#FFFFFFFF" android:strokeWidth="1.2" android:strokeLineJoin="round" />
+    <path android:pathData="M73.1,68.5 L81.9,74 L79,64.1 L66,58 Z" android:fillColor="#FFFFFFFF" android:strokeColor="#FFFFFFFF" android:strokeWidth="1" android:strokeLineJoin="round" />
+    <path android:pathData="M39.5,50.6 a21.8,21.8 0 1,0 43.6,0 a21.8,21.8 0 1,0 -43.6,0 Z M50.3,45.8 Q54.5,41.8 58.7,45.8 L58.7,48.2 Q54.5,44.2 50.3,48.2 Z M63.9,45.8 Q68.1,41.8 72.3,45.8 L72.3,48.2 Q68.1,44.2 63.9,48.2 Z M52.6,52.95 Q61.3,58.15 70,52.95 L70,56.25 Q61.3,61.45 52.6,56.25 Z" android:fillColor="#FFFFFFFF" android:fillType="evenOdd" />
+  </group>
+</vector>

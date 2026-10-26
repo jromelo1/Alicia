@@ -36,16 +36,19 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
-import com.gutigu.alicia.ui.theme.AliciaAccentSoft
+import com.gutigu.alicia.ui.theme.AliciaSuccessSoft
 import com.gutigu.alicia.ui.theme.AliciaAlert
 import com.gutigu.alicia.ui.theme.AliciaBackground
 import com.gutigu.alicia.ui.theme.AliciaText
 import com.gutigu.alicia.ui.theme.AliciaTextSecondary
+import com.gutigu.alicia.ui.theme.AliciaSuccess
+import com.gutigu.alicia.ui.theme.AliciaWarningStrong
 
 // ─────────────────────────────────────────────
 //  PALETA DE COLORES — centralizada en ui/theme/Color.kt donde coincide;
@@ -58,7 +61,7 @@ private object PanicColors {
     // es la emergencia activa real (backgroundDanger), nunca decorativo.
     val backgroundSafe = AliciaBackground
     val backgroundDanger = AliciaAlert
-    val backgroundSendingTint = AliciaAccentSoft
+    val backgroundSendingTint = AliciaSuccessSoft
 
     // Texto sobre fondo claro (idle, countdown, enviando, resuelto, error)
     val textOnLight = AliciaText
@@ -72,10 +75,10 @@ private object PanicColors {
     val buttonRed = Color(0xFFE53935)
     val buttonRedDark = Color(0xFFB71C1C)
     val cancelButton = AliciaTextSecondary
-    val resolveGreen = Color(0xFF2E7D32)
+    val resolveGreen = AliciaSuccess
     val cardOnDanger = Color(0x26FFFFFF)
     val pulseRing = AliciaAlert.copy(alpha = 0.12f)
-    val warningStrong = Color(0xFFB9770E)
+    val warningStrong = AliciaWarningStrong
 }
 
 // ─────────────────────────────────────────────
@@ -207,14 +210,14 @@ private fun IdleContent(hasNoContacts: Boolean, onPanicPress: () -> Unit) {
         // Título
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
             Text(
-                text = "CÍRCULO DE",
+                text = stringResource(R.string.panic_title_line1),
                 color = PanicColors.textOnLightSecondary,
                 fontSize = 14.sp,
                 fontWeight = FontWeight.W400,
                 letterSpacing = 4.sp
             )
             Text(
-                text = "CONFIANZA",
+                text = stringResource(R.string.panic_title_line2),
                 color = PanicColors.textOnLight,
                 fontFamily = MaterialTheme.typography.headlineLarge.fontFamily,
                 fontSize = 28.sp,
@@ -241,7 +244,7 @@ private fun IdleContent(hasNoContacts: Boolean, onPanicPress: () -> Unit) {
                 modifier = Modifier
                     .size(200.dp)
                     .clip(CircleShape)
-                    .background(Color(0x14E8342A))
+                    .background(AliciaAlert.copy(alpha = 0.08f))
             )
             // Botón principal — MUY GRANDE para adultos mayores
             Box(
@@ -273,7 +276,7 @@ private fun IdleContent(hasNoContacts: Boolean, onPanicPress: () -> Unit) {
                 ) {
                     Text(text = "🆘", fontSize = 48.sp)
                     Text(
-                        text = "AYUDA",
+                        text = stringResource(R.string.panic_help_label),
                         color = Color.White,
                         fontSize = 22.sp,
                         fontWeight = FontWeight.ExtraBold,
@@ -285,7 +288,7 @@ private fun IdleContent(hasNoContacts: Boolean, onPanicPress: () -> Unit) {
 
         // Instrucción
         Text(
-            text = "Toca para alertar a tu círculo",
+            text = stringResource(R.string.panic_tap_instruction),
             color = PanicColors.textOnLightSecondary,
             fontSize = 16.sp,
             textAlign = TextAlign.Center
@@ -293,7 +296,7 @@ private fun IdleContent(hasNoContacts: Boolean, onPanicPress: () -> Unit) {
 
         if (hasNoContacts) {
             Text(
-                text = "⚠️ Todavía no tienes a nadie en tu círculo — agrega a un familiar para que esta alerta le llegue a alguien",
+                text = stringResource(R.string.panic_no_contacts_warning),
                 color = PanicColors.warningStrong,
                 fontSize = 14.sp,
                 textAlign = TextAlign.Center,
@@ -322,7 +325,7 @@ private fun CountdownContent(seconds: Int, onCancel: () -> Unit) {
         modifier = Modifier.padding(32.dp)
     ) {
         Text(
-            text = "Enviando alerta en...",
+            text = stringResource(R.string.panic_countdown_title),
             color = PanicColors.textOnLightSecondary,
             fontSize = 18.sp,
             textAlign = TextAlign.Center
@@ -359,7 +362,7 @@ private fun CountdownContent(seconds: Int, onCancel: () -> Unit) {
             Icon(Icons.Default.Close, contentDescription = null, modifier = Modifier.size(28.dp))
             Spacer(Modifier.width(12.dp))
             Text(
-                text = "CANCELAR",
+                text = stringResource(R.string.panic_cancel_button),
                 fontSize = 20.sp,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 2.sp
@@ -367,7 +370,7 @@ private fun CountdownContent(seconds: Int, onCancel: () -> Unit) {
         }
 
         Text(
-            text = "Toca CANCELAR si estás bien",
+            text = stringResource(R.string.panic_cancel_instruction),
             color = PanicColors.textOnLightSecondary,
             fontSize = 14.sp,
             textAlign = TextAlign.Center
@@ -387,18 +390,18 @@ private fun SendingContent() {
     ) {
         CircularProgressIndicator(
             modifier = Modifier.size(80.dp),
-            color = Color(0xFF2E7D32),
+            color = AliciaSuccess,
             strokeWidth = 6.dp
         )
         Text(
-            text = "Alertando a tu círculo...",
+            text = stringResource(R.string.panic_sending_title),
             color = PanicColors.textOnLight,
             fontSize = 22.sp,
             fontWeight = FontWeight.Medium,
             textAlign = TextAlign.Center
         )
         Text(
-            text = "Obteniendo tu ubicación\ny notificando a familia",
+            text = stringResource(R.string.panic_sending_subtitle),
             color = PanicColors.textOnLightSecondary,
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
@@ -456,7 +459,7 @@ private fun ActiveContent(
         }
 
         Text(
-            text = if (noneReached) "ALERTA REGISTRADA" else "¡ALERTA ENVIADA!",
+            text = if (noneReached) stringResource(R.string.panic_active_title_registered) else stringResource(R.string.panic_active_title_sent),
             color = PanicColors.textOnDanger,
             fontSize = 28.sp,
             fontWeight = FontWeight.ExtraBold,
@@ -477,22 +480,22 @@ private fun ActiveContent(
                 StatusRow(
                     emoji = if (allReached) "📱" else "⚠️",
                     text = when {
-                        smsTotalCount == 0 -> "Tu círculo está vacío: nadie fue avisado"
-                        noneReached -> "No se pudo avisar a tu círculo por SMS"
-                        !allReached -> "Avisamos a $smsSentCount de $smsTotalCount personas"
-                        else -> "Tu círculo fue notificado"
+                        smsTotalCount == 0 -> stringResource(R.string.panic_status_empty_circle)
+                        noneReached -> stringResource(R.string.panic_status_sms_failed)
+                        !allReached -> stringResource(R.string.panic_status_partial, smsSentCount, smsTotalCount)
+                        else -> stringResource(R.string.panic_status_notified)
                     }
                 )
                 StatusRow(
                     emoji = if (locationShared) "📍" else "❔",
-                    text = if (locationShared) "Ubicación compartida" else "Ubicación no disponible"
+                    text = if (locationShared) stringResource(R.string.panic_location_shared) else stringResource(R.string.panic_location_unavailable)
                 )
             }
         }
 
         if (noneReached) {
             Text(
-                text = "⚠️ Llama directamente al\n123 o a un familiar",
+                text = stringResource(R.string.panic_call_directly),
                 color = PanicColors.textOnDanger,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
@@ -505,7 +508,7 @@ private fun ActiveContent(
 
         // Botones de resolución
         Text(
-            text = "¿Ya estás bien?",
+            text = stringResource(R.string.panic_already_okay_question),
             color = PanicColors.textOnDanger,
             fontSize = 16.sp
         )
@@ -522,7 +525,7 @@ private fun ActiveContent(
                 border = BorderStroke(1.dp, Color.White.copy(alpha = 0.5f)),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Text("Falsa alarma", fontSize = 14.sp)
+                Text(stringResource(R.string.panic_false_alarm_button), fontSize = 14.sp)
             }
 
             // Estoy bien
@@ -534,7 +537,7 @@ private fun ActiveContent(
             ) {
                 Icon(Icons.Default.Check, contentDescription = null)
                 Spacer(Modifier.width(8.dp))
-                Text("Estoy bien", fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.panic_im_okay_button), fontSize = 14.sp, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -552,7 +555,7 @@ private fun ResolvedContent() {
     ) {
         Text(text = "✅", fontSize = 72.sp)
         Text(
-            text = "Tu círculo fue\navisado que estás bien",
+            text = stringResource(R.string.panic_resolved_title),
             color = PanicColors.textOnLight,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
@@ -560,7 +563,7 @@ private fun ResolvedContent() {
             lineHeight = 32.sp
         )
         Text(
-            text = "Gracias por confirmar",
+            text = stringResource(R.string.panic_resolved_subtitle),
             color = PanicColors.textOnLightSecondary,
             fontSize = 16.sp
         )
@@ -585,7 +588,7 @@ private fun ErrorContent(message: String) {
             tint = PanicColors.warningStrong
         )
         Text(
-            text = "No se pudo enviar la alerta",
+            text = stringResource(R.string.panic_error_title),
             color = PanicColors.textOnLight,
             fontSize = 22.sp,
             fontWeight = FontWeight.Bold,
@@ -598,7 +601,7 @@ private fun ErrorContent(message: String) {
             textAlign = TextAlign.Center
         )
         Text(
-            text = "⚠️ Llama directamente al\n123 o a un familiar",
+            text = stringResource(R.string.panic_call_directly),
             color = PanicColors.warningStrong,
             fontSize = 18.sp,
             fontWeight = FontWeight.Medium,
