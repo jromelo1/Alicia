@@ -739,13 +739,15 @@ export const deleteMyData = onRequest(
           const headers = { Authorization: `Bearer ${RETELL_API_KEY.value()}`, "Content-Type": "application/json" };
           const found = await fetch("https://api.retellai.com/list-contacts", {
             method: "POST", headers,
-            body: JSON.stringify({ filter_criteria: { phone_number: { eq: phone } }, limit: 50 }),
+            body: JSON.stringify({ filter_criteria: { phone_number: { type: "string", op: "eq", value: phone } }, limit: 50 }),
           });
           if (!found.ok) {
             logger.warn(`deleteMyData: Retell respondió ${found.status} al buscar el contacto`);
           } else {
-            const { items = [] } = (await found.json()) as { items?: { contact_id: string }[] };
-            for (const item of items) {
+            const { items = [] } = (await found.json()) as { items?: { contact_id: string; phone_number?: string }[] };
+            // Protección: solo se borra un contacto cuyo número sea exactamente este,
+            // aunque Retell devolviera otros por un filtro mal interpretado.
+            for (const item of items.filter((i) => i.phone_number === phone)) {
               const r = await fetch(`https://api.retellai.com/delete-contact/${encodeURIComponent(item.contact_id)}`, {
                 method: "DELETE", headers: { Authorization: `Bearer ${RETELL_API_KEY.value()}` },
               });
