@@ -357,7 +357,7 @@
     <string name="member_save_changes_button">Guardar cambios</string>
 
     <!-- Llamada diaria -->
-    <string name="call_title">📞 Llamada diaria</string>
+    <string name="call_title">📞 Llamadas de Alicia</string>
     <string name="call_subtitle">Alicia llama todos los días a tu familiar, a la hora que elijas, para conversar un rato — y aquí queda el registro de lo que hablaron</string>
     <string name="call_enabled_label">Llamada activada</string>
     <string name="call_will_ring_at">Sonará a las %1$s</string>

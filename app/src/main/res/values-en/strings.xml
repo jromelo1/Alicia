@@ -357,7 +357,7 @@
     <string name="member_save_changes_button">Save changes</string>
 
     <!-- Daily call -->
-    <string name="call_title">📞 Daily call</string>
+    <string name="call_title">📞 Alicia\'s calls</string>
     <string name="call_subtitle">Alicia calls your relative every day at the time you choose, for a short chat — and a record of what they talked about is kept here</string>
     <string name="call_enabled_label">Call turned on</string>
     <string name="call_will_ring_at">It\'ll ring at %1$s</string>

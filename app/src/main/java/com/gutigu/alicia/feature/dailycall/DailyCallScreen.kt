@@ -106,6 +106,9 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
 
     val history by viewModel.history.collectAsState()
     var openedCall by remember { mutableStateOf<CallRecord?>(null) }
+    // Quien ya activó las llamadas ve primero el historial; el formulario queda plegado.
+    // Quien aún no las activa lo ve abierto, porque es lo que viene a completar.
+    var showSettings by remember { mutableStateOf(!profile.callEnabled) }
 
     var fullName by remember { mutableStateOf("") }
     var treatment by remember { mutableStateOf("") }
@@ -227,89 +230,6 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
         }
 
         item {
-            Text(stringResource(R.string.call_data_section_title), color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(10.dp))
-        }
-
-        item {
-            FormField(stringResource(R.string.call_full_name_label), fullName, { fullName = it }, stringResource(R.string.call_full_name_placeholder), capitalizeWords = true)
-            FormField(stringResource(R.string.call_nickname_label), treatment, { treatment = it }, stringResource(R.string.call_nickname_placeholder), capitalizeWords = true)
-
-            Text(stringResource(R.string.call_formality_label), color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 10.dp, bottom = 6.dp))
-            TwoChoiceChips(
-                optionALabel = stringResource(R.string.call_formality_formal), optionASelected = !useTu, onSelectA = { useTu = false },
-                optionBLabel = stringResource(R.string.call_formality_informal), optionBSelected = useTu, onSelectB = { useTu = true }
-            )
-
-            Text(stringResource(R.string.call_language_label), color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 14.dp, bottom = 6.dp))
-            TwoChoiceChips(
-                optionALabel = stringResource(R.string.language_spanish), optionASelected = language == "es", onSelectA = { language = "es" },
-                optionBLabel = stringResource(R.string.language_english), optionBSelected = language == "en", onSelectB = { language = "en" }
-            )
-
-            FormField(stringResource(R.string.call_origin_country_label), originCountry, { originCountry = it }, stringResource(R.string.call_origin_country_placeholder), capitalizeWords = true)
-            FormField(stringResource(R.string.call_interests_label), interests, { interests = it }, stringResource(R.string.call_interests_placeholder), minLines = 2)
-            FormField(stringResource(R.string.call_family_label), familyInfo, { familyInfo = it }, stringResource(R.string.call_family_placeholder), minLines = 2)
-        }
-
-        item {
-            Text(stringResource(R.string.call_phone_label), color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 8.dp))
-            Spacer(modifier = Modifier.height(8.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                CountryCodeField(selected = country, onSelect = { country = it })
-                OutlinedTextField(
-                    value = localPhone,
-                    onValueChange = { localPhone = it },
-                    placeholder = { Text(stringResource(R.string.call_phone_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    colors = fieldColors(),
-                    modifier = Modifier.weight(1f),
-                    textStyle = androidx.compose.ui.text.TextStyle(color = TextPrimary, fontSize = 18.sp)
-                )
-            }
-            Spacer(modifier = Modifier.height(14.dp))
-        }
-
-        item {
-            FormField(stringResource(R.string.call_emergency_name_label), emergencyName, { emergencyName = it }, stringResource(R.string.call_emergency_name_placeholder), capitalizeWords = true)
-            FormField(stringResource(R.string.call_emergency_phone_label), emergencyPhone, { emergencyPhone = it }, stringResource(R.string.call_emergency_phone_placeholder), keyboardType = KeyboardType.Phone)
-        }
-
-        item {
-            Text(stringResource(R.string.call_preferred_time_label), color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 8.dp))
-            Spacer(modifier = Modifier.height(8.dp))
-            TimeAdjuster(hour = hour, minute = minute, enabled = true, onAdjust = { deltaMinutes ->
-                val total = hour * 60 + minute + deltaMinutes
-                val norm = ((total % 1440) + 1440) % 1440
-                hour = norm / 60; minute = norm % 60
-            })
-            Spacer(modifier = Modifier.height(20.dp))
-        }
-
-        item {
-            ConsentSection(
-                checked = consentChecked,
-                acceptedAt = profile.consentAcceptedAt,
-                onCheckedChange = { consentChecked = it }
-            )
-            Spacer(modifier = Modifier.height(20.dp))
-        }
-
-        item {
-            Button(
-                onClick = { viewModel.saveProfile(buildProfile(profile.callEnabled), consentChecked) },
-                enabled = fullName.isNotBlank(),
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = AccentGreen)
-            ) {
-                Text(stringResource(R.string.action_save), color = AliciaOnAccent, fontSize = 17.sp, fontWeight = FontWeight.Bold)
-            }
-            Spacer(modifier = Modifier.height(28.dp))
-        }
-
-        item {
             Text(stringResource(R.string.call_history_title), color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(10.dp))
             if (history.isEmpty()) {
@@ -326,6 +246,106 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
             Box(modifier = Modifier.padding(bottom = 10.dp)) {
                 CallHistoryCard(call, onClick = { openedCall = call })
             }
+        }
+
+        item {
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showSettings = !showSettings }
+                    .padding(vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    stringResource(R.string.call_data_section_title),
+                    color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(if (showSettings) "▴" else "▾", color = TextSecondary, fontSize = 20.sp)
+            }
+            Spacer(modifier = Modifier.height(6.dp))
+        }
+
+        if (showSettings) {
+            item {
+                FormField(stringResource(R.string.call_full_name_label), fullName, { fullName = it }, stringResource(R.string.call_full_name_placeholder), capitalizeWords = true)
+                FormField(stringResource(R.string.call_nickname_label), treatment, { treatment = it }, stringResource(R.string.call_nickname_placeholder), capitalizeWords = true)
+
+                Text(stringResource(R.string.call_formality_label), color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 10.dp, bottom = 6.dp))
+                TwoChoiceChips(
+                    optionALabel = stringResource(R.string.call_formality_formal), optionASelected = !useTu, onSelectA = { useTu = false },
+                    optionBLabel = stringResource(R.string.call_formality_informal), optionBSelected = useTu, onSelectB = { useTu = true }
+                )
+
+                Text(stringResource(R.string.call_language_label), color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 14.dp, bottom = 6.dp))
+                TwoChoiceChips(
+                    optionALabel = stringResource(R.string.language_spanish), optionASelected = language == "es", onSelectA = { language = "es" },
+                    optionBLabel = stringResource(R.string.language_english), optionBSelected = language == "en", onSelectB = { language = "en" }
+                )
+
+                FormField(stringResource(R.string.call_origin_country_label), originCountry, { originCountry = it }, stringResource(R.string.call_origin_country_placeholder), capitalizeWords = true)
+                FormField(stringResource(R.string.call_interests_label), interests, { interests = it }, stringResource(R.string.call_interests_placeholder), minLines = 2)
+                FormField(stringResource(R.string.call_family_label), familyInfo, { familyInfo = it }, stringResource(R.string.call_family_placeholder), minLines = 2)
+            }
+
+            item {
+                Text(stringResource(R.string.call_phone_label), color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    CountryCodeField(selected = country, onSelect = { country = it })
+                    OutlinedTextField(
+                        value = localPhone,
+                        onValueChange = { localPhone = it },
+                        placeholder = { Text(stringResource(R.string.call_phone_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        colors = fieldColors(),
+                        modifier = Modifier.weight(1f),
+                        textStyle = androidx.compose.ui.text.TextStyle(color = TextPrimary, fontSize = 18.sp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(14.dp))
+            }
+
+            item {
+                FormField(stringResource(R.string.call_emergency_name_label), emergencyName, { emergencyName = it }, stringResource(R.string.call_emergency_name_placeholder), capitalizeWords = true)
+                FormField(stringResource(R.string.call_emergency_phone_label), emergencyPhone, { emergencyPhone = it }, stringResource(R.string.call_emergency_phone_placeholder), keyboardType = KeyboardType.Phone)
+            }
+
+            item {
+                Text(stringResource(R.string.call_preferred_time_label), color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                TimeAdjuster(hour = hour, minute = minute, enabled = true, onAdjust = { deltaMinutes ->
+                    val total = hour * 60 + minute + deltaMinutes
+                    val norm = ((total % 1440) + 1440) % 1440
+                    hour = norm / 60; minute = norm % 60
+                })
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
+            item {
+                ConsentSection(
+                    checked = consentChecked,
+                    acceptedAt = profile.consentAcceptedAt,
+                    onCheckedChange = { consentChecked = it }
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
+            item {
+                Button(
+                    onClick = { viewModel.saveProfile(buildProfile(profile.callEnabled), consentChecked) },
+                    enabled = fullName.isNotBlank(),
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = AccentGreen)
+                ) {
+                    Text(stringResource(R.string.action_save), color = AliciaOnAccent, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                }
+                Spacer(modifier = Modifier.height(28.dp))
+            }
+
         }
 
         item { Spacer(modifier = Modifier.height(40.dp)) }
