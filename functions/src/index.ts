@@ -82,6 +82,9 @@ const RETELL_VOICES = defineString("RETELL_VOICES", { default: "" });
 const RETELL_CREATE_CALL_URL = "https://api.retellai.com/v2/create-phone-call";
 // La ventana debe ser igual al intervalo del scheduler — si se cambia uno, cambiar el otro.
 const RUN_WINDOW_MINUTES = 15;
+// Una llamada más corta que esto (p. ej. contestan y cuelgan a los 7 s) no es una
+// conversación: su resumen no debe reemplazar las notas de la última conversación real.
+const MIN_CONVERSATION_SECONDS = 30;
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Tipos mínimos — solo lo que esta función realmente usa de cada API.
@@ -333,10 +336,13 @@ export const retellWebhook = onRequest(
         { merge: true }
       );
 
-      // Solo una llamada completada con resumen reemplaza las notas: si no contestó,
-      // se conservan las de la última conversación real para que la próxima tenga contexto.
+      // Solo una llamada completada, con resumen y de al menos MIN_CONVERSATION_SECONDS
+      // reemplaza las notas: si no contestó o colgó enseguida, se conservan las de la
+      // última conversación real para que la próxima tenga contexto.
       const profileUpdate: Record<string, unknown> = { lastCallAt: endedAt };
-      if (status === "COMPLETED" && summary.trim()) profileUpdate.lastCallNotes = summary;
+      if (status === "COMPLETED" && durationSeconds >= MIN_CONVERSATION_SECONDS && summary.trim()) {
+        profileUpdate.lastCallNotes = summary;
+      }
       if (optOut) {
         // La persona pidió no volver a recibir llamadas: se pausan hasta que alguien las reactive en Mi cuenta.
         profileUpdate.callEnabled = false;
