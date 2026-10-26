@@ -21,6 +21,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -31,12 +32,18 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.CameraPosition
 import com.google.android.gms.maps.model.LatLng
 import com.google.maps.android.compose.*
+import com.gutigu.alicia.R
 import com.gutigu.alicia.ui.theme.AliciaAccent
 import com.gutigu.alicia.ui.theme.AliciaBackground
 import com.gutigu.alicia.ui.theme.AliciaFormAlert
 import com.gutigu.alicia.ui.theme.AliciaSurface
 import com.gutigu.alicia.ui.theme.AliciaText
 import com.gutigu.alicia.ui.theme.AliciaTextSecondary
+import com.gutigu.alicia.ui.theme.AliciaOnAccent
+import com.gutigu.alicia.ui.theme.AliciaAlert
+import com.gutigu.alicia.ui.theme.AliciaWarning
+import com.gutigu.alicia.ui.theme.AliciaWarningSoft
+import com.gutigu.alicia.ui.theme.AliciaWarningStrong
 
 // ─── Paleta, centralizada en ui/theme/Color.kt ──────────────────────────────────
 private val NavyDark      = AliciaBackground   // fondo de pantalla
@@ -81,7 +88,7 @@ fun SafeZonesScreen(
 
             is SafeZoneUiState.Error -> {
                 Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(state.message, color = Color(0xFFFF6B6B), fontSize = 16.sp,
+                    Text(state.message, color = AliciaAlert, fontSize = 16.sp,
                         textAlign = TextAlign.Center, modifier = Modifier.padding(24.dp))
                 }
             }
@@ -170,7 +177,7 @@ private fun MapContent(
             currentLatLng?.let { pos ->
                 Marker(
                     state = rememberMarkerState(position = pos),
-                    title = "Tu ubicación",
+                    title = stringResource(R.string.safezone_your_location),
                     icon = BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN)
                 )
             }
@@ -190,7 +197,11 @@ private fun MapContent(
                 Marker(
                     state = rememberMarkerState(position = zoneLatLng),
                     title = zone.name,
-                    snippet = "Radio: ${zone.radiusMeters.toInt()} m · ${if (zone.isActive) "Activa" else "Inactiva"}",
+                    snippet = stringResource(
+                        R.string.safezone_marker_snippet,
+                        zone.radiusMeters.toInt(),
+                        if (zone.isActive) stringResource(R.string.safezone_active) else stringResource(R.string.safezone_inactive)
+                    ),
                     icon = BitmapDescriptorFactory.defaultMarker(
                         if (zone.isActive) BitmapDescriptorFactory.HUE_CYAN
                         else BitmapDescriptorFactory.HUE_YELLOW
@@ -235,7 +246,7 @@ private fun MapContent(
                 tonalElevation = 4.dp
             ) {
                 Text(
-                    text = "Zonas Seguras",
+                    text = stringResource(R.string.safezone_title),
                     color = TextPrimary,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
@@ -273,7 +284,7 @@ private fun MapContent(
                 containerColor = NavyMedium,
                 contentColor   = AccentGreen
             ) {
-                Icon(Icons.Default.MyLocation, contentDescription = "Mi ubicación")
+                Icon(Icons.Default.MyLocation, contentDescription = stringResource(R.string.safezone_my_location_desc))
             }
 
             // Mostrar / ocultar lista de zonas
@@ -284,7 +295,7 @@ private fun MapContent(
             ) {
                 Icon(
                     imageVector = if (showZoneList) Icons.Default.ExpandMore else Icons.Default.ExpandLess,
-                    contentDescription = "Lista de zonas"
+                    contentDescription = stringResource(R.string.safezone_zone_list_desc)
                 )
             }
 
@@ -292,10 +303,10 @@ private fun MapContent(
             FloatingActionButton(
                 onClick        = onAddZone,
                 containerColor = AccentGreen,
-                contentColor   = TextPrimary,
+                contentColor = AliciaOnAccent,
                 modifier       = Modifier.size(60.dp)
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Agregar zona", modifier = Modifier.size(28.dp))
+                Icon(Icons.Default.Add, contentDescription = stringResource(R.string.safezone_add_zone_desc), modifier = Modifier.size(28.dp))
             }
         }
     }
@@ -336,14 +347,14 @@ private fun ZoneListPanel(
                 )
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(
-                    text = "Zonas Seguras (${zones.size})",
+                    text = stringResource(R.string.safezone_title_with_count, zones.size),
                     color = TextPrimary,
                     fontSize = 18.sp,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.weight(1f)
                 )
                 IconButton(onClick = onCollapse) {
-                    Icon(Icons.Default.ExpandMore, contentDescription = "Colapsar",
+                    Icon(Icons.Default.ExpandMore, contentDescription = stringResource(R.string.safezone_collapse_desc),
                         tint = TextSecondary)
                 }
             }
@@ -358,7 +369,7 @@ private fun ZoneListPanel(
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = "Toca + para agregar tu primera zona",
+                        text = stringResource(R.string.safezone_empty_hint),
                         color = TextSecondary,
                         fontSize = 15.sp,
                         textAlign = TextAlign.Center
@@ -428,7 +439,7 @@ private fun ZoneRow(
         )
 
         IconButton(onClick = { showConfirm = true }) {
-            Icon(Icons.Default.Delete, contentDescription = "Eliminar",
+            Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.safezone_delete_desc),
                 tint = AccentRed.copy(alpha = 0.8f), modifier = Modifier.size(20.dp))
         }
     }
@@ -436,18 +447,18 @@ private fun ZoneRow(
     if (showConfirm) {
         AlertDialog(
             onDismissRequest = { showConfirm = false },
-            title   = { Text("¿Eliminar zona?", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
-            text    = { Text("Se eliminará \"${zone.name}\" del mapa.", fontSize = 16.sp) },
+            title   = { Text(stringResource(R.string.safezone_delete_dialog_title), fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+            text    = { Text(stringResource(R.string.safezone_delete_dialog_text, zone.name), fontSize = 16.sp) },
             confirmButton = {
                 Button(
                     onClick = { onDelete(zone.id); showConfirm = false },
                     colors  = ButtonDefaults.buttonColors(containerColor = AccentRed),
                     modifier = Modifier.height(48.dp)
-                ) { Text("Eliminar", fontSize = 16.sp) }
+                ) { Text(stringResource(R.string.action_delete), fontSize = 16.sp) }
             },
             dismissButton = {
                 TextButton(onClick = { showConfirm = false }) {
-                    Text("Cancelar", fontSize = 16.sp)
+                    Text(stringResource(R.string.action_cancel), fontSize = 16.sp)
                 }
             },
             containerColor = NavyMedium,
@@ -466,9 +477,9 @@ private fun PermissionBanner(
     onRequestBg: () -> Unit
 ) {
     val (msg, label, action) = if (!hasFine) {
-        Triple("Activa la ubicación para ver el mapa", "Activar", onRequestFine)
+        Triple(stringResource(R.string.safezone_perm_enable_location), stringResource(R.string.safezone_activate_button), onRequestFine)
     } else {
-        Triple("Activa 'Siempre' en ubicación para alertas en segundo plano", "Activar", onRequestBg)
+        Triple(stringResource(R.string.safezone_perm_enable_background), stringResource(R.string.safezone_activate_button), onRequestBg)
     }
 
     Surface(
@@ -476,7 +487,7 @@ private fun PermissionBanner(
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 8.dp),
         shape          = RoundedCornerShape(12.dp),
-        color          = Color(0xFFFCE9D2),
+        color          = AliciaWarningSoft,
         tonalElevation = 4.dp
     ) {
         Row(
@@ -485,11 +496,11 @@ private fun PermissionBanner(
                 .padding(horizontal = 14.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(msg, color = Color(0xFF8A5A0F), fontSize = 13.sp, modifier = Modifier.weight(1f))
+            Text(msg, color = AliciaWarningStrong, fontSize = 13.sp, modifier = Modifier.weight(1f))
             Spacer(modifier = Modifier.width(8.dp))
             Button(
                 onClick = action,
-                colors  = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF8C00)),
+                colors  = ButtonDefaults.buttonColors(containerColor = AliciaWarning),
                 modifier = Modifier.height(38.dp)
             ) { Text(label, color = Color.White, fontSize = 13.sp) }
         }
@@ -505,7 +516,7 @@ private fun GuardianWarningBanner() {
             .fillMaxWidth()
             .padding(horizontal = 12.dp, vertical = 8.dp),
         shape          = RoundedCornerShape(12.dp),
-        color          = Color(0xFFFCE9D2),
+        color          = AliciaWarningSoft,
         tonalElevation = 4.dp
     ) {
         Row(
@@ -514,11 +525,11 @@ private fun GuardianWarningBanner() {
                 .padding(horizontal = 14.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Icon(Icons.Default.Warning, contentDescription = null, tint = Color(0xFF8A5A0F), modifier = Modifier.size(18.dp))
+            Icon(Icons.Default.Warning, contentDescription = null, tint = AliciaWarningStrong, modifier = Modifier.size(18.dp))
             Spacer(modifier = Modifier.width(8.dp))
             Text(
-                "Todavía no hay ningún guardián en tu círculo. Si sales de una zona segura, no habrá nadie a quien avisar.",
-                color = Color(0xFF8A5A0F),
+                stringResource(R.string.safezone_no_guardians_warning),
+                color = AliciaWarningStrong,
                 fontSize = 13.sp
             )
         }
@@ -537,25 +548,25 @@ private fun AddZoneDialog(
 
     AlertDialog(
         onDismissRequest = onDismiss,
-        title = { Text("Nueva Zona Segura", fontWeight = FontWeight.Bold, fontSize = 20.sp) },
+        title = { Text(stringResource(R.string.safezone_add_dialog_title), fontWeight = FontWeight.Bold, fontSize = 20.sp) },
         text  = {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
                 OutlinedTextField(
                     value = name, onValueChange = { name = it },
-                    label = { Text("Nombre") },
-                    placeholder = { Text("Ej: Casa, Parque, Panadería") },
+                    label = { Text(stringResource(R.string.safezone_name_label)) },
+                    placeholder = { Text(stringResource(R.string.safezone_name_placeholder)) },
                     singleLine = true, modifier = Modifier.fillMaxWidth(),
                     colors = fieldColors()
                 )
                 OutlinedTextField(
                     value = radiusText,
                     onValueChange = { radiusText = it.filter { c -> c.isDigit() } },
-                    label = { Text("Radio en metros") },
+                    label = { Text(stringResource(R.string.safezone_radius_label)) },
                     singleLine = true, modifier = Modifier.fillMaxWidth(),
                     colors = fieldColors()
                 )
                 Text(
-                    "Se centrará en tu ubicación actual.",
+                    stringResource(R.string.safezone_centered_hint),
                     color = TextSecondary, fontSize = 13.sp
                 )
             }
@@ -570,10 +581,10 @@ private fun AddZoneDialog(
                 enabled = name.isNotBlank(),
                 colors  = ButtonDefaults.buttonColors(containerColor = AccentGreen),
                 modifier = Modifier.height(48.dp)
-            ) { Text("Agregar", fontSize = 16.sp, color = TextPrimary, fontWeight = FontWeight.Bold) }
+            ) { Text(stringResource(R.string.safezone_add_button), fontSize = 16.sp, color = AliciaOnAccent, fontWeight = FontWeight.Bold) }
         },
         dismissButton = {
-            TextButton(onClick = onDismiss) { Text("Cancelar", fontSize = 16.sp) }
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel), fontSize = 16.sp) }
         },
         containerColor = NavyMedium,
         titleContentColor = TextPrimary,

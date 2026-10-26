@@ -1,7 +1,15 @@
 package com.gutigu.alicia.feature.dailycall
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.widthIn
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.ui.draw.clip
+import com.gutigu.alicia.ui.theme.AliciaAccentMuted
+import com.gutigu.alicia.ui.theme.AliciaAccentSoft
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -26,6 +34,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.CheckboxDefaults
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -41,12 +50,14 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.gutigu.alicia.R
 import com.gutigu.alicia.feature.checkin.TimeAdjuster
 import com.gutigu.alicia.feature.circle.CountryCodeField
 import com.gutigu.alicia.feature.circle.CountryCodes
@@ -60,6 +71,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 import java.util.TimeZone
+import com.gutigu.alicia.ui.theme.AliciaOnAccent
 
 private val NavyDark      = AliciaBackground
 private val NavyMedium    = AliciaSurfaceAlt
@@ -70,16 +82,38 @@ private val TextSecondary = AliciaTextSecondary
 
 /**
  * Perfil + activación de la llamada diaria de Alicia (agente de voz vía Retell).
- * La rellena quien tenga los datos a mano — Adulto Mayor o Familiar, ambos ven
- * y editan lo mismo, sincronizado por Firestore.
+ * Es una pantalla del perfil Familiar (Guardián y Miembro): la familia configura la
+ * llamada y aquí queda el registro de lo que Alicia habló con el adulto mayor. El
+ * adulto mayor no ve esta pantalla — solo contesta el teléfono.
  */
 @Composable
 fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
-    val profile by viewModel.profile.collectAsState()
+    val profileOrNull by viewModel.profile.collectAsState()
+
+    // Mientras profileOrNull sea null (aún no llegó el primer valor real de
+    // Firestore), no se dibuja el formulario — así nunca se rellena con datos
+    // vacíos que luego "se quedan pegados" cuando sí llega la data real.
+    if (profileOrNull == null) {
+        Box(
+            modifier = Modifier.fillMaxSize().background(NavyDark),
+            contentAlignment = Alignment.Center
+        ) {
+            CircularProgressIndicator(color = AccentGreen)
+        }
+        return
+    }
+    val profile = profileOrNull!!
+
     val history by viewModel.history.collectAsState()
+    var openedCall by remember { mutableStateOf<CallRecord?>(null) }
+    // Quien ya activó las llamadas ve primero el historial; el formulario queda plegado.
+    // Quien aún no las activa lo ve abierto, porque es lo que viene a completar.
+    var showSettings by remember { mutableStateOf(!profile.callEnabled) }
 
     var fullName by remember { mutableStateOf("") }
     var treatment by remember { mutableStateOf("") }
+    var useTu by remember { mutableStateOf(false) }
+    var language by remember { mutableStateOf("es") }
     var originCountry by remember { mutableStateOf("") }
     var interests by remember { mutableStateOf("") }
     var familyInfo by remember { mutableStateOf("") }
@@ -98,6 +132,8 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
         if (!loadedOnce) {
             fullName = profile.fullName
             treatment = profile.treatment
+            useTu = profile.useTu
+            language = profile.language
             originCountry = profile.originCountry
             interests = profile.interests
             familyInfo = profile.familyInfo
@@ -116,6 +152,8 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
     fun buildProfile(enabled: Boolean) = CallProfile(
         fullName = fullName.trim(),
         treatment = treatment.trim(),
+        useTu = useTu,
+        language = language,
         originCountry = originCountry.trim(),
         interests = interests.trim(),
         familyInfo = familyInfo.trim(),
@@ -127,6 +165,8 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
         timeZoneId = TimeZone.getDefault().id,
         callEnabled = enabled,
         consentAcceptedAt = profile.consentAcceptedAt,
+        registeredBy = profile.registeredBy,
+        profileStatus = profile.profileStatus,
         lastCallNotes = profile.lastCallNotes,
         lastCallAt = profile.lastCallAt
     )
@@ -142,9 +182,9 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
         item { Spacer(modifier = Modifier.height(24.dp)) }
 
         item {
-            Text("📞 Llamada diaria", color = TextPrimary, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.call_title), color = TextPrimary, fontSize = 28.sp, fontWeight = FontWeight.Bold)
             Text(
-                "Alicia llama todos los días a la hora que elijas, para conversar un rato",
+                stringResource(R.string.call_subtitle),
                 color = TextSecondary,
                 fontSize = 15.sp,
                 modifier = Modifier.padding(top = 4.dp, bottom = 20.dp)
@@ -162,11 +202,11 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column(modifier = Modifier.weight(1f)) {
-                        Text("Llamada activada", color = TextPrimary, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
+                        Text(stringResource(R.string.call_enabled_label), color = TextPrimary, fontSize = 17.sp, fontWeight = FontWeight.SemiBold)
                         Text(
-                            if (profile.callEnabled) "Sonará a las %02d:%02d".format(profile.preferredHour, profile.preferredMinute)
-                            else if (!canEnable) "Completa el nombre, el teléfono y el consentimiento para activarla"
-                            else "Guarda para activarla",
+                            if (profile.callEnabled) stringResource(R.string.call_will_ring_at, "%02d:%02d".format(profile.preferredHour, profile.preferredMinute))
+                            else if (!canEnable) stringResource(R.string.call_incomplete_hint)
+                            else stringResource(R.string.call_save_to_enable_hint),
                             color = TextSecondary,
                             fontSize = 13.sp
                         )
@@ -179,85 +219,22 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(20.dp))
-        }
-
-        item {
-            Text("Datos para la llamada", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
-            Spacer(modifier = Modifier.height(10.dp))
-        }
-
-        item {
-            FormField("Nombre completo", fullName, { fullName = it }, "Ej. Rosa Elena Gómez", capitalizeWords = true)
-            FormField("¿Cómo le gusta que le llamen?", treatment, { treatment = it }, "Ej. Doña Rosa", capitalizeWords = true)
-            FormField("País de origen", originCountry, { originCountry = it }, "Ej. Colombia", capitalizeWords = true)
-            FormField("Gustos y temas de conversación", interests, { interests = it }, "Ej. le encanta hablar de sus nietos, jardinería y telenovelas", minLines = 2)
-            FormField("Familia", familyInfo, { familyInfo = it }, "Ej. su hija se llama Marta, su nieto es Andrés", minLines = 2)
-        }
-
-        item {
-            Text("Teléfono al que se llama", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 8.dp))
             Spacer(modifier = Modifier.height(8.dp))
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                CountryCodeField(selected = country, onSelect = { country = it })
-                OutlinedTextField(
-                    value = localPhone,
-                    onValueChange = { localPhone = it },
-                    placeholder = { Text("3001234567", color = TextSecondary.copy(alpha = 0.5f)) },
-                    singleLine = true,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                    colors = fieldColors(),
-                    modifier = Modifier.weight(1f),
-                    textStyle = androidx.compose.ui.text.TextStyle(color = TextPrimary, fontSize = 18.sp)
-                )
-            }
-            Spacer(modifier = Modifier.height(14.dp))
-        }
-
-        item {
-            FormField("Nombre del contacto de emergencia", emergencyName, { emergencyName = it }, "Ej. Marta Gómez", capitalizeWords = true)
-            FormField("Teléfono de emergencia", emergencyPhone, { emergencyPhone = it }, "Solo para casos graves durante la llamada", keyboardType = KeyboardType.Phone)
-        }
-
-        item {
-            Text("Hora preferida de la llamada", color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 8.dp))
-            Spacer(modifier = Modifier.height(8.dp))
-            TimeAdjuster(hour = hour, minute = minute, enabled = true, onAdjust = { deltaMinutes ->
-                val total = hour * 60 + minute + deltaMinutes
-                val norm = ((total % 1440) + 1440) % 1440
-                hour = norm / 60; minute = norm % 60
-            })
-            Spacer(modifier = Modifier.height(20.dp))
-        }
-
-        item {
-            ConsentSection(
-                checked = consentChecked,
-                acceptedAt = profile.consentAcceptedAt,
-                onCheckedChange = { consentChecked = it }
+            Text(
+                stringResource(R.string.call_status_prefix, profileStatusLabel(profile.profileStatus)),
+                color = TextSecondary,
+                fontSize = 12.sp,
+                modifier = Modifier.padding(start = 4.dp)
             )
             Spacer(modifier = Modifier.height(20.dp))
         }
 
         item {
-            Button(
-                onClick = { viewModel.saveProfile(buildProfile(profile.callEnabled), consentChecked) },
-                enabled = fullName.isNotBlank(),
-                modifier = Modifier.fillMaxWidth().height(56.dp),
-                shape = RoundedCornerShape(14.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = AccentGreen)
-            ) {
-                Text("Guardar", color = TextPrimary, fontSize = 17.sp, fontWeight = FontWeight.Bold)
-            }
-            Spacer(modifier = Modifier.height(28.dp))
-        }
-
-        item {
-            Text("Llamadas recientes", color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.call_history_title), color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(10.dp))
             if (history.isEmpty()) {
                 Text(
-                    "Todavía no ha habido ninguna llamada.",
+                    stringResource(R.string.call_history_empty),
                     color = TextSecondary,
                     fontSize = 14.sp,
                     modifier = Modifier.padding(vertical = 8.dp)
@@ -267,11 +244,121 @@ fun DailyCallScreen(viewModel: DailyCallViewModel = hiltViewModel()) {
 
         items(history, key = { it.id }) { call ->
             Box(modifier = Modifier.padding(bottom = 10.dp)) {
-                CallHistoryCard(call)
+                CallHistoryCard(call, onClick = { openedCall = call })
             }
         }
 
+        item {
+            Spacer(modifier = Modifier.height(12.dp))
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { showSettings = !showSettings }
+                    .padding(vertical = 10.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    stringResource(R.string.call_data_section_title),
+                    color = TextPrimary, fontSize = 18.sp, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.weight(1f)
+                )
+                Text(if (showSettings) "▴" else "▾", color = TextSecondary, fontSize = 20.sp)
+            }
+            Spacer(modifier = Modifier.height(6.dp))
+        }
+
+        if (showSettings) {
+            item {
+                FormField(stringResource(R.string.call_full_name_label), fullName, { fullName = it }, stringResource(R.string.call_full_name_placeholder), capitalizeWords = true)
+                FormField(stringResource(R.string.call_nickname_label), treatment, { treatment = it }, stringResource(R.string.call_nickname_placeholder), capitalizeWords = true)
+
+                Text(stringResource(R.string.call_formality_label), color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 10.dp, bottom = 6.dp))
+                TwoChoiceChips(
+                    optionALabel = stringResource(R.string.call_formality_formal), optionASelected = !useTu, onSelectA = { useTu = false },
+                    optionBLabel = stringResource(R.string.call_formality_informal), optionBSelected = useTu, onSelectB = { useTu = true }
+                )
+
+                Text(stringResource(R.string.call_language_label), color = TextPrimary, fontSize = 14.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 14.dp, bottom = 6.dp))
+                TwoChoiceChips(
+                    optionALabel = stringResource(R.string.language_spanish), optionASelected = language == "es", onSelectA = { language = "es" },
+                    optionBLabel = stringResource(R.string.language_english), optionBSelected = language == "en", onSelectB = { language = "en" }
+                )
+
+                FormField(stringResource(R.string.call_origin_country_label), originCountry, { originCountry = it }, stringResource(R.string.call_origin_country_placeholder), capitalizeWords = true)
+                FormField(stringResource(R.string.call_interests_label), interests, { interests = it }, stringResource(R.string.call_interests_placeholder), minLines = 2)
+                FormField(stringResource(R.string.call_family_label), familyInfo, { familyInfo = it }, stringResource(R.string.call_family_placeholder), minLines = 2)
+            }
+
+            item {
+                Text(stringResource(R.string.call_phone_label), color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                    CountryCodeField(selected = country, onSelect = { country = it })
+                    OutlinedTextField(
+                        value = localPhone,
+                        onValueChange = { localPhone = it },
+                        placeholder = { Text(stringResource(R.string.call_phone_placeholder), color = TextSecondary.copy(alpha = 0.5f)) },
+                        singleLine = true,
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
+                        colors = fieldColors(),
+                        modifier = Modifier.weight(1f),
+                        textStyle = androidx.compose.ui.text.TextStyle(color = TextPrimary, fontSize = 18.sp)
+                    )
+                }
+                Spacer(modifier = Modifier.height(14.dp))
+            }
+
+            item {
+                FormField(stringResource(R.string.call_emergency_name_label), emergencyName, { emergencyName = it }, stringResource(R.string.call_emergency_name_placeholder), capitalizeWords = true)
+                FormField(stringResource(R.string.call_emergency_phone_label), emergencyPhone, { emergencyPhone = it }, stringResource(R.string.call_emergency_phone_placeholder), keyboardType = KeyboardType.Phone)
+            }
+
+            item {
+                Text(stringResource(R.string.call_preferred_time_label), color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold, modifier = Modifier.padding(top = 8.dp))
+                Spacer(modifier = Modifier.height(8.dp))
+                TimeAdjuster(hour = hour, minute = minute, enabled = true, onAdjust = { deltaMinutes ->
+                    val total = hour * 60 + minute + deltaMinutes
+                    val norm = ((total % 1440) + 1440) % 1440
+                    hour = norm / 60; minute = norm % 60
+                })
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
+            item {
+                ConsentSection(
+                    checked = consentChecked,
+                    acceptedAt = profile.consentAcceptedAt,
+                    onCheckedChange = { consentChecked = it }
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+            }
+
+            item {
+                Button(
+                    onClick = { viewModel.saveProfile(buildProfile(profile.callEnabled), consentChecked) },
+                    enabled = fullName.isNotBlank(),
+                    modifier = Modifier.fillMaxWidth().height(56.dp),
+                    shape = RoundedCornerShape(14.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = AccentGreen)
+                ) {
+                    Text(stringResource(R.string.action_save), color = AliciaOnAccent, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+                }
+                Spacer(modifier = Modifier.height(28.dp))
+            }
+
+        }
+
         item { Spacer(modifier = Modifier.height(40.dp)) }
+    }
+
+    openedCall?.let { call ->
+        CallConversationSheet(
+            call = call,
+            elderName = profile.treatment
+                .ifBlank { profile.fullName.substringBefore(' ') }
+                .ifBlank { stringResource(R.string.call_speaker_elder_default) },
+            onDismiss = { openedCall = null }
+        )
     }
 }
 
@@ -302,6 +389,43 @@ private fun FormField(
     )
 }
 
+/** Traduce el valor guardado de [CallProfile.profileStatus] a un texto legible. */
+@Composable
+private fun profileStatusLabel(status: String): String = when (status) {
+    CallProfileStatus.PENDING_INTRO -> stringResource(R.string.call_status_pending_intro)
+    else -> status
+}
+
+@Composable
+private fun TwoChoiceChips(
+    optionALabel: String,
+    optionASelected: Boolean,
+    onSelectA: () -> Unit,
+    optionBLabel: String,
+    optionBSelected: Boolean,
+    onSelectB: () -> Unit
+) {
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+        ChoiceChip(optionALabel, optionASelected, onSelectA, Modifier.weight(1f))
+        ChoiceChip(optionBLabel, optionBSelected, onSelectB, Modifier.weight(1f))
+    }
+}
+
+@Composable
+private fun ChoiceChip(label: String, selected: Boolean, onClick: () -> Unit, modifier: Modifier = Modifier) {
+    Button(
+        onClick = onClick,
+        modifier = modifier.height(46.dp),
+        shape = RoundedCornerShape(24.dp),
+        colors = ButtonDefaults.buttonColors(
+            containerColor = if (selected) AccentGreen else NavyMedium,
+            contentColor = if (selected) AliciaOnAccent else TextSecondary
+        )
+    ) {
+        Text(label, fontSize = 14.sp, fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal)
+    }
+}
+
 @Composable
 private fun ConsentSection(
     checked: Boolean,
@@ -314,10 +438,10 @@ private fun ConsentSection(
         colors = CardDefaults.cardColors(containerColor = NavyMedium)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text("Consentimiento para la llamada con IA", color = TextPrimary, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.call_consent_title), color = TextPrimary, fontSize = 15.sp, fontWeight = FontWeight.Bold)
             Spacer(modifier = Modifier.height(6.dp))
             Text(
-                "Estos datos y el audio de la llamada se comparten con Retell, el servicio de voz con inteligencia artificial que hace la llamada en nombre de Alicia. Puedes desactivar la llamada diaria cuando quieras.",
+                stringResource(R.string.call_consent_body),
                 color = TextSecondary,
                 fontSize = 13.sp,
                 lineHeight = 18.sp
@@ -329,11 +453,11 @@ private fun ConsentSection(
                     onCheckedChange = onCheckedChange,
                     colors = CheckboxDefaults.colors(checkedColor = AccentGreen)
                 )
-                Text("Autorizo la llamada diaria con IA", color = TextPrimary, fontSize = 14.sp)
+                Text(stringResource(R.string.call_consent_checkbox_label), color = TextPrimary, fontSize = 14.sp)
             }
             if (acceptedAt != null) {
                 Text(
-                    "Aceptado el ${formatDate(acceptedAt)}",
+                    stringResource(R.string.call_consent_accepted_at, formatDate(acceptedAt)),
                     color = TextSecondary,
                     fontSize = 12.sp,
                     modifier = Modifier.padding(start = 40.dp)
@@ -344,16 +468,20 @@ private fun ConsentSection(
 }
 
 @Composable
-private fun CallHistoryCard(call: CallRecord) {
+private fun CallHistoryCard(call: CallRecord, onClick: () -> Unit) {
+    val hasDetail = call.transcript.isNotEmpty() || call.summary.isNotBlank()
     val (icon, tint, label) = when (call.status) {
-        CallStatus.COMPLETED -> Triple(Icons.Default.Check, AccentGreen, "Completada")
-        CallStatus.NO_ANSWER -> Triple(Icons.Default.Warning, AccentAmber, "No contestó")
-        CallStatus.IN_VOICEMAIL -> Triple(Icons.Default.Warning, AccentAmber, "Buzón de voz")
-        CallStatus.FAILED -> Triple(Icons.Default.Warning, AccentAmber, "No se pudo llamar")
-        CallStatus.UNKNOWN -> Triple(Icons.Default.Call, TextSecondary, "Registrada")
+        CallStatus.COMPLETED -> Triple(Icons.Default.Check, AccentGreen, stringResource(R.string.call_status_completed))
+        CallStatus.NO_ANSWER -> Triple(Icons.Default.Warning, AccentAmber, stringResource(R.string.call_status_no_answer))
+        CallStatus.IN_VOICEMAIL -> Triple(Icons.Default.Warning, AccentAmber, stringResource(R.string.call_status_voicemail))
+        CallStatus.FAILED -> Triple(Icons.Default.Warning, AccentAmber, stringResource(R.string.call_status_failed))
+        CallStatus.UNKNOWN -> Triple(Icons.Default.Call, TextSecondary, stringResource(R.string.call_status_unknown))
     }
     Card(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .clickable(enabled = hasDetail, onClick = onClick),
         shape = RoundedCornerShape(14.dp),
         colors = CardDefaults.cardColors(containerColor = NavyMedium)
     ) {
@@ -367,8 +495,104 @@ private fun CallHistoryCard(call: CallRecord) {
                     Text("· $label", color = tint, fontSize = 13.sp)
                 }
                 if (call.summary.isNotBlank()) {
-                    Text(call.summary, color = TextSecondary, fontSize = 13.sp, lineHeight = 18.sp, modifier = Modifier.padding(top = 4.dp))
+                    Text(call.summary, color = TextSecondary, fontSize = 13.sp, lineHeight = 18.sp, maxLines = 3, modifier = Modifier.padding(top = 4.dp))
                 }
+                if (call.transcript.isNotEmpty()) {
+                    Text(
+                        stringResource(R.string.call_view_conversation),
+                        color = AccentGreen,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.SemiBold,
+                        modifier = Modifier.padding(top = 8.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ─────────────────────────────────────────────
+//  Conversación de una llamada — lo que habló Alicia y lo que respondió el adulto mayor
+// ─────────────────────────────────────────────
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun CallConversationSheet(call: CallRecord, elderName: String, onDismiss: () -> Unit) {
+    ModalBottomSheet(
+        onDismissRequest = onDismiss,
+        sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true),
+        containerColor = NavyDark
+    ) {
+        LazyColumn(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+            verticalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            item {
+                Text(stringResource(R.string.call_conversation_title), color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                val duration = if (call.durationSeconds > 0) {
+                    " · " + stringResource(R.string.call_duration, "%d:%02d".format(call.durationSeconds / 60, call.durationSeconds % 60))
+                } else ""
+                Text(formatDateTime(call.startedAt) + duration, color = TextSecondary, fontSize = 14.sp, modifier = Modifier.padding(top = 2.dp))
+            }
+
+            if (call.summary.isNotBlank()) {
+                item {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clip(RoundedCornerShape(14.dp))
+                            .background(AliciaAccentSoft)
+                            .padding(14.dp)
+                    ) {
+                        Text(stringResource(R.string.call_conversation_summary_title), color = AccentGreen, fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                        Text(call.summary, color = TextPrimary, fontSize = 15.sp, lineHeight = 21.sp, modifier = Modifier.padding(top = 4.dp))
+                    }
+                }
+            }
+
+            if (call.transcript.isEmpty()) {
+                item {
+                    Text(
+                        stringResource(R.string.call_conversation_empty),
+                        color = TextSecondary,
+                        fontSize = 15.sp,
+                        modifier = Modifier.padding(vertical = 12.dp)
+                    )
+                }
+            } else {
+                items(call.transcript) { line -> ConversationBubble(line, elderName) }
+            }
+
+            item { Spacer(modifier = Modifier.height(32.dp)) }
+        }
+    }
+}
+
+@Composable
+private fun ConversationBubble(line: TranscriptLine, elderName: String) {
+    val isAlicia = line.speaker == CallSpeaker.ALICIA
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = if (isAlicia) Arrangement.Start else Arrangement.End
+    ) {
+        Column(
+            modifier = Modifier.widthIn(max = 320.dp),
+            horizontalAlignment = if (isAlicia) Alignment.Start else Alignment.End
+        ) {
+            Text(
+                if (isAlicia) stringResource(R.string.call_speaker_alicia) else elderName,
+                color = if (isAlicia) AccentGreen else TextSecondary,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(bottom = 2.dp, start = 4.dp, end = 4.dp)
+            )
+            Box(
+                modifier = Modifier
+                    .clip(RoundedCornerShape(16.dp))
+                    .background(if (isAlicia) NavyMedium else AliciaAccentMuted)
+                    .padding(horizontal = 14.dp, vertical = 10.dp)
+            ) {
+                Text(line.text, color = TextPrimary, fontSize = 16.sp, lineHeight = 22.sp)
             }
         }
     }

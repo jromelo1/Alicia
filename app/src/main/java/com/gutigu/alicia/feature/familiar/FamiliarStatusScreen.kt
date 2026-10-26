@@ -27,11 +27,13 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.gutigu.alicia.R
 import com.gutigu.alicia.ui.theme.AliciaAccent
-import com.gutigu.alicia.ui.theme.AliciaAccentBlue
+import com.gutigu.alicia.ui.theme.AliciaSecondary
 import com.gutigu.alicia.ui.theme.AliciaAlert
 import com.gutigu.alicia.ui.theme.AliciaBackground
 import com.gutigu.alicia.ui.theme.AliciaSurface
@@ -41,6 +43,11 @@ import com.gutigu.alicia.ui.theme.AliciaTextSecondary
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import com.gutigu.alicia.ui.theme.AliciaAccentMuted
+import com.gutigu.alicia.ui.theme.AliciaInk2
+import com.gutigu.alicia.ui.theme.AliciaSuccess
+import com.gutigu.alicia.ui.theme.AliciaWarning
+import com.gutigu.alicia.ui.theme.AliciaWarningStrong
 
 // ─── Paleta (spec v2 — claro), centralizada en ui/theme/Color.kt ────────────────
 private val NavyDark      = AliciaBackground   // fondo de pantalla
@@ -55,11 +62,14 @@ private val TextOnAlert          = Color(0xFFFFFFFF)
 private val TextOnAlertSecondary = Color(0xFFFCE0DE)
 
 // Paleta adicional para las notas
-private val PurpleFamiliar      = Color(0xFF9C27B0)
-private val PurpleFamiliarLight = Color(0xFFCE93D8)
+private val PurpleFamiliar      = AliciaAccent
+private val PurpleFamiliarLight = AliciaAccentMuted
 
 @Composable
-fun FamiliarStatusScreen(viewModel: FamiliarViewModel = hiltViewModel()) {
+fun FamiliarStatusScreen(
+    viewModel: FamiliarViewModel = hiltViewModel(),
+    onNavigateToTab: (Int) -> Unit = {}
+) {
     val state   by viewModel.dashboardState.collectAsState()
     val context = LocalContext.current
 
@@ -76,7 +86,7 @@ fun FamiliarStatusScreen(viewModel: FamiliarViewModel = hiltViewModel()) {
             AlertEmergencyScreen(state = state, context = context)
         } else {
             // ── MODO NORMAL: dashboard de paz mental ───────────────────────
-            NormalDashboard(state = state, context = context, viewModel = viewModel)
+            NormalDashboard(state = state, context = context, viewModel = viewModel, onNavigateToTab = onNavigateToTab)
         }
     }
 }
@@ -89,7 +99,8 @@ fun FamiliarStatusScreen(viewModel: FamiliarViewModel = hiltViewModel()) {
 private fun NormalDashboard(
     state: DashboardState,
     context: Context,
-    viewModel: FamiliarViewModel
+    viewModel: FamiliarViewModel,
+    onNavigateToTab: (Int) -> Unit
 ) {
     val name = state.userName.ifBlank { "tu familiar" }
     var showNoteDialog by remember { mutableStateOf(false) }
@@ -102,8 +113,8 @@ private fun NormalDashboard(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding),
-            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 24.dp),
-            verticalArrangement = Arrangement.spacedBy(20.dp)
+            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 28.dp),
+            verticalArrangement = Arrangement.spacedBy(28.dp)
         ) {
             // ── Encabezado ────────────────────────────────────────────────
             item {
@@ -125,6 +136,11 @@ private fun NormalDashboard(
             // ── 1. Hero: Indicador de estado ──────────────────────────────
             item {
                 HeroStatusSection(state = state, name = name)
+            }
+
+            // ── Accesos rápidos a las demás secciones ──────────────────────
+            item {
+                QuickAccessGrid(onNavigateToTab = onNavigateToTab)
             }
 
             // ── Próxima cita médica (solo lectura) ─────────────────────────
@@ -228,16 +244,13 @@ private fun HeroStatusSection(state: DashboardState, name: String) {
     Card(
         modifier  = Modifier.fillMaxWidth(),
         shape     = RoundedCornerShape(24.dp),
-        colors    = CardDefaults.cardColors(containerColor = heroColor.copy(alpha = 0.12f)),
-        border    = androidx.compose.foundation.BorderStroke(
-            width = 1.5.dp,
-            color = heroColor.copy(alpha = 0.35f)
-        )
+        colors    = CardDefaults.cardColors(containerColor = NavyMedium),
+        elevation = CardDefaults.cardElevation(defaultElevation = 3.dp)
     ) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(24.dp),
+                .padding(28.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(14.dp)
         ) {
@@ -297,6 +310,98 @@ private fun HeroStatusSection(state: DashboardState, name: String) {
 }
 
 // ─────────────────────────────────────────────────────────────────────────────
+//  Accesos rápidos — tarjetas de colores a las demás pestañas, inspiradas en el
+//  home de apps bancarias: simples, con categorías reconocibles por color e ícono
+//  en vez de tener que leer texto (útil para el Familiar y también más agradable
+//  que la barra de pestañas sola). No reemplaza la barra inferior, solo la ayuda.
+// ─────────────────────────────────────────────────────────────────────────────
+
+private data class QuickAccessItem(
+    val icon: ImageVector,
+    val label: String,
+    val color: Color,
+    val tabIndex: Int
+)
+
+@Composable
+private fun QuickAccessGrid(onNavigateToTab: (Int) -> Unit) {
+    val items = listOf(
+        QuickAccessItem(Icons.Default.Favorite, stringResource(R.string.tab_bienestar), AliciaAccent, tabIndex = 1),
+        QuickAccessItem(Icons.Default.Call, stringResource(R.string.tab_llamada), AliciaSecondary, tabIndex = 2),
+        QuickAccessItem(Icons.Default.LocationOn, stringResource(R.string.tab_zonas), AliciaSuccess, tabIndex = 3),
+        QuickAccessItem(Icons.Default.PhotoLibrary, stringResource(R.string.tab_recuerdos), AliciaWarningStrong, tabIndex = 4),
+        QuickAccessItem(Icons.Default.AccountCircle, stringResource(R.string.tab_circulo), AliciaWarning, tabIndex = 5)
+    )
+    val rows = items.chunked(3)
+
+    Column {
+        Text(
+            text = stringResource(R.string.quick_access_title),
+            color = TextPrimary,
+            fontSize = 18.sp,
+            fontWeight = FontWeight.Bold
+        )
+        Spacer(modifier = Modifier.height(14.dp))
+
+        rows.forEachIndexed { rowIndex, rowItems ->
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                rowItems.forEach { item ->
+                    QuickAccessTile(
+                        icon = item.icon,
+                        label = item.label,
+                        color = item.color,
+                        modifier = Modifier.weight(1f),
+                        onClick = { onNavigateToTab(item.tabIndex) }
+                    )
+                }
+                // Fila incompleta: rellena el resto del ancho para que los
+                // íconos no se estiren buscando ocupar todo el espacio.
+                repeat(3 - rowItems.size) {
+                    Spacer(modifier = Modifier.weight(1f))
+                }
+            }
+            if (rowIndex != rows.lastIndex) {
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+}
+
+@Composable
+private fun QuickAccessTile(
+    icon: ImageVector,
+    label: String,
+    color: Color,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = modifier.clickable(onClick = onClick),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        Box(
+            modifier = Modifier
+                .size(56.dp)
+                .clip(CircleShape)
+                .background(color.copy(alpha = 0.15f)),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(icon, contentDescription = label, tint = color, modifier = Modifier.size(26.dp))
+        }
+        Text(
+            label,
+            color = TextPrimary,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.Medium,
+            textAlign = TextAlign.Center,
+            maxLines = 2,
+            lineHeight = 14.sp
+        )
+    }
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
 //  Próxima cita médica — solo lectura, sin acciones (ver AppointmentRepository)
 // ─────────────────────────────────────────────────────────────────────────────
 
@@ -305,8 +410,8 @@ private fun NextAppointmentCard(appointment: com.gutigu.alicia.data.AppointmentE
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape    = RoundedCornerShape(20.dp),
-        colors   = CardDefaults.cardColors(containerColor = AliciaAccentBlue.copy(alpha = 0.10f)),
-        border   = androidx.compose.foundation.BorderStroke(1.dp, AliciaAccentBlue.copy(alpha = 0.35f))
+        colors   = CardDefaults.cardColors(containerColor = NavyMedium),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
             modifier = Modifier
@@ -319,13 +424,13 @@ private fun NextAppointmentCard(appointment: com.gutigu.alicia.data.AppointmentE
                 modifier = Modifier
                     .size(48.dp)
                     .clip(CircleShape)
-                    .background(AliciaAccentBlue.copy(alpha = 0.18f)),
+                    .background(AliciaSecondary.copy(alpha = 0.18f)),
                 contentAlignment = Alignment.Center
             ) {
                 Text("🩺", fontSize = 24.sp)
             }
             Column(modifier = Modifier.weight(1f)) {
-                Text("Próxima cita médica", color = AliciaAccentBlue, fontSize = 14.sp, fontWeight = FontWeight.Bold)
+                Text("Próxima cita médica", color = AliciaSecondary, fontSize = 14.sp, fontWeight = FontWeight.Bold)
                 val who = if (appointment.specialty.isNotBlank())
                     "${appointment.doctorName} · ${appointment.specialty}" else appointment.doctorName
                 Text(who, color = TextPrimary, fontSize = 16.sp, fontWeight = FontWeight.SemiBold)
@@ -353,9 +458,9 @@ private fun formatAppointmentDateTime(millis: Long): String {
 @Composable
 private fun TimelineItem(activity: ActivityItem) {
     val (icon, color) = when (activity.type) {
-        ActivityType.CHECK_IN    -> Icons.Default.Favorite        to Color(0xFF2ECC71)
-        ActivityType.MEDICATION  -> Icons.Default.MedicalServices to Color(0xFF3498DB)
-        ActivityType.APPOINTMENT -> Icons.Default.DateRange       to AliciaAccentBlue
+        ActivityType.CHECK_IN    -> Icons.Default.Favorite        to AliciaSuccess
+        ActivityType.MEDICATION  -> Icons.Default.MedicalServices to AliciaInk2
+        ActivityType.APPOINTMENT -> Icons.Default.DateRange       to AliciaSecondary
     }
 
     Row(
@@ -424,9 +529,9 @@ private fun EmptyTimelineState() {
 @Composable
 private fun HistoryRow(record: com.gutigu.alicia.data.CheckInHistoryEntity) {
     val (tint, label) = when (record.status) {
-        "RESPONDED" -> Color(0xFF2ECC71) to "Bien"
-        "MISSED"    -> Color(0xFFE74C3C) to "Alerta"
-        else        -> Color(0xFFF39C12) to "Pendiente"
+        "RESPONDED" -> AliciaSuccess to "Bien"
+        "MISSED"    -> AliciaAlert to "Alerta"
+        else        -> AliciaWarning to "Pendiente"
     }
     Row(
         modifier = Modifier
@@ -495,7 +600,7 @@ private fun BottomActionBar(state: DashboardState, context: Context) {
                     .fillMaxWidth()
                     .height(52.dp),
                 shape   = RoundedCornerShape(14.dp),
-                colors  = ButtonDefaults.buttonColors(containerColor = Color(0xFF27AE60)),
+                colors  = ButtonDefaults.buttonColors(containerColor = AliciaSuccess),
                 enabled = state.userPhone.isNotBlank()
             ) {
                 Icon(Icons.Default.Phone, contentDescription = null, modifier = Modifier.size(20.dp))
@@ -589,7 +694,7 @@ private fun AlertEmergencyScreen(state: DashboardState, context: Context) {
                     },
                     modifier = Modifier.fillMaxWidth().height(56.dp),
                     shape   = RoundedCornerShape(14.dp),
-                    colors  = ButtonDefaults.buttonColors(containerColor = Color(0xFF27AE60))
+                    colors  = ButtonDefaults.buttonColors(containerColor = AliciaSuccess)
                 ) {
                     Icon(Icons.Default.Phone, contentDescription = null, modifier = Modifier.size(24.dp))
                     Spacer(modifier = Modifier.width(10.dp))
@@ -668,8 +773,8 @@ private fun SendNoteToAliciaCard(onClick: () -> Unit) {
             .fillMaxWidth()
             .clickable { onClick() },
         shape     = RoundedCornerShape(20.dp),
-        colors    = CardDefaults.cardColors(containerColor = PurpleFamiliar.copy(alpha = 0.10f)),
-        border    = androidx.compose.foundation.BorderStroke(1.dp, PurpleFamiliarLight.copy(alpha = 0.35f))
+        colors    = CardDefaults.cardColors(containerColor = NavyMedium),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(
             modifier = Modifier

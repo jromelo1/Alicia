@@ -71,6 +71,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -81,6 +82,7 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
+import com.gutigu.alicia.R
 import com.gutigu.alicia.data.NoteEntity
 import com.gutigu.alicia.ui.theme.AliciaAccent
 import com.gutigu.alicia.ui.theme.AliciaBackground
@@ -92,6 +94,8 @@ import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import com.gutigu.alicia.ui.theme.AliciaOnAccent
+import com.gutigu.alicia.ui.theme.AliciaAccentDark
 
 // ── Paleta, centralizada en ui/theme/Color.kt donde coincide ────────────────────
 private val NavyDark       = AliciaBackground   // fondo de pantalla
@@ -100,8 +104,8 @@ private val TextPrimary    = AliciaText
 private val TextSecondary  = AliciaTextSecondary
 private val AccentGreen    = AliciaAccent
 private val AccentRed      = AliciaFormAlert
-private val PurpleMic      = Color(0xFF9C27B0)
-private val PurpleMicLight = Color(0xFF7A1F8A)
+private val PurpleMic      = AliciaAccent
+private val PurpleMicLight = AliciaAccentDark
 
 // ─────────────────────────────────────────────────────────────────────────────
 //  Pantalla principal
@@ -144,7 +148,7 @@ fun NotesScreen(viewModel: NotesViewModel = hiltViewModel()) {
                     .fillMaxSize()
                     .padding(horizontal = 20.dp)
             ) {
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(28.dp))
 
                 // Cabecera
                 Row(
@@ -152,19 +156,19 @@ fun NotesScreen(viewModel: NotesViewModel = hiltViewModel()) {
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
-                    Column {
-                        Text("🎤 Mis Notas", color = TextPrimary, fontSize = 28.sp, fontWeight = FontWeight.Bold)
-                        Text("Tu diario privado — no se comparte con tu familia", color = TextSecondary, fontSize = 15.sp)
+                    Column(modifier = Modifier.weight(1f).padding(end = 12.dp)) {
+                        Text(stringResource(R.string.notes_title), color = TextPrimary, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.notes_subtitle), color = TextSecondary, fontSize = 15.sp)
                     }
                     IconButton(
                         onClick = { showTextDialog = true },
                         modifier = Modifier.size(44.dp).background(NavyMedium, CircleShape)
                     ) {
-                        Icon(Icons.Default.Edit, contentDescription = "Nota manual", tint = AccentGreen, modifier = Modifier.size(20.dp))
+                        Icon(Icons.Default.Edit, contentDescription = stringResource(R.string.notes_manual_note_desc), tint = AccentGreen, modifier = Modifier.size(20.dp))
                     }
                 }
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
                 // Banner notas del familiar sin leer
                 AnimatedVisibility(visible = unreadCount > 0) {
@@ -180,8 +184,8 @@ fun NotesScreen(viewModel: NotesViewModel = hiltViewModel()) {
                             Text("💌", fontSize = 20.sp)
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                if (unreadCount == 1) "Tu familiar te dejó 1 nota nueva"
-                                else "Tu familiar te dejó $unreadCount notas nuevas",
+                                if (unreadCount == 1) stringResource(R.string.notes_unread_one)
+                                else stringResource(R.string.notes_unread_many, unreadCount),
                                 color = PurpleMicLight,
                                 fontSize = 14.sp,
                                 fontWeight = FontWeight.SemiBold
@@ -196,7 +200,7 @@ fun NotesScreen(viewModel: NotesViewModel = hiltViewModel()) {
                     EmptyNotesState(onTapMic = ::onMicTap)
                 } else {
                     LazyColumn(
-                        verticalArrangement = Arrangement.spacedBy(10.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp),
                         contentPadding = PaddingValues(bottom = 180.dp)
                     ) {
                         items(notes, key = { it.id }) { note ->
@@ -338,14 +342,14 @@ private fun MicFab(onClick: () -> Unit, modifier: Modifier = Modifier) {
             ) {
                 Icon(
                     Icons.Default.Mic,
-                    contentDescription = "Hablar",
+                    contentDescription = stringResource(R.string.notes_speak_desc),
                     tint = Color.White,
                     modifier = Modifier.size(36.dp)
                 )
             }
         }
         Spacer(modifier = Modifier.height(6.dp))
-        Text("Toca para hablar", color = PurpleMicLight, fontSize = 13.sp)
+        Text(stringResource(R.string.notes_tap_to_speak), color = PurpleMicLight, fontSize = 13.sp)
     }
 }
 
@@ -391,7 +395,7 @@ private fun LiveTranscriptionOverlay(partial: String, onStopTap: () -> Unit) {
 
             // Texto parcial en vivo
             AnimatedContent(
-                targetState = partial.ifBlank { "Te escucho…" },
+                targetState = partial.ifBlank { stringResource(R.string.notes_listening_placeholder) },
                 transitionSpec = { fadeIn(tween(150)) togetherWith fadeOut(tween(100)) },
                 label = "partial"
             ) { text ->
@@ -410,7 +414,7 @@ private fun LiveTranscriptionOverlay(partial: String, onStopTap: () -> Unit) {
             TextButton(onClick = onStopTap) {
                 Icon(Icons.Default.MicOff, contentDescription = null, tint = PurpleMicLight, modifier = Modifier.size(18.dp))
                 Spacer(modifier = Modifier.width(6.dp))
-                Text("Detener", color = PurpleMicLight, fontSize = 14.sp)
+                Text(stringResource(R.string.notes_stop_button), color = PurpleMicLight, fontSize = 14.sp)
             }
         }
     }
@@ -447,13 +451,13 @@ private fun PendingNoteConfirmPanel(
                     Spacer(modifier = Modifier.width(10.dp))
                     Column {
                         Text(
-                            pending.category.label,
+                            stringResource(pending.category.labelRes),
                             color = pending.category.color,
                             fontSize = 12.sp,
                             fontWeight = FontWeight.Bold,
                             letterSpacing = 0.5.sp
                         )
-                        Text("¿Guardo esto?", color = TextSecondary, fontSize = 12.sp)
+                        Text(stringResource(R.string.notes_save_question), color = TextSecondary, fontSize = 12.sp)
                     }
                 }
 
@@ -469,13 +473,13 @@ private fun PendingNoteConfirmPanel(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text("⏰", fontSize = 14.sp)
                         Spacer(modifier = Modifier.width(4.dp))
-                        Text("Recordatorio a las ${formatTime(ts)}", color = AccentGreen, fontSize = 13.sp)
+                        Text(stringResource(R.string.notes_reminder_at, formatTime(ts)), color = AccentGreen, fontSize = 13.sp)
                     }
                 }
 
                 Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                     TextButton(onClick = onDiscard, modifier = Modifier.weight(1f).height(48.dp)) {
-                        Text("Descartar", color = TextSecondary, fontSize = 15.sp)
+                        Text(stringResource(R.string.notes_discard_button), color = TextSecondary, fontSize = 15.sp)
                     }
                     Button(
                         onClick  = onConfirm,
@@ -483,7 +487,7 @@ private fun PendingNoteConfirmPanel(
                         shape    = RoundedCornerShape(12.dp),
                         colors   = ButtonDefaults.buttonColors(containerColor = AccentGreen)
                     ) {
-                        Text("✓  Guardar", color = TextPrimary, fontSize = 15.sp, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.notes_save_confirm_button), color = AliciaOnAccent, fontSize = 15.sp, fontWeight = FontWeight.Bold)
                     }
                 }
             }
@@ -536,7 +540,7 @@ private fun NoteCardItem(
 
             Column(modifier = Modifier.weight(1f)) {
                 if (isUnread) {
-                    Text("NUEVA", color = category.color, fontSize = 10.sp,
+                    Text(stringResource(R.string.notes_new_badge), color = category.color, fontSize = 10.sp,
                         fontWeight = FontWeight.Bold, letterSpacing = 1.sp)
                 }
                 Text(
@@ -567,7 +571,7 @@ private fun NoteCardItem(
             }
 
             IconButton(onClick = onDelete, modifier = Modifier.size(38.dp)) {
-                Icon(Icons.Default.Delete, contentDescription = "Eliminar",
+                Icon(Icons.Default.Delete, contentDescription = stringResource(R.string.notes_delete_desc),
                     tint = AccentRed.copy(alpha = 0.55f), modifier = Modifier.size(18.dp))
             }
         }
@@ -589,14 +593,14 @@ private fun EmptyNotesState(onTapMic: () -> Unit) {
     ) {
         Text("🎤", fontSize = 72.sp, textAlign = TextAlign.Center)
         Text(
-            "Habla y yo recuerdo",
+            stringResource(R.string.notes_empty_title),
             color = TextPrimary,
             fontSize = 24.sp,
             fontWeight = FontWeight.Bold,
             textAlign = TextAlign.Center
         )
         Text(
-            "Toca el micrófono y dile a Alicia\nqué quieres que recuerde por ti.\nEs privado: tu familia no lo verá.",
+            stringResource(R.string.notes_empty_subtitle),
             color = TextSecondary,
             fontSize = 16.sp,
             textAlign = TextAlign.Center,
@@ -611,7 +615,7 @@ private fun EmptyNotesState(onTapMic: () -> Unit) {
         ) {
             Icon(Icons.Default.Mic, contentDescription = null, tint = Color.White, modifier = Modifier.size(24.dp))
             Spacer(modifier = Modifier.width(8.dp))
-            Text("Hablar con Alicia", color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
+            Text(stringResource(R.string.notes_speak_with_alicia), color = Color.White, fontSize = 17.sp, fontWeight = FontWeight.Bold)
         }
     }
 }
@@ -631,10 +635,10 @@ private fun AddNoteTextDialog(onDismiss: () -> Unit, onConfirm: (String) -> Unit
                 .padding(24.dp)
         ) {
             Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Nueva nota", color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.notes_dialog_title), color = TextPrimary, fontSize = 22.sp, fontWeight = FontWeight.Bold)
                 OutlinedTextField(
                     value = text, onValueChange = { text = it },
-                    label = { Text("¿Qué quieres anotar?", color = TextSecondary) },
+                    label = { Text(stringResource(R.string.notes_dialog_label), color = TextSecondary) },
                     minLines = 3, maxLines = 6,
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                     colors = OutlinedTextFieldDefaults.colors(
@@ -647,7 +651,7 @@ private fun AddNoteTextDialog(onDismiss: () -> Unit, onConfirm: (String) -> Unit
                 )
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     TextButton(onClick = onDismiss, modifier = Modifier.weight(1f).height(50.dp)) {
-                        Text("Cancelar", color = TextSecondary)
+                        Text(stringResource(R.string.action_cancel), color = TextSecondary)
                     }
                     Button(
                         onClick  = { if (text.isNotBlank()) onConfirm(text) },
@@ -655,7 +659,7 @@ private fun AddNoteTextDialog(onDismiss: () -> Unit, onConfirm: (String) -> Unit
                         modifier = Modifier.weight(1f).height(50.dp),
                         shape    = RoundedCornerShape(12.dp),
                         colors   = ButtonDefaults.buttonColors(containerColor = AccentGreen)
-                    ) { Text("Guardar", color = TextPrimary, fontWeight = FontWeight.Bold) }
+                    ) { Text(stringResource(R.string.action_save), color = AliciaOnAccent, fontWeight = FontWeight.Bold) }
                 }
             }
         }
@@ -680,7 +684,7 @@ private fun ReminderTimeDialog(onDismiss: () -> Unit, onConfirm: (hour: Int, min
             ) {
                 Text("⏰", fontSize = 40.sp)
                 Text(
-                    "¿A qué hora te lo recuerdo?",
+                    stringResource(R.string.notes_reminder_dialog_title),
                     color = TextPrimary, fontSize = 20.sp,
                     fontWeight = FontWeight.Bold, textAlign = TextAlign.Center
                 )
@@ -695,7 +699,7 @@ private fun ReminderTimeDialog(onDismiss: () -> Unit, onConfirm: (hour: Int, min
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.size(width = 68.dp, height = 44.dp),
                         colors = ButtonDefaults.filledTonalButtonColors(containerColor = NavyDark, contentColor = AccentGreen)
-                    ) { Text("−30m", fontSize = 12.sp) }
+                    ) { Text(stringResource(R.string.time_offset_minus_30), fontSize = 12.sp) }
 
                     Text(
                         "%02d:%02d".format(hour, minute),
@@ -709,19 +713,19 @@ private fun ReminderTimeDialog(onDismiss: () -> Unit, onConfirm: (hour: Int, min
                         shape = RoundedCornerShape(10.dp),
                         modifier = Modifier.size(width = 68.dp, height = 44.dp),
                         colors = ButtonDefaults.filledTonalButtonColors(containerColor = NavyDark, contentColor = AccentGreen)
-                    ) { Text("+30m", fontSize = 12.sp) }
+                    ) { Text(stringResource(R.string.time_offset_plus_30), fontSize = 12.sp) }
                 }
 
                 Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                     TextButton(onClick = onDismiss, modifier = Modifier.weight(1f).height(50.dp)) {
-                        Text("Sin recordatorio", color = TextSecondary, fontSize = 13.sp)
+                        Text(stringResource(R.string.notes_no_reminder_button), color = TextSecondary, fontSize = 13.sp)
                     }
                     Button(
                         onClick  = { onConfirm(hour, minute) },
                         modifier = Modifier.weight(1f).height(50.dp),
                         shape    = RoundedCornerShape(12.dp),
                         colors   = ButtonDefaults.buttonColors(containerColor = AccentGreen)
-                    ) { Text("Aceptar", color = TextPrimary, fontWeight = FontWeight.Bold) }
+                    ) { Text(stringResource(R.string.action_accept), color = AliciaOnAccent, fontWeight = FontWeight.Bold) }
                 }
             }
         }

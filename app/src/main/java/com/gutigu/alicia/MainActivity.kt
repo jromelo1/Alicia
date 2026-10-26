@@ -1,10 +1,11 @@
 ﻿package com.gutigu.alicia
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.StringRes
+import androidx.appcompat.app.AppCompatActivity
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -23,6 +24,7 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material.icons.filled.PhotoLibrary
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -46,6 +48,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -69,17 +72,23 @@ import com.gutigu.alicia.feature.profile.ProfileRepository
 import com.gutigu.alicia.feature.profile.UserProfile
 import com.gutigu.alicia.feature.safezones.SafeZonesScreen
 import com.gutigu.alicia.ui.theme.AliciaAccent
-import com.gutigu.alicia.ui.theme.AliciaAccentBlue
+import com.gutigu.alicia.ui.theme.AliciaSecondary
 import com.gutigu.alicia.ui.theme.AliciaAlert
 import com.gutigu.alicia.ui.theme.AliciaBackground
-import com.gutigu.alicia.ui.theme.AliciaCircle
+import com.gutigu.alicia.ui.theme.AliciaText
+import com.gutigu.alicia.ui.theme.AliciaLine
 import com.gutigu.alicia.ui.theme.AliciaSurface
 import com.gutigu.alicia.ui.theme.AliciaTextSecondary
 import com.gutigu.alicia.ui.theme.AliciaTheme
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import com.gutigu.alicia.ui.theme.AliciaAccentDark
+import com.gutigu.alicia.ui.theme.AliciaInk2
+import com.gutigu.alicia.ui.theme.AliciaWarningStrong
 
-private data class Tab(val label: String, val icon: ImageVector, val color: Color = AliciaAccent)
+// [labelRes] en vez de texto literal — así la etiqueta se resuelve en el idioma
+// activo (ver ui/theme/AppLanguage.kt) en el punto donde de verdad se renderiza.
+private data class Tab(@StringRes val labelRes: Int, val icon: ImageVector, val color: Color = AliciaAccent)
 
 // Paleta centralizada en ui/theme/Color.kt — estos nombres locales se conservan
 // solo por legibilidad dentro de este archivo.
@@ -91,37 +100,39 @@ private val TextSecondary = AliciaTextSecondary
 // Colores por ícono — para que el Adulto Mayor identifique cada pestaña a
 // simple vista por su color, no solo por el texto (a veces cortado en
 // pantallas angostas).
-private val TabColorSos       = AliciaAlert       // rojo — reservado para emergencias reales
-private val TabColorBienestar = Color(0xFFEC407A) // rosa — bienestar/ánimo
-private val TabColorLlamada   = AliciaAccentBlue  // azul — llamada diaria
-private val TabColorRecuerdos = AliciaCircle      // morado suave — coincide con Recuerdos
-private val TabColorMedicina  = Color(0xFFE67E22) // naranja — medicamentos
-private val TabColorNotas     = Color(0xFF9C27B0) // magenta — coincide con el ícono de Notas
-private val TabColorCirculo   = AliciaAccent      // verde — círculo de confianza
+private val TabColorSos       = AliciaAlert         // rojo — reservado para emergencias reales
+private val TabColorBienestar = AliciaAccent        // terracota — bienestar (acento de marca)
+private val TabColorRecuerdos = AliciaWarningStrong   // bronce — recuerdos
+private val TabColorMedicina  = AliciaInk2   // grafito — medicamentos
+private val TabColorNotas     = AliciaAccentDark   // café — notas
+private val TabColorCirculo   = AliciaText          // tinta — círculo de confianza
 
-// Tabs para el perfil Adulto Mayor
+// Tabs para el perfil Adulto Mayor. La llamada diaria de Alicia NO está aquí a propósito:
+// la configura y la lee la familia (perfil Familiar) — el adulto mayor solo contesta el teléfono.
 private val TABS_ADULTO = listOf(
-    Tab("SOS",       Icons.Default.Warning, TabColorSos),
-    Tab("Bienestar", Icons.Default.Favorite, TabColorBienestar),
-    Tab("Llamada",   Icons.Default.Call, TabColorLlamada),
-    Tab("Recuerdos", Icons.Default.PhotoLibrary, TabColorRecuerdos),
-    Tab("Medicina",  Icons.Default.Notifications, TabColorMedicina),
-    Tab("Notas",     Icons.Default.Edit, TabColorNotas),
-    Tab("Círculo",   Icons.Default.AccountCircle, TabColorCirculo)
+    Tab(R.string.tab_sos,       Icons.Default.Warning, TabColorSos),
+    Tab(R.string.tab_bienestar, Icons.Default.Favorite, TabColorBienestar),
+    Tab(R.string.tab_recuerdos, Icons.Default.PhotoLibrary, TabColorRecuerdos),
+    Tab(R.string.tab_medicina,  Icons.Default.Notifications, TabColorMedicina),
+    Tab(R.string.tab_notas,     Icons.Default.Edit, TabColorNotas),
+    Tab(R.string.tab_circulo,   Icons.Default.AccountCircle, TabColorCirculo)
 )
 
 // Tabs para el perfil Familiar
 private val TABS_FAMILIAR = listOf(
-    Tab("Estado",    Icons.Default.Favorite),
-    Tab("Bienestar", Icons.Default.Notifications),
-    Tab("Llamada",   Icons.Default.Call),
-    Tab("Zonas",     Icons.Default.LocationOn),
-    Tab("Recuerdos", Icons.Default.PhotoLibrary),
-    Tab("Círculo",   Icons.Default.AccountCircle)
+    Tab(R.string.tab_estado,    Icons.Default.Favorite),
+    Tab(R.string.tab_bienestar, Icons.Default.Notifications),
+    Tab(R.string.tab_llamada,   Icons.Default.Call),
+    Tab(R.string.tab_zonas,     Icons.Default.LocationOn),
+    Tab(R.string.tab_recuerdos, Icons.Default.PhotoLibrary),
+    Tab(R.string.tab_circulo,   Icons.Default.AccountCircle)
 )
 
+// AppCompatActivity (no ComponentActivity) — necesaria para que
+// AppCompatDelegate.setApplicationLocales() (ver ui/theme/AppLanguage.kt) pueda
+// cambiar el idioma de toda la app y recrear la Activity automáticamente.
 @AndroidEntryPoint
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
 
     @Inject lateinit var profileRepository: ProfileRepository
     @Inject lateinit var authRepository: AuthRepository
@@ -321,7 +332,7 @@ private fun SetupScaffold(
                 modifier = Modifier.size(18.dp)
             )
             Spacer(modifier = Modifier.width(6.dp))
-            Text("Cambiar de perfil", color = TextSecondary, fontSize = 15.sp)
+            Text(stringResource(R.string.change_profile), color = TextSecondary, fontSize = 15.sp)
         }
         Box(modifier = Modifier.weight(1f)) {
             content()
@@ -369,34 +380,47 @@ private fun MainNavigation(profile: UserProfile) {
     Scaffold(
         containerColor = AppBg,
         bottomBar = {
-            NavigationBar(containerColor = AppSurface) {
-                tabs.forEachIndexed { index, tab ->
-                    NavigationBarItem(
-                        selected = selectedTab == index,
-                        onClick  = { selectedTab = index },
-                        icon = {
-                            Icon(
-                                imageVector = tab.icon,
-                                contentDescription = tab.label
+            // Tab bar translúcida estilo iOS: superficie semitransparente + línea muy
+            // sutil arriba en vez del elevation-shadow sólido de Material por defecto.
+            // Android (minSdk 26) no soporta el desenfoque real del fondo detrás de la
+            // barra sin restructurar cada pantalla para que el contenido haga scroll
+            // por debajo de ella — se aproxima el efecto con transparencia + blur del
+            // propio contenedor en vez de blur del contenido de atrás.
+            Column {
+                HorizontalDivider(color = AliciaLine.copy(alpha = 0.6f), thickness = 0.5.dp)
+                NavigationBar(
+                    containerColor = AppSurface.copy(alpha = 0.92f),
+                    tonalElevation = 0.dp
+                ) {
+                    tabs.forEachIndexed { index, tab ->
+                        val label = stringResource(tab.labelRes)
+                        NavigationBarItem(
+                            selected = selectedTab == index,
+                            onClick  = { selectedTab = index },
+                            icon = {
+                                Icon(
+                                    imageVector = tab.icon,
+                                    contentDescription = label
+                                )
+                            },
+                            label = {
+                                Text(
+                                    label,
+                                    fontSize = 10.sp,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis,
+                                    softWrap = false
+                                )
+                            },
+                            colors = NavigationBarItemDefaults.colors(
+                                selectedIconColor   = tab.color,
+                                selectedTextColor   = tab.color,
+                                indicatorColor      = tab.color.copy(alpha = 0.15f),
+                                unselectedIconColor = TextSecondary,
+                                unselectedTextColor = TextSecondary
                             )
-                        },
-                        label = {
-                            Text(
-                                tab.label,
-                                fontSize = 10.sp,
-                                maxLines = 1,
-                                overflow = TextOverflow.Ellipsis,
-                                softWrap = false
-                            )
-                        },
-                        colors = NavigationBarItemDefaults.colors(
-                            selectedIconColor   = tab.color,
-                            selectedTextColor   = tab.color,
-                            indicatorColor      = tab.color.copy(alpha = 0.15f),
-                            unselectedIconColor = TextSecondary,
-                            unselectedTextColor = TextSecondary
                         )
-                    )
+                    }
                 }
             }
         }
@@ -405,7 +429,7 @@ private fun MainNavigation(profile: UserProfile) {
             if (profile == UserProfile.ADULTO_MAYOR) {
                 AdultoMayorContent(selectedTab)
             } else {
-                FamiliarContent(selectedTab)
+                FamiliarContent(selectedTab, onNavigateToTab = { selectedTab = it })
             }
         }
     }
@@ -416,18 +440,17 @@ private fun AdultoMayorContent(tab: Int) {
     when (tab) {
         0 -> PanicScreen()
         1 -> CheckInScreen()
-        2 -> DailyCallScreen()
-        3 -> MemoriesScreen()
-        4 -> MedicationScreen()
-        5 -> NotesScreen()
-        6 -> CircleScreen()
+        2 -> MemoriesScreen()
+        3 -> MedicationScreen()
+        4 -> NotesScreen()
+        5 -> CircleScreen()
     }
 }
 
 @Composable
-private fun FamiliarContent(tab: Int) {
+private fun FamiliarContent(tab: Int, onNavigateToTab: (Int) -> Unit) {
     when (tab) {
-        0 -> FamiliarStatusScreen()
+        0 -> FamiliarStatusScreen(onNavigateToTab = onNavigateToTab)
         1 -> FamiliarCheckInScreen()
         2 -> DailyCallScreen()
         3 -> SafeZonesScreen()
